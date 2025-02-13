@@ -1,0 +1,49 @@
+version: '3.6'
+
+services:
+  db:
+    image: mysql:5.7.16
+    command: --character-set-server=utf8mb4 --sql_mode=""
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    # volumes:
+    #   - ./dump:/docker-entrypoint-initdb.d
+
+  web: &web_base
+    tty: true
+    stdin_open: true
+    build: ./docker/web
+    # command: tail -f Gemfile
+    command: sh /docker-entrypoint.sh
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root
+      RAILS_ENV: development
+      REDIS_URL: redis:6379
+      REDMINE_API_KEY: cfd5114fdb5b6ff9a403844bf74d8935be2132dd
+      BASIC_AUTH_USER_NAME: zigexn
+      BASIC_AUTH_USER_PASSWORD: zigexn2vn
+      # PAGER: busybox less
+    # env_file:
+    #   - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/workspace
+      - bundle_cache:/workspace/vendor/bundle
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    <<: *web_base
+    command: sh /docker-entrypoint-worker.sh
+    ports: []
+
+  redis:
+    image: redis
+    platform: linux/amd64
+
+volumes:
+  bundle_cache:

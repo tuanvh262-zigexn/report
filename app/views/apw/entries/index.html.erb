@@ -1,0 +1,132 @@
+<div class="header">
+    <h1>Dashboard</h1>
+    <div>
+        <input class="search-bar" type="text" placeholder="Search...">
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-user-circle"></i>
+    </div>
+</div>
+
+<!-- Widgets -->
+<div class="widget-container">
+    <div class="widget">
+        <div>
+            <h3>Total Sales</h3>
+            <p>$82,540</p>
+        </div>
+        <i class="fas fa-dollar-sign icon"></i>
+    </div>
+    <div class="widget">
+        <div>
+            <h3>Total Users</h3>
+            <p>4,320</p>
+        </div>
+        <i class="fas fa-users icon"></i>
+    </div>
+    <div class="widget">
+        <div>
+            <h3>Orders</h3>
+            <p>1,754</p>
+        </div>
+        <i class="fas fa-box icon"></i>
+    </div>
+    <div class="widget">
+        <div>
+            <h3>New Comments</h3>
+            <p>126</p>
+        </div>
+        <i class="fas fa-comments icon"></i>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-container">
+  <div class="chart">
+    <h3>Revenue Growth</h3>
+    <div id="chart_div" style="height: 500px;"></div>
+  </div>
+  <!-- <div id="chart_div" style="width: 900px; height: 500px;"></div> -->
+  <div class="chart">
+    <h3>Sales Distribution</h3>
+    <div id="piechart_3d" style="height: 500px;"></div>
+  </div>
+  <%= @weekly_reports.count %>
+</div>
+
+<%= content_for :stylesheet do %>
+  <%= stylesheet_link_tag 'entries' %>
+<% end %>
+
+<%= content_for :javascripts do %>
+  <%= javascript_include_tag  'loader' %>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawVisualization);
+
+    var dataTable = []
+    dataTable.push(
+      [
+        'Week',
+        'Total time working',
+        'Task count',
+        'Story count',
+        'Task meeting deadline',
+      ]
+    )
+    <% @weekly_reports.each do |report| %>
+      console.log(11111)
+      dataTable.push(
+        [
+          '<%= report.start_date %>',
+          <%= report.total_time_working %>,
+          <%= report.tasks.count %>,
+          <%= report.tasks.pluck(:story_id).uniq.count %>,
+          <%= report.tasks.where(time_estimate_ratio: 0.8..1.0).count %>
+        ]
+      )
+    <% end %>
+
+    function drawVisualization() {
+      var dataComboChart = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title : 'Monthly Coffee Production by Country',
+        vAxis: {title: 'Cups'},
+        hAxis: {title: 'Month'},
+        seriesType: 'bars',
+        series: {3: {type: 'line'}}
+      };
+
+      var comboChart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+      comboChart.draw(dataComboChart, options);
+    }
+
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var dataPieChart = google.visualization.arrayToDataTable([
+        ['Task', 'Hours'],
+        ['Idle',  <%= @weekly_reports.sum{|x| x.content["idle"]} %>],
+        ['Coding', <%= @weekly_reports.sum{|x| x.content["coding"]} %>],
+        ['Design', <%= @weekly_reports.sum{|x| x.content["design"]} %>],
+        ['Meeting', <%= @weekly_reports.sum{|x| x.content["meeting"]} %>],
+        ['Release', <%= @weekly_reports.sum{|x| x.content["release"]} %>],
+        ['Testing', <%= @weekly_reports.sum{|x| x.content["testing"]} %>],
+        ['Document', <%= @weekly_reports.sum{|x| x.content["document"]} %>],
+        ['Leave Off', <%= @weekly_reports.sum{|x| x.content["leave_off"]} %>],
+        ['Bug Fixing', <%= @weekly_reports.sum{|x| x.content["bug_fixing"]} %>],
+        ['Requirement', <%= @weekly_reports.sum{|x| x.content["requirement"]} %>],
+        ['Support Team', <%= @weekly_reports.sum{|x| x.content["support_team"]} %>],
+        ['Support Customer', <%= @weekly_reports.sum{|x| x.content["support_customer"]} %>]
+      ]);
+
+      var optionsPiechart = {
+        title: 'My Daily Activities',
+        is3D: true,
+      };
+
+      var piechart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+      piechart.draw(dataPieChart, optionsPiechart);
+    }
+  </script>
+<% end %>

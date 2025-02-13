@@ -1,0 +1,10 @@
+id,name,redmine_id,role,actived,part_time,buffer_rate
+1,Đinh Ngọc Hân,304,"brse",1,0,1
+2,Nguyễn Bình Minh,318,"dev",1,0,0.9
+3,Nguyen Phuc,342,"dev",1,0,0.95
+4,Nguyễn Thanh Tùng,317,"dev",1,0,0.8
+5,Chau Tan,290,"dev",1,0,0.8
+6,Huynh Nhut,243,"dev",1,1,0.9
+7,Nguyen Tien Phong,361,"dev",1,0,0.7
+8,Ba Thi Thom,348,"tester",1,0,0.85
+9,Phạm Thị Loan,395,"tester",1,0,0.85

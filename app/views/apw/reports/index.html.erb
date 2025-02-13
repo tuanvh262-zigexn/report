@@ -1,0 +1,620 @@
+  <%= form_with url: apw_root_path, method: :get, local: true do |f| %>
+    <div class="filters">
+    <!-- Chọn ngày bắt đầu -->
+    <%= f.label :start_date, "Start date" %>
+    <%= f.text_field :start_date, name: "q[start_date]",
+      type: :date, value: @support.params_search[:start_date] %>
+    <%# <label for="start-date">Ngày bắt đầu:</label> %>
+    <%# <input type="date" id="start-date"> %>
+
+    <!-- Chọn người làm báo cáo -->
+    <%= f.label :user_id, "Member" %>
+    <%= f.select "q[user_id]",
+      options_for_select(
+          User.all.pluck(:name, :id),
+        @support.params_search[:user_id]
+      ), {prompt: 'All'}
+    %>
+
+    <!-- Chọn ngày kết thúc -->
+    <%= f.label :end_date, "End date" %>
+    <%= f.text_field :end_date, type: :date,
+      name: "q[end_date]", value: @support.params_search[:end_date] %>
+    <!-- Chọn loại báo cáo -->
+
+    <%= f.label :report_type, "Report type" %>
+    <%= f.select "q[report_type]",
+      options_for_select(
+        [
+          ['Daily', :daily_report],
+          ['Weekly', :weekly_report],
+          ['Monthly', :monthly_report],
+          ['Quarter', :quarter_report]
+        ],
+        @support.params_search[:report_type]
+      )
+    %>
+    <%# <label for="report-type-select">Chọn loại báo cáo:</label>
+    <select id="report-type-select">
+        <option value="performance">Hiệu suất</option>
+        <option value="attendance">Vắng mặt</option>
+        <option value="task-completion">Hoàn thành công việc</option>
+    </select> %>
+
+    <!-- Nút Search -->
+    <%= f.button "Tìm kiếm", type: :submit, id: "search-button" %>
+    <%# <button type="button" >Tìm kiếm</button> %>
+  </div>
+  <% end %>
+
+<!-- Biểu đồ -->
+<div class="charts-container">
+  <div class="chart">
+    <h3>The workload quantity</h3>
+    <div id="chart_div" class="chart-canvas"></div>
+  </div>
+</div>
+<div class="charts-container">
+  <div class="chart">
+    <h3>Accuracy of estimates</h3>
+    <div id="chart_task_div" class="chart-canvas"></div>
+  </div>
+</div>
+<hr>
+<h3>Classify the workload</h3>
+<div class="charts-container">
+  <div class="chart">
+    <div id="piechart_3d" class="chart-canvas"></div>
+  </div>
+  <div class="chart">
+    <div id="piechart_3d_detail" class="chart-canvas"></div>
+  </div>
+</div>
+<hr>
+<h3>Difficulty of tasks</h3>
+<div class="charts-container">
+  <div class="chart">
+    <div id="linechart_difficulty" class="chart-canvas"></div>
+  </div>
+
+  <%# <div class="chart">
+    <h3>Biểu đồ Line 1</h3>
+    <div id="linechart_material_1" class="chart-canvas"></div>
+  </div> %>
+</div>
+<div class="charts-container">
+  <div class="chart">
+    <div id="linechart_difficulty_coding" class="chart-canvas"></div>
+  </div>
+
+  <div class="chart">
+    <div id="linechart_difficulty_testing" class="chart-canvas"></div>
+  </div>
+</div>
+<hr>
+<h3>Quality of development</h3>
+<div class="charts-container">
+  <div class="chart">
+    <div id="chart_bug_div" class="chart-canvas"></div>
+  </div>
+
+  <div class="chart">
+    <div id="chart_tester_div" class="chart-canvas"></div>
+  </div>
+</div>
+<hr>
+<!-- Bảng dữ liệu -->
+<h3>Average hours to complete a task</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Task difficulty</th>
+      <th>Average Total Hours</th>
+      <th>Average Requirement Hours</th>
+      <th>Average Design Hours</th>
+      <th>Average Coding Hours</th>
+      <th>Average Testing Hours</th>
+      <th>Average Bug Fixing Hours</th>
+      <th>Average Release Hours</th>
+      <th>Average Cross Support Hours</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @support.time_based_on_difficulty.each do |k, v| %>
+    <tr>
+      <td><%= k.upcase %></td>
+      <td><%= v[:total] %></td>
+      <td><%= v[:requirement] %></td>
+      <td><%= v[:design] %></td>
+      <td><%= v[:coding] %></td>
+      <td><%= v[:testing] %></td>
+      <td><%= v[:bug_fixing] %></td>
+      <td><%= v[:release] %></td>
+      <td><%= v[:cross_support] %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<h3>Detailed data for each task</h3>
+<div class="table-container">
+  <table id="sortableTable">
+      <thead>
+          <tr>
+              <th class="sortable fixed-column"onclick="sortTable(0)">STT</th>
+              <th class="sortable" onclick="sortTable(1)">Remine </th>
+              <th class="sortable">
+                Status
+                <span class="filter-icon" onclick="toggleFilter('filterStatus', event)">&#x1F50D;</span>
+              </th>
+              <th class="sortable">
+                Difficulty Level
+                <span class="filter-icon" onclick="toggleFilter('filterLevel', event)">&#x1F50D;</span>
+              </th>
+              <th class="sortable">Subject</th>
+              <th class="sortable" onclick="sortTable(5)">Total Estimated Hours</th>
+              <th class="sortable" onclick="sortTable(6)">Total Spent Hours</th>
+              <th class="sortable" onclick="sortTable(7)">Spent Estimate Ratio</th>
+              <th class="sortable" onclick="sortTable(8)">Prod Bug</th>
+              <th class="sortable" onclick="sortTable(9)">Stg Bug</th>
+              <th class="sortable" onclick="sortTable(10)">TestCase Count</th>
+              <th class="sortable" onclick="sortTable(11)">Requirement Hours</th>
+              <th class="sortable" onclick="sortTable(12)">Design Hours</th>
+              <th class="sortable" onclick="sortTable(13)">Coding Hours</th>
+              <th class="sortable" onclick="sortTable(14)">Testing Hours</th>
+              <th class="sortable" onclick="sortTable(15)">Bug Fixing Hours</th>
+              <th class="sortable" onclick="sortTable(16)">Cross Support Hours</th>
+              <th class="sortable" onclick="sortTable(17)">Release Hours</th>
+          </tr>
+      </thead>
+      <tbody>
+          <% @support.stories.each.with_index(1) do |story, i| %>
+          <tr>
+              <td class="fixed-column">
+                <%= i %>
+              </td>
+              <td>
+                <%= link_to story.issue_id, "https://dev.zigexn.vn/issues/#{story.issue_id}", target: "_blank" %>
+              </td>
+              <td data-status="<%= story.status %>">
+                <span class="status-label <%= story.status %>"><%= story.status %></span>
+              </td>
+              <td data-level="<%= story.level %>">
+                <span class="level-label <%= story.level %>"><%= story.level %></span>
+              </td>
+              <td>
+                <%= story.subject %>
+              </td>
+              <td><%= story.total_estimated_hours %></td>
+              <td><%= story.total_spent_hours %></td>
+              <td><%= story.time_estimate_ratio %></td>
+              <td><%= story.prod_bug_count %></td>
+              <td><%= story.bug_count %></td>
+              <td><%= story.test_case_count %></td>
+              <td><%= story.requirement_hours %></td>
+              <td><%= story.design_hours %></td>
+              <td><%= story.coding_hours %></td>
+              <td><%= story.testing_hours %></td>
+              <td><%= story.bug_fixing_hours %></td>
+              <td><%= story.cross_support_hours %></td>
+              <td><%= story.release_hours %></td>
+          </tr>
+        <% end %>
+    </tbody>
+  </table>
+  <div id="filterLevel" class="filter-container">
+    <label><input type="checkbox" value="unset" onclick="filterTable()">Unset</label>
+    <label><input type="checkbox" value="basic" onclick="filterTable()">Basic</label>
+    <label><input type="checkbox" value="intermediate" onclick="filterTable()">Intermediate</label>
+    <label><input type="checkbox" value="upper_intermediate" onclick="filterTable()">Upper Intermediate</label>
+    <label><input type="checkbox" value="advanced" onclick="filterTable()">Advanced</label>
+    <label><input type="checkbox" value="expert" onclick="filterTable()">Expert</label>
+  </div>
+
+  <div id="filterStatus" class="filter-container">
+    <label><input type="checkbox" value="init" onclick="filterTable()">Init</label>
+    <label><input type="checkbox" value="pending" onclick="filterTable()">Pending</label>
+    <label><input type="checkbox" value="in_progress" onclick="filterTable()">In Progress</label>
+    <label><input type="checkbox" value="resolved" onclick="filterTable()">Resolved</label>
+    <label><input type="checkbox" value="code_review" onclick="filterTable()">Code Review</label>
+    <label><input type="checkbox" value="testing" onclick="filterTable()">Testing</label>
+    <label><input type="checkbox" value="verified" onclick="filterTable()">Verified</label>
+    <label><input type="checkbox" value="jp_side" onclick="filterTable()">JP Side</label>
+    <label><input type="checkbox" value="feedback" onclick="filterTable()">Feedback</label>
+    <label><input type="checkbox" value="waiting_release" onclick="filterTable()">Waiting Release</label>
+    <label><input type="checkbox" value="released" onclick="filterTable()">Released</label>
+    <label><input type="checkbox" value="closed" onclick="filterTable()">Closed</label>
+  </div>
+</div>
+
+
+   <%#  <script>
+        // Xử lý sự kiện nhấn nút "Tìm kiếm"
+        document.getElementById('search-button').addEventListener('click', function() {
+            const employee = document.getElementById('employee-select').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            const reportType = document.getElementById('report-type-select').value;
+
+            alert(`Tìm kiếm với các thông tin:\nNhân viên: ${employee}\nNgày bắt đầu: ${startDate}\nNgày kết thúc: ${endDate}\nLoại báo cáo: ${reportType}`);
+        });
+
+        // Chức năng thay đổi header khi cuộn trang
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script> %>
+
+
+<%= content_for :stylesheet do %>
+  <%= stylesheet_link_tag 'reports' %>
+<% end %>
+
+<%= content_for :javascripts do %>
+  <%= javascript_include_tag  'loader' %>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart', 'line']});
+
+    google.charts.setOnLoadCallback(drawVisualization);
+    function drawVisualization() {
+      var dataTable = []
+      dataTable.push(
+        [
+          'Week',
+          'The number of stories', 'Completed stories', 'Released stories'
+        ]
+      )
+      <% @support.story_chart.each do |data| %>
+        dataTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:total_tasks] %>,
+            <%= data[:waiting_release] %>,
+            <%= data[:released] %>
+          ]
+        )
+      <% end %>
+
+      var dataComboChart = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title : 'The chart depicts the number of stories',
+        vAxis: {title: 'Stories'},
+        seriesType: 'bars',
+        series: {2: {type: 'line'}}
+      };
+
+      var comboChart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+      comboChart.draw(dataComboChart, options);
+    }
+
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var dataPieChart = google.visualization.arrayToDataTable([
+        ['Task', 'Hours'],
+        ['Idle',  <%= @support.pie_chart_working_logs[:idle] %>],
+        ['Document', <%= @support.pie_chart_working_logs[:document] %>],
+        ['Leave Off', <%= @support.pie_chart_working_logs[:leave_off] %>],
+        ['Meeting', <%= @support.pie_chart_working_logs[:meeting] %>],
+        ['Cross Review', <%= @support.pie_chart_working_logs[:cross_review] %>],
+        ['Support Customer', <%= @support.pie_chart_working_logs[:support_customer] %>],
+        ['Doing Task', <%= @support.pie_chart_working_logs[:doing_task] %>],
+        ['Other', <%= @support.pie_chart_working_logs[:other] %>]
+      ]);
+
+      var optionsPiechart = {
+        title: 'The entire workload',
+        is3D: true,
+      };
+
+      var piechart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+      piechart.draw(dataPieChart, optionsPiechart);
+    }
+
+    google.charts.setOnLoadCallback(drawDetailChart);
+    function drawDetailChart() {
+      var dataDetailPieChart = google.visualization.arrayToDataTable([
+        ['Task', 'Hours'],
+        ['Requirement',  <%= @support.pie_chart_detail_working_logs[:requirement] %>],
+        ['Design', <%= @support.pie_chart_detail_working_logs[:design] %>],
+        ['Coding', <%= @support.pie_chart_detail_working_logs[:coding] %>],
+        ['Testing', <%= @support.pie_chart_detail_working_logs[:testing] %>],
+        ['Bug_fixing', <%= @support.pie_chart_detail_working_logs[:bug_fixing] %>],
+        ['Release', <%= @support.pie_chart_detail_working_logs[:release] %>]
+      ]);
+
+      var optionsDetailPiechart = {
+        title: 'Workload related to completing tasks',
+        is3D: true,
+      };
+
+      var piechart = new google.visualization.PieChart(document.getElementById('piechart_3d_detail'));
+      piechart.draw(dataDetailPieChart, optionsDetailPiechart);
+    }
+
+    google.charts.setOnLoadCallback(drawTaskVisualization);
+    function drawTaskVisualization() {
+      var dataTasksTable = []
+      dataTasksTable.push(
+        [
+          'Week',
+          'The number of tasks', 'Completed tasks', 'Meet deadline'
+        ]
+      )
+      <% @support.task_chart.each do |data| %>
+        dataTasksTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:total] %>,
+            <%= data[:done_tasks] %>,
+            <%= data[:meeting_deadline] %>
+          ]
+        )
+      <% end %>
+
+      var dataTaskComboChart = google.visualization.arrayToDataTable(dataTasksTable);
+
+      var options = {
+        title : 'The chart depicts the number of tasks',
+        vAxis: {title: 'Tasks'},
+        seriesType: 'bars',
+        series: {2: {type: 'line'}}
+      };
+
+      var comboChart = new google.visualization.ComboChart(document.getElementById('chart_task_div'));
+      comboChart.draw(dataTaskComboChart, options);
+    }
+
+    google.charts.setOnLoadCallback(drawBugVisualization);
+    function drawBugVisualization() {
+      var dataBugTable = []
+      dataBugTable.push(
+        [
+          'Week',
+          'Bug', 'Prod Bug'
+        ]
+      )
+      <% @support.bug_chart.each do |data| %>
+        dataBugTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:total] %>,
+            <%= data[:prod_bugs] %>
+          ]
+        )
+      <% end %>
+
+      var dataBugComboChart = google.visualization.arrayToDataTable(dataBugTable);
+
+      var options = {
+        title : 'The number of bugs',
+        vAxis: {title: 'Bug '},
+        seriesType: 'bars',
+        series: {1: {type: 'line'}}
+      };
+
+      var comboChart = new google.visualization.ComboChart(document.getElementById('chart_bug_div'));
+      comboChart.draw(dataBugComboChart, options);
+    }
+
+    google.charts.setOnLoadCallback(drawTesterVisualization);
+    function drawTesterVisualization() {
+      var dataTesterWorkloadTable = []
+      dataTesterWorkloadTable.push(
+        [
+          'Week',
+          'Testcase', 'Working '
+        ]
+      )
+      <% @support.tester_workload_chart.each do |data| %>
+        dataTesterWorkloadTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:testcases] %>,
+            <%= data[:testing_hours] %>
+          ]
+        )
+      <% end %>
+
+      var dataTesterWorkloadComboChart = google.visualization.arrayToDataTable(dataTesterWorkloadTable);
+
+      var options = {
+        title : 'The number of test cases and execution time',
+        vAxis: {title: 'Testcases coun'},
+        seriesType: 'bars',
+        series: {1: {type: 'line'}}
+      };
+
+      var comboChart = new google.visualization.ComboChart(document.getElementById('chart_tester_div'));
+      comboChart.draw(dataTesterWorkloadComboChart, options);
+    }
+
+    google.charts.setOnLoadCallback(drawDifficultyChart);
+    function drawDifficultyChart() {
+      var dataTable = []
+      dataTable.push(
+        [
+          'Day',
+          'Unset', 'Basic', 'Intermediate', 'Upper Intermediate', 'Advanced', 'Expert'
+        ]
+      )
+      <% @support.difficulty_chart.each do |data| %>
+        dataTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:unset] %>,
+            <%= data[:basic] %>,
+            <%= data[:intermediate] %>,
+            <%= data[:upper_intermediate] %>,
+            <%= data[:advanced] %>,
+            <%= data[:expert] %>,
+          ]
+        )
+      <% end %>
+      var data = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title: 'Classify the workload based on tasks with different levels of difficulty',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('linechart_difficulty'));
+
+      chart.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(drawDifficultyCodingChart);
+    function drawDifficultyCodingChart() {
+      var dataTable = []
+      dataTable.push(
+        [
+          'Day',
+          'Unset', 'Basic', 'Intermediate', 'Upper Intermediate', 'Advanced', 'Expert'
+        ]
+      )
+      <% @support.difficulty_coding_chart.each do |data| %>
+        dataTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:unset] %>,
+            <%= data[:basic] %>,
+            <%= data[:intermediate] %>,
+            <%= data[:upper_intermediate] %>,
+            <%= data[:advanced] %>,
+            <%= data[:expert] %>,
+          ]
+        )
+      <% end %>
+      var data = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title: 'Coding workload',
+        curveType: 'function',
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('linechart_difficulty_coding'));
+
+      chart.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(drawDifficultyTestingChart);
+    function drawDifficultyTestingChart() {
+      var dataTable = []
+      dataTable.push(
+        [
+          'Day',
+          'Unset', 'Basic', 'Intermediate', 'Upper Intermediate', 'Advanced', 'Expert'
+        ]
+      )
+      <% @support.difficulty_testing_chart.each do |data| %>
+        dataTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:unset] %>,
+            <%= data[:basic] %>,
+            <%= data[:intermediate] %>,
+            <%= data[:upper_intermediate] %>,
+            <%= data[:advanced] %>,
+            <%= data[:expert] %>,
+          ]
+        )
+      <% end %>
+      var data = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title: 'Testing workload',
+        curveType: 'function',
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('linechart_difficulty_testing'));
+
+      chart.draw(data, options);
+    }
+
+    function sortTable(columnIndex) {
+        var table = document.getElementById("sortableTable");
+        var rows = Array.from(table.rows).slice(1); // Get all rows except the header
+        var isAscending = table.rows[0].cells[columnIndex].classList.contains("asc");
+
+        // Remove 'asc' or 'desc' classes from all headers
+        var headers = table.querySelectorAll("th");
+        headers.forEach(function(header) {
+            header.classList.remove("asc", "desc");
+        });
+
+        // Toggle the class for the clicked column header
+        var header = table.rows[0].cells[columnIndex];
+        header.classList.add(isAscending ? "desc" : "asc");
+
+        // Sort the rows
+        rows.sort(function(a, b) {
+            var cellA = a.cells[columnIndex].innerText;
+            var cellB = b.cells[columnIndex].innerText;
+
+            // Sort by numeric value if it's a number, otherwise by string
+            if (!isNaN(cellA) && !isNaN(cellB)) {
+                return isAscending ? cellA - cellB : cellB - cellA;
+            }
+            return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+        });
+
+        // Append the sorted rows back into the table body with animation
+        rows.forEach(function(row) {
+            table.appendChild(row);
+        });
+    }
+
+    function toggleFilter(filterId, event) {
+      var filterContainer = document.getElementById(filterId);
+      // Position the filter container below the clicked icon
+      var iconPosition = event.target.getBoundingClientRect();
+      filterContainer.style.left = `${iconPosition.left}px`; // Align horizontally with the icon
+      filterContainer.style.top = `${iconPosition.bottom + window.scrollY}px`; // Position below the icon
+      filterContainer.style.display = filterContainer.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function filterTable() {
+      var table, tr, td, i, j, filterCheckboxes, selectedFilters;
+      table = document.getElementById("sortableTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Check the checkboxes that are selected
+      selectedFilters = {};
+      var filterColumns = ['filterLevel', 'filterStatus'];
+
+      filterColumns.forEach(function(filterId) {
+        var checkboxes = document.querySelectorAll(`#${filterId} input[type="checkbox"]:checked`);
+        selectedFilters[filterId] = Array.from(checkboxes).map(function(checkbox) {
+            return checkbox.value;
+        });
+      });
+
+      // Loop through each row and hide or show it
+      for (i = 1; i < tr.length; i++) { // Skip the first row (headers)
+        tr[i].style.display = "none"; // Hide the row initially
+        td = tr[i].getElementsByTagName("td");
+
+        var match = true;
+
+        // Check each column based on selected checkboxes
+        if (selectedFilters.filterLevel.length > 0 && !selectedFilters.filterLevel.includes(td[3].getAttribute('data-level'))) {
+            match = false;
+        }
+        if (selectedFilters.filterStatus.length > 0 && !selectedFilters.filterStatus.includes(td[2].getAttribute('data-status'))) {
+            match = false;
+        }
+
+        if (match) {
+            tr[i].style.display = ""; // Show the row if it matches
+        }
+      }
+    }
+  </script>
+<% end %>
