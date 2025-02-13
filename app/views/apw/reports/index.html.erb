@@ -76,11 +76,6 @@
   <div class="chart">
     <div id="linechart_difficulty" class="chart-canvas"></div>
   </div>
-
-  <%# <div class="chart">
-    <h3>Biểu đồ Line 1</h3>
-    <div id="linechart_material_1" class="chart-canvas"></div>
-  </div> %>
 </div>
 <div class="charts-container">
   <div class="chart">
@@ -138,41 +133,45 @@
 
 
 <h3>Detailed data for each task</h3>
+<h5>
+  Total story:
+  <span id="story-count"><%= @support.stories.size %></span>
+</h5>
 <div class="table-container">
   <table id="sortableTable">
       <thead>
           <tr>
-              <th class="sortable fixed-column"onclick="sortTable(0)">STT</th>
-              <th class="sortable" onclick="sortTable(1)">Remine </th>
-              <th class="sortable">
-                Status
-                <span class="filter-icon" onclick="toggleFilter('filterStatus', event)">&#x1F50D;</span>
-              </th>
-              <th class="sortable">
-                Difficulty Level
-                <span class="filter-icon" onclick="toggleFilter('filterLevel', event)">&#x1F50D;</span>
-              </th>
-              <th class="sortable">Subject</th>
-              <th class="sortable" onclick="sortTable(5)">Total Estimated Hours</th>
-              <th class="sortable" onclick="sortTable(6)">Total Spent Hours</th>
-              <th class="sortable" onclick="sortTable(7)">Spent Estimate Ratio</th>
-              <th class="sortable" onclick="sortTable(8)">Prod Bug</th>
-              <th class="sortable" onclick="sortTable(9)">Stg Bug</th>
-              <th class="sortable" onclick="sortTable(10)">TestCase Count</th>
-              <th class="sortable" onclick="sortTable(11)">Requirement Hours</th>
-              <th class="sortable" onclick="sortTable(12)">Design Hours</th>
-              <th class="sortable" onclick="sortTable(13)">Coding Hours</th>
-              <th class="sortable" onclick="sortTable(14)">Testing Hours</th>
-              <th class="sortable" onclick="sortTable(15)">Bug Fixing Hours</th>
-              <th class="sortable" onclick="sortTable(16)">Cross Support Hours</th>
-              <th class="sortable" onclick="sortTable(17)">Release Hours</th>
+            <th class="sortable fixed-column"onclick="sortTable(0)">ID</th>
+            <th class="sortable" onclick="sortTable(1)">Remine </th>
+            <th class="sortable">
+              Status
+              <span class="filter-icon" onclick="toggleFilter('filterStatus', event)">&#x1F50D;</span>
+            </th>
+            <th class="sortable">
+              Difficulty Level
+              <span class="filter-icon" onclick="toggleFilter('filterLevel', event)">&#x1F50D;</span>
+            </th>
+            <th class="sortable">Subject</th>
+            <th class="sortable" onclick="sortTable(5)">Total Estimated Hours</th>
+            <th class="sortable" onclick="sortTable(6)">Total Spent Hours</th>
+            <th class="sortable" onclick="sortTable(7)">Spent Estimate Ratio</th>
+            <th class="sortable" onclick="sortTable(8)">Prod Bug</th>
+            <th class="sortable" onclick="sortTable(9)">Stg Bug</th>
+            <th class="sortable" onclick="sortTable(10)">TestCase Count</th>
+            <th class="sortable" onclick="sortTable(11)">Requirement Hours</th>
+            <th class="sortable" onclick="sortTable(12)">Design Hours</th>
+            <th class="sortable" onclick="sortTable(13)">Coding Hours</th>
+            <th class="sortable" onclick="sortTable(14)">Testing Hours</th>
+            <th class="sortable" onclick="sortTable(15)">Bug Fixing Hours</th>
+            <th class="sortable" onclick="sortTable(16)">Cross Support Hours</th>
+            <th class="sortable" onclick="sortTable(17)">Release Hours</th>
           </tr>
       </thead>
       <tbody>
-          <% @support.stories.each.with_index(1) do |story, i| %>
+          <% @support.stories.each do |story| %>
           <tr>
               <td class="fixed-column">
-                <%= i %>
+                <%= link_to story.id, apw_story_path(story.id), target: "_blank" %>
               </td>
               <td>
                 <%= link_to story.issue_id, "https://dev.zigexn.vn/issues/#{story.issue_id}", target: "_blank" %>
@@ -253,7 +252,7 @@
 
 
 <%= content_for :stylesheet do %>
-  <%= stylesheet_link_tag 'reports' %>
+  <%= stylesheet_link_tag 'report/index' %>
 <% end %>
 
 <%= content_for :javascripts do %>
@@ -597,6 +596,7 @@
       });
 
       // Loop through each row and hide or show it
+      let storyCount = 0
       for (i = 1; i < tr.length; i++) { // Skip the first row (headers)
         tr[i].style.display = "none"; // Hide the row initially
         td = tr[i].getElementsByTagName("td");
@@ -612,9 +612,11 @@
         }
 
         if (match) {
-            tr[i].style.display = ""; // Show the row if it matches
+          tr[i].style.display = ""; // Show the row if it matches
+          storyCount ++;
         }
       }
+      document.getElementById("story-count").textContent = storyCount;
     }
   </script>
 <% end %>

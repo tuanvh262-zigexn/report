@@ -1,0 +1,268 @@
+table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      border-radius: 10px;
+    }
+
+    th, td {
+      padding: 12px 20px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #eaeaea;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .status.in-progress {
+      background-color: orange;
+      color: white;
+    }
+
+    .status.not-started {
+      background-color: red;
+      color: white;
+    }
+
+    .status.completed {
+      background-color: green;
+      color: white;
+    }
+
+    .task-detail h2 {
+      color: #333;
+    }
+
+    .task-detail p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #555;
+    }
+
+.status-label {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.status-label:hover {
+    background-color: #ddd;
+}
+.init {
+    background-color: #f0f0f0;
+}
+.pending {
+    background-color: #ffcc80;
+}
+.in_progress {
+    background-color: #90caf9;
+}
+.resolved {
+    background-color: #81c784;
+}
+.code_review {
+    background-color: #ff7043;
+}
+.testing {
+    background-color: #ffeb3b;
+}
+.verified {
+    background-color: #8e24aa;
+}
+.jp_side {
+    background-color: #d32f2f;
+}
+.feedback {
+    background-color: #f57c00;
+}
+.waiting_release {
+    background-color: #0288d1;
+}
+.released {
+    background-color: #43a047;
+}
+.closed {
+    background-color: #757575;
+}
+
+.highlight-row {
+  background-color: #f8d7da; /* Màu đỏ nhạt */
+  color: #721c24; /* Màu chữ đỏ */
+}
+
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 32px;
+  margin-bottom: 40px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Mỗi dòng dữ liệu */
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 2px solid #ecf0f1;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.data-row:last-child {
+  border-bottom: none;
+}
+
+.data-row:hover {
+  background-color: #ecf0f1;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(5px);
+}
+
+/* Cột trái */
+.data-left {
+  width: 35%;
+  font-weight: bold;
+  color: #34495e;
+  font-size: 16px;
+}
+
+/* Cột phải */
+.data-right {
+  width: 60%;
+  color: #7f8c8d;
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+/* Màu nền cho các dòng dữ liệu */
+.data-row:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+/* Các hiệu ứng cho chữ và nền */
+.highlight-row {
+  background-color: #ffe5e5;
+  border-left: 4px solid #e74c3c;
+}
+
+/* Màu sắc trạng thái */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.status.init {
+    background-color: #f0f0f0;
+    color: white;
+}
+.status.pending {
+    background-color: #ffcc80;
+    color: white;
+}
+.status.in_progress {
+    background-color: #90caf9;
+    color: white;
+}
+.status.resolved {
+    background-color: #81c784;
+    color: white;
+}
+.status.code_review {
+    background-color: #ff7043;
+    color: white;
+}
+.status.testing {
+    background-color: #ffeb3b;
+    color: white;
+}
+.status.verified {
+    background-color: #8e24aa;
+    color: white;
+}
+.status.jp_side {
+    background-color: #d32f2f;
+    color: white;
+}
+.status.feedback {
+    background-color: #f57c00;
+    color: white;
+}
+.status.waiting_release {
+    background-color: #0288d1;
+    color: white;
+}
+.status.released {
+    background-color: #43a047;
+    color: white;
+}
+.status.closed {
+    background-color: #757575;
+    color: white;
+}
+
+.accordion {
+  background-color: #2980b9;
+  color: white;
+  padding: 15px 25px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.accordion:hover {
+  background-color: #3498db;
+}
+
+.panel {
+  display: none;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.panel.open {
+  display: block;
+}

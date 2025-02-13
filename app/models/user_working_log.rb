@@ -19,6 +19,8 @@ class UserWorkingLog < ApplicationRecord
     idle: 11
   }
 
+  delegate :name, to: :user, allow_nil: true, prefix: true
+
   # def support_activity?
   #   coding? || design? || bug_fixing?
   # end

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   namespace :apw do
     # root "entries#index"
     root "reports#index"
+    resources :stories, only: :show
 
     mount Sidekiq::Web, at: '/sidekiq'
   end

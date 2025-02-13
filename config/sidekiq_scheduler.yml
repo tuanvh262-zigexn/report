@@ -6,9 +6,14 @@ daily_fetch_working_logs:
 update_reports_worker:
   cron: '0 23 * * 1-5'
   class: UpdateReportsWorker
-  enabled: default
+  queue: default
 
 fetch_all_report_worker:
   cron: '30 23 * * 1-5'
   class: FetchAllReportWorker
-  enabled: default
+  queue: default
+
+update_story_worker:
+  cron: '0 7 * * 1-5'
+  class: UpdateStoryWorker
+  queue: default

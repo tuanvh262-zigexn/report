@@ -38,4 +38,15 @@ class SubTask < ApplicationRecord
     unit_test: 4,
     integration_test: 5
   }
+
+  enum :activity_type, {
+    clear_requirement: 1,
+    detail_design: 2,
+    code: 3,
+    test: 4,
+    bug: 5,
+    release: 6
+  }
+
+  delegate :name, to: :owner, prefix: true, allow_nil: true
 end

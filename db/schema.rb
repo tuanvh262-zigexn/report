@@ -76,6 +76,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.integer "defect_origin", default: 0
     t.string "cause_analyze"
     t.boolean "meet_deadline", default: false
+    t.integer "activity_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_sub_tasks_on_issue_id", unique: true

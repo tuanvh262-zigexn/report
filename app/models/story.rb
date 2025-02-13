@@ -29,6 +29,8 @@ class Story < ApplicationRecord
     expert: 5
   }
 
+  delegate :name, to: :user, allow_nil: true, prefix: true
+
   def state_over_period_date period_date
     # return :release if
     [

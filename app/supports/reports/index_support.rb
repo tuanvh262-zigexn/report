@@ -1,4 +1,4 @@
-class Report::IndexSupport
+class Reports::IndexSupport
   attr_accessor :params_q
 
   def initialize params_q

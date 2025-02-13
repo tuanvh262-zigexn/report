@@ -12,6 +12,14 @@ regex:
       testing: !ruby/regexp /4. Testing -/
       bug_fixing: !ruby/regexp /5. Bug fixing -/
       release: !ruby/regexp /6. Release -/
+  sub_task:
+    activity_types:
+      clear_requirement: !ruby/regexp /1. Requirement -/
+      detail_design: !ruby/regexp /2. Design -/
+      code: !ruby/regexp /3. Coding -/
+      test: !ruby/regexp /4. Testing -/
+      bug: !ruby/regexp /5. Bug fixing -/
+      release: !ruby/regexp /6. Release -/
 
 redis:
   host: redis

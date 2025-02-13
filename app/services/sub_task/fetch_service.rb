@@ -20,7 +20,8 @@ class SubTask::FetchService
         defect_origin: defect_origin,
         cause_analyze: redmine_issue["custom_fields"]&.find{|x| x["name"] == "Cause Analyze"}.try("[]", "value"),
         is_bug: is_bug?,
-        meet_deadline: meet_deadline
+        meet_deadline: meet_deadline,
+        activity_type: gen_activity_type
       )
 
       sub_task.save!
@@ -37,10 +38,13 @@ class SubTask::FetchService
     @redmine_issue ||= Redmine::Issue.new(sub_task.issue_id).execute
   end
 
-  def redmine_issue_test
-    @redmine_issue_test ||= begin
-      issue_test_id = redmine_issue["children"].find{|x| x.dig("tracker", "id") == 9}["id"]
-      Redmine::Issue.new(issue_test_id).execute
+  def redmine_parent_issue
+    @redmine_parent_issue ||= Redmine::Issue.new(redmine_issue.dig("parent", "id")).execute
+  end
+
+  def gen_activity_type
+    Settings.regex.sub_task.activity_types.each do |type, regex|
+      return type if redmine_parent_issue.dig("subject")&.match(regex)
     end
   end
 
