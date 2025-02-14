@@ -85,6 +85,6 @@ class Stories::ShowSupport
   end
 
   def working_logs
-    @working_logs ||= UserWorkingLog.where(root_issue_id: 66338).includes(:user)
+    @working_logs ||= UserWorkingLog.where(root_issue_id: story.issue_id).includes(:user)
   end
 end
