@@ -201,13 +201,13 @@ class Reports::IndexSupport
       cross_support_hours = stories_by_level.sum(&:cross_support_hours)
       total_hours = stories_by_level.sum(&:total_spent_hours)
 
-      requirement_size = finished_stories.reject{|x| x.requirement_hours.zero?}.size
-      design_size = finished_stories.reject{|x| x.design_hours.zero?}.size
-      coding_size = finished_stories.reject{|x| x.coding_hours.zero?}.size
-      testing_size = finished_stories.reject{|x| x.testing_hours.zero?}.size
-      bug_fixing_size = finished_stories.reject{|x| x.bug_fixing_hours.zero?}.size
-      release_size = finished_stories.reject{|x| x.release_hours.zero?}.size
-      cross_support_size = finished_stories.reject{|x| x.cross_support_hours.zero?}.size
+      requirement_size = stories_by_level.reject{|x| x.requirement_hours.zero?}.size
+      design_size = stories_by_level.reject{|x| x.design_hours.zero?}.size
+      coding_size = stories_by_level.reject{|x| x.coding_hours.zero?}.size
+      testing_size = stories_by_level.reject{|x| x.testing_hours.zero?}.size
+      bug_fixing_size = stories_by_level.reject{|x| x.bug_fixing_hours.zero?}.size
+      release_size = stories_by_level.reject{|x| x.release_hours.zero?}.size
+      cross_support_size = stories_by_level.reject{|x| x.cross_support_hours.zero?}.size
 
       data.merge({
         level => {
