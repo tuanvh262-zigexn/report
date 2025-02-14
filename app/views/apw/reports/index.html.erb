@@ -141,7 +141,7 @@
   <table id="sortableTable">
       <thead>
           <tr>
-            <th class="sortable fixed-column"onclick="sortTable(0)">ID</th>
+            <th class="sortable fixed-column"onclick="sortTable(0)"></th>
             <th class="sortable" onclick="sortTable(1)">Remine </th>
             <th class="sortable">
               Status
@@ -171,7 +171,7 @@
           <% @support.stories.each do |story| %>
           <tr>
               <td class="fixed-column">
-                <%= link_to story.id, apw_story_path(story.id), target: "_blank" %>
+                <%= link_to "Detail", apw_story_path(story.id), target: "_blank", class: "btn" %>
               </td>
               <td>
                 <%= link_to story.issue_id, "https://dev.zigexn.vn/issues/#{story.issue_id}", target: "_blank" %>

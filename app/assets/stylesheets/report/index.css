@@ -260,3 +260,19 @@ tbody tr:hover {
 .closed {
     background-color: #757575;
 }
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
