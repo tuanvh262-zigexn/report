@@ -218,8 +218,8 @@
           [
             '<%= line_chart_data[:text] %>',
             '<%= line_chart_data[:hours] %>',
-            new Date('<%= line_chart_data[:start_at].to_date %>'),
-            new Date('<%= line_chart_data[:end_at].to_date %>')
+            new Date('<%= line_chart_data[:start_at].strftime("%Y-%m-%d") %>'),
+            new Date('<%= line_chart_data[:end_at].strftime("%Y-%m-%d") %>')
           ]
         )
       <% end %>
@@ -252,9 +252,9 @@
           data.push(
             [
               '<%= data_chart[:text] %>',
-              '<%= log[:name] %>',
-              new Date('<%= log[:date].to_date %>'),
-              new Date('<%= log[:date].to_date %>')
+              '<%= log[:name] %>: <%= log[:hours] %>',
+              new Date('<%= log[:date].strftime("%Y-%m-%d") %>'),
+              new Date('<%= (log[:date] + 1.days).strftime("%Y-%m-%d") %>')
             ]
           )
         <% end %>
