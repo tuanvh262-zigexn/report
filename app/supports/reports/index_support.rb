@@ -21,7 +21,7 @@ class Reports::IndexSupport
     @params_search ||= begin
       {
         start_date: params_q.dig(:start_date)&.to_date || (Date.current - 2.months).beginning_of_week,
-        end_date: params_q.dig(:end_date)&.to_date || Date.current.beginning_of_week,
+        end_date: params_q.dig(:end_date)&.to_date || Date.current,
         report_type: params_q.dig(:report_type) || "weekly_report",
         user_id: params_q.dig(:user_id).presence
       }

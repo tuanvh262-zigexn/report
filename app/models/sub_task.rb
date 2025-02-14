@@ -1,6 +1,6 @@
 class SubTask < ApplicationRecord
   belongs_to :story
-  belongs_to :owner, class_name: User.name, foreign_key: :id, optional: true
+  belongs_to :owner, class_name: User.name, foreign_key: :owner_id, optional: true
 
   enum :status, {
     init: 0,
