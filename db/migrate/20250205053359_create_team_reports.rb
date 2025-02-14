@@ -7,7 +7,7 @@ class CreateTeamReports < ActiveRecord::Migration[8.0]
       t.date :start_date, null: false
       t.boolean :latest, default: false
       t.boolean :public, default: false
-      t.float :total_time_working, default: 0
+      t.decimal :total_time_working, default: 0, :scale => 2, :precision => 10
 
       t.timestamps
     end

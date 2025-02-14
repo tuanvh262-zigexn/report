@@ -29,9 +29,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.string "link_issue"
     t.date "start_date"
     t.date "due_date"
-    t.float "time_estimate_ratio"
-    t.float "total_estimated_hours"
-    t.float "total_spent_hours"
+    t.decimal "time_estimate_ratio", precision: 10, scale: 2
+    t.decimal "total_estimated_hours", precision: 10, scale: 2
+    t.decimal "total_spent_hours", precision: 10, scale: 2
     t.integer "test_case_count", default: 0
     t.integer "bug_count", default: 0
     t.integer "prod_bug_count", default: 0
@@ -45,13 +45,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.date "testing_end_at"
     t.date "bug_fixing_start_at"
     t.date "bug_fixing_end_at"
-    t.float "requirement_hours"
-    t.float "design_hours"
-    t.float "coding_hours"
-    t.float "testing_hours"
-    t.float "bug_fixing_hours"
-    t.float "release_hours"
-    t.float "cross_support_hours"
+    t.decimal "requirement_hours", precision: 10, scale: 2
+    t.decimal "design_hours", precision: 10, scale: 2
+    t.decimal "coding_hours", precision: 10, scale: 2
+    t.decimal "testing_hours", precision: 10, scale: 2
+    t.decimal "bug_fixing_hours", precision: 10, scale: 2
+    t.decimal "release_hours", precision: 10, scale: 2
+    t.decimal "cross_support_hours", precision: 10, scale: 2
     t.date "finished_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -68,9 +68,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.string "subject"
     t.date "start_date"
     t.date "due_date"
-    t.float "time_estimate_ratio"
-    t.float "total_estimated_hours"
-    t.float "total_spent_hours"
+    t.decimal "time_estimate_ratio", precision: 10, scale: 2
+    t.decimal "total_estimated_hours", precision: 10, scale: 2
+    t.decimal "total_spent_hours", precision: 10, scale: 2
     t.boolean "is_bug"
     t.integer "bug_category", default: 0
     t.integer "defect_origin", default: 0
@@ -91,7 +91,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.date "start_date", null: false
     t.boolean "latest", default: false
     t.boolean "public", default: false
-    t.float "total_time_working", default: 0.0
+    t.decimal "total_time_working", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["type", "user_id", "start_date"], name: "index_team_reports_on_type_and_user_id_and_start_date", unique: true
@@ -100,7 +100,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
 
   create_table "user_working_logs", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.float "hours", null: false
+    t.decimal "hours", precision: 10, scale: 2, null: false
     t.integer "activity_type", default: 0, null: false
     t.boolean "standardized", default: false
     t.date "spent_on", null: false

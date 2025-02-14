@@ -67,25 +67,25 @@ class Report::GenerateService
 
   def data_content
     {
-      not_found: working_logs.select(&:not_found?).sum(&:hours),
-      requirement: working_logs.select(&:requirement?).sum(&:hours),
-      design: working_logs.select{|x| x.design? && x.owner_issue}.sum(&:hours),
-      coding: working_logs.select{|x| x.coding? && x.owner_issue}.sum(&:hours),
-      testing: working_logs.select(&:testing?).sum(&:hours),
-      bug_fixing: working_logs.select{|x| x.bug_fixing? && x.owner_issue}.sum(&:hours),
-      release: working_logs.select(&:release?).sum(&:hours),
-      meeting: working_logs.select(&:meeting?).sum(&:hours),
-      leave_off: working_logs.select(&:leave_off?).sum(&:hours),
-      document: working_logs.select(&:document?).sum(&:hours),
-      support_customer: working_logs.select(&:support_customer?).sum(&:hours),
-      idle: working_logs.select(&:idle?).sum(&:hours),
-      support_team: working_logs.reject(&:owner_issue).sum(&:hours),
-      doing_task: working_logs.select(&:requirement?).sum(&:hours) +
+      not_found: working_logs.select(&:not_found?).sum(&:hours).to_f,
+      requirement: working_logs.select(&:requirement?).sum(&:hours).to_f,
+      design: working_logs.select{|x| x.design? && x.owner_issue}.sum(&:hours).to_f,
+      coding: working_logs.select{|x| x.coding? && x.owner_issue}.sum(&:hours).to_f,
+      testing: working_logs.select(&:testing?).sum(&:hours).to_f,
+      bug_fixing: working_logs.select{|x| x.bug_fixing? && x.owner_issue}.sum(&:hours).to_f,
+      release: working_logs.select(&:release?).sum(&:hours).to_f,
+      meeting: working_logs.select(&:meeting?).sum(&:hours).to_f,
+      leave_off: working_logs.select(&:leave_off?).sum(&:hours).to_f,
+      document: working_logs.select(&:document?).sum(&:hours).to_f,
+      support_customer: working_logs.select(&:support_customer?).sum(&:hours).to_f,
+      idle: working_logs.select(&:idle?).sum(&:hours).to_f,
+      support_team: working_logs.reject(&:owner_issue).sum(&:hours).to_f,
+      doing_task: (working_logs.select(&:requirement?).sum(&:hours) +
         working_logs.select{|x| x.design? && x.owner_issue}.sum(&:hours) +
         working_logs.select{|x| x.coding? && x.owner_issue}.sum(&:hours) +
         working_logs.select(&:testing?).sum(&:hours) +
         working_logs.select(&:release?).sum(&:hours) +
-        working_logs.select{|x| x.bug_fixing? && x.owner_issue}.sum(&:hours)
+        working_logs.select{|x| x.bug_fixing? && x.owner_issue}.sum(&:hours)).to_f
     }
   end
 

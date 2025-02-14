@@ -2,7 +2,7 @@ class CreateUserWorkingLogs < ActiveRecord::Migration[8.0]
   def change
     create_table :user_working_logs do |t|
       t.references :user, null: false
-      t.float :hours, null: false
+      t.decimal :hours, null: false, :scale => 2, :precision => 10
       t.integer :activity_type, null: false, default: 0
       t.boolean :standardized, default: false
       t.date :spent_on, null: false

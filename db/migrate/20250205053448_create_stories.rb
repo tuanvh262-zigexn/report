@@ -9,9 +9,9 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.string :link_issue
       t.date :start_date
       t.date :due_date
-      t.float :time_estimate_ratio
-      t.float :total_estimated_hours
-      t.float :total_spent_hours
+      t.decimal :time_estimate_ratio, :scale => 2, :precision => 10
+      t.decimal :total_estimated_hours, :scale => 2, :precision => 10
+      t.decimal :total_spent_hours, :scale => 2, :precision => 10
       t.integer :test_case_count, default: 0
       t.integer :bug_count, default: 0
       t.integer :prod_bug_count, default: 0
@@ -25,13 +25,13 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.date :testing_end_at
       t.date :bug_fixing_start_at
       t.date :bug_fixing_end_at
-      t.float :requirement_hours
-      t.float :design_hours
-      t.float :coding_hours
-      t.float :testing_hours
-      t.float :bug_fixing_hours
-      t.float :release_hours
-      t.float :cross_support_hours
+      t.decimal :requirement_hours, :scale => 2, :precision => 10
+      t.decimal :design_hours, :scale => 2, :precision => 10
+      t.decimal :coding_hours, :scale => 2, :precision => 10
+      t.decimal :testing_hours, :scale => 2, :precision => 10
+      t.decimal :bug_fixing_hours, :scale => 2, :precision => 10
+      t.decimal :release_hours, :scale => 2, :precision => 10
+      t.decimal :cross_support_hours, :scale => 2, :precision => 10
       t.date :finished_at
 
       t.timestamps
