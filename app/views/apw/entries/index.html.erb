@@ -12,14 +12,18 @@
         <th rowspan=2>Task</th>
         <th rowspan=2>Owner</th>
         <th rowspan=2>Status</th>
-        <th rowspan=2>Done</th>
-        <% @support.list_date.each do |data| %>
-          <th class="<%= 'today' if data.today? %>"><%= data.strftime("%d") %></th>
+        <th rowspan=2>Est</th>
+        <% @support.list_date.each do |date| %>
+          <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>">
+            <%= date.strftime("%d") %>
+          </th>
         <% end %>
       </tr>
       <tr>
-        <% @support.list_date.each do |data| %>
-          <th class="<%= 'today' if data.today? %>"><%= data.strftime("%a") %></th>
+        <% @support.list_date.each do |date| %>
+          <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>">
+            <%= date.strftime("%a") %>
+          </th>
         <% end %>
       </tr>
     </thead>
@@ -31,24 +35,33 @@
               target: "_blank" %>
           </td>
           <% task = story.sub_tasks.first %>
-          <td><%= task&.subject %></td>
-          <td><%= task&.owner_name %></td>
-          <td><%= task&.status %></td>
-          <td><%= task&.done_ratio %></td>
+          <td class="text-align-left <%= :done if task.closed? %>">
+            <%= link_to task.subject, "https://dev.zigexn.vn/issues/#{task.issue_id}",
+              target: "_blank" %>
+          </td>
+          <td class="<%= :done if task.closed? %>"><%= task&.owner_name %></td>
+          <td class="<%= :done if task.closed? %>"><%= task&.status %></td>
+          <td class="<%= :done if task.closed? %>"><%= task&.total_estimated_hours.to_f %></td>
           <% @support.list_date.each do |date| %>
-            <td></td>
+            <td class="<%= @support.class_name(task, date) %>"></td>
           <% end %>
         </tr>
         <% story.sub_tasks.each.with_index(0) do |task, i| %>
           <% next if i.zero? %>
           <tr>
-            <td>
+            <td class="text-align-left <%= :done if task.closed? %>">
               <%= link_to task.subject, "https://dev.zigexn.vn/issues/#{task.issue_id}",
               target: "_blank" %>
             </td>
-            <td><%= task.owner_name %></td>
-            <td><%= task.status %></td>
-            <td><%= "#{task.done_ratio}%" %></td>
+            <td class="<%= :done if task.closed? %>"><%= task.owner_name %></td>
+            <td class="<%= :done if task.closed? %>">
+              <%= task.status %>
+              <br>
+              <%= "#{task.done_ratio}%" %>
+            </td class="<%= :done if task.closed? %>">
+            <td class="<%= :done if task.closed? %>">
+              <%= task.total_estimated_hours.to_f %>
+            </td>
             <% @support.list_date.each do |date| %>
               <td class="<%= @support.class_name(task, date) %>"></td>
             <% end %>

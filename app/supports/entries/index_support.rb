@@ -27,13 +27,17 @@ class Entries::IndexSupport
 
   def list_date
     date_ranges = adsdsd.keys
-    date_ranges.min.to_date..(Date.current + 1.months)
+    (Date.current - 2.week).beginning_of_week..(Date.current + 1.months)
   end
 
   def class_name task, date
+    return :holiday if date.saturday? || date.sunday?
+
     if (adsdsd[date.strftime("%Y-%m-%d")] || []).include? task.id
       if task.closed?
         return :done
+      elsif date < Date.current
+        return :in_progress
       else
         return :activity
       end
