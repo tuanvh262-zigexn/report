@@ -26,7 +26,10 @@
     <tbody>
       <% @support.stories.each do |story| %>
         <tr>
-          <td rowspan="<%= story.sub_tasks.size.zero? ? 1 : story.sub_tasks.size %>"><%= story.subject %></td>
+          <td rowspan="<%= story.sub_tasks.size.zero? ? 1 : story.sub_tasks.size %>">
+            <%= link_to story.subject, "https://dev.zigexn.vn/issues/#{story.issue_id}",
+              target: "_blank" %>
+          </td>
           <% task = story.sub_tasks.first %>
           <td><%= task&.subject %></td>
           <td><%= task&.owner_name %></td>
@@ -39,7 +42,10 @@
         <% story.sub_tasks.each.with_index(0) do |task, i| %>
           <% next if i.zero? %>
           <tr>
-            <td><%= task.subject %></td>
+            <td>
+              <%= link_to task.subject, "https://dev.zigexn.vn/issues/#{task.issue_id}",
+              target: "_blank" %>
+            </td>
             <td><%= task.owner_name %></td>
             <td><%= task.status %></td>
             <td><%= "#{task.done_ratio}%" %></td>
