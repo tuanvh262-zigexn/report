@@ -3,7 +3,7 @@ class UpdateReportsWorker
 
   def perform
     yesterday = Time.current.yesterday
-    UserWorkingLog.where(created_at: yesterday.beginning_of_day..yesterday.end_of_day)
+    UserWorkingLog.where.not(standardized: true)
       .pluck(:spent_on).uniq.each do |spent_on|
 
       UserDailyReport.where(start_date: spent_on).update_all(latest: false)
@@ -18,5 +18,6 @@ class UpdateReportsWorker
       UserQuarterReport.where(start_date: spent_on.beginning_of_quarter).update_all(latest: false)
       QuarterReport.where(start_date: spent_on.beginning_of_quarter).update_all(latest: false)
     end
+    UserWorkingLog.where.not(standardized: true).update_all(standardized: true)
   end
 end

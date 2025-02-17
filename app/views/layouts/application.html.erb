@@ -30,8 +30,8 @@
 
       <!-- Navbar -->
       <nav class="navbar">
-        <a href="#home">Home</a>
-        <%# <a href="#report">Báo Cáo</a> %>
+        <%= link_to "Home", apw_root_path %>
+        <%= link_to "Report", apw_reports_path %>
         <%# <a href="#contact">Liên Hệ</a> %>
       </nav>
     </header>
@@ -44,4 +44,5 @@
   <% if content_for? :javascripts %>
     <%= yield :javascripts %>
   <% end %>
+  <%= javascript_include_tag  'jquery-1.7.2.min' %>
 </html>

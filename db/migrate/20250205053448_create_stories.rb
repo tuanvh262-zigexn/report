@@ -15,6 +15,7 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.integer :test_case_count, default: 0
       t.integer :bug_count, default: 0
       t.integer :prod_bug_count, default: 0
+      t.integer :done_ratio, default: 0
       t.date :requirement_start_at
       t.date :requirement_end_at
       t.date :design_start_at

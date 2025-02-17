@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   # get "up" => "rails/health#show", as: :rails_health_check
   namespace :apw do
-    # root "entries#index"
-    root "reports#index"
+    root "entries#index"
+    resources :reports, only: :index
     resources :stories, only: :show
 
     mount Sidekiq::Web, at: '/sidekiq'

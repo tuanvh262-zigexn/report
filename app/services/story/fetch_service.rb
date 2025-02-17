@@ -14,6 +14,7 @@ class Story::FetchService
   def execute
     return unless redis.setnx(redis_key, Time.current.to_i)
     redis.getex(redis_key, ex: Settings.redis.expried.story)
+    user_changed = false
 
     ActiveRecord::Base.transaction do
       story.assign_attributes(
@@ -24,6 +25,7 @@ class Story::FetchService
         link_issue: redmine_issue.dig("description"),
         start_date: redmine_issue.dig("start_date"),
         due_date: redmine_issue.dig("start_date"),
+        done_ratio: redmine_issue.dig("done_ratio").to_i,
         total_estimated_hours: redmine_issue.dig("total_estimated_hours"),
         total_spent_hours: redmine_issue.dig("total_spent_hours"),
         time_estimate_ratio: time_estimate_ratio,
@@ -53,11 +55,18 @@ class Story::FetchService
         finished_at: finished_at
       )
 
+      user_changed = story.user_id_changed?
       story.save!
       build_sub_tasks!
 
       story.sub_tasks.each do |task|
         FetchSubTaskWorker.perform_async(task.id)
+      end
+
+      if user_changed
+        UserWorkingLog.where(root_issue_id: story.issue_id).each do |log|
+          CategorizeActivitiesUserWorkingLogWorker.perform_async(log.id)
+        end
       end
     rescue StandardError => e
       redis.del(redis_key)

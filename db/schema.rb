@@ -35,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.integer "test_case_count", default: 0
     t.integer "bug_count", default: 0
     t.integer "prod_bug_count", default: 0
+    t.integer "done_ratio", default: 0
     t.date "requirement_start_at"
     t.date "requirement_end_at"
     t.date "design_start_at"
@@ -68,6 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.string "subject"
     t.date "start_date"
     t.date "due_date"
+    t.integer "done_ratio", default: 0
     t.decimal "time_estimate_ratio", precision: 10, scale: 2
     t.decimal "total_estimated_hours", precision: 10, scale: 2
     t.decimal "total_spent_hours", precision: 10, scale: 2

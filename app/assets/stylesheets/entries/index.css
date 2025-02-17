@@ -1,0 +1,51 @@
+table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #50E3C2;
+  color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+td {
+  background-color: #f9f9f9;
+}
+
+tr:nth-child(even) td {
+  background-color: #f1f1f1;
+}
+
+tr:hover td {
+  background-color: #e6f7f3;
+}
+
+
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Cho phép cuộn ngang */
+  margin-top: 20px;
+}
+
+.activity {
+  background-color: skyblue !important;
+}
+
+.done {
+  background-color: gray !important;
+}
+
+.today {
+  color: black;
+  background-color: yellow !important;
+}

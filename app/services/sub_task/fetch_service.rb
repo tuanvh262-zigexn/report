@@ -13,6 +13,7 @@ class SubTask::FetchService
         subject: redmine_issue.dig("subject"),
         start_date: redmine_issue.dig("start_date"),
         due_date: redmine_issue.dig("start_date"),
+        done_ratio: redmine_issue.dig("done_ratio").to_i,
         total_estimated_hours: redmine_issue.dig("total_estimated_hours"),
         total_spent_hours: redmine_issue.dig("total_spent_hours"),
         time_estimate_ratio: time_estimate_ratio,

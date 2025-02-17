@@ -13,7 +13,7 @@ class UserWorkingLogs::CategorizeActivities
     user_working_log.update!(
       activity_type: activity_type,
       root_issue_id: root_issue["id"],
-      standardized: true,
+      standardized: false,
       owner_issue: owner_issue
     )
 
