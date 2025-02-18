@@ -42,3 +42,13 @@ th {
 .in_progress {
   background-color: lightcoral;
 }
+
+.checkbox-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.checkbox-container label {
+  width: 20%;
+  text-align: left;
+}

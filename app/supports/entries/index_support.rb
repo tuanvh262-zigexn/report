@@ -1,9 +1,13 @@
 class Entries::IndexSupport
   attr_accessor :params_q
 
-  # def initialize params_q
-  #   @params_q = params_q || {}
-  # end
+  def initialize params_q
+    @params_q = params_q
+  end
+
+  def params_search
+    @params_search ||= params_q || { user_ids: User.actived.pluck(:id).map(&:to_s) }
+  end
 
   def adsdsd
     @adsdsd ||= begin
@@ -49,17 +53,16 @@ class Entries::IndexSupport
   def stories
     @stories ||= begin
       Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified])
-    end.includes(sub_tasks: :owner).order(:start_date)
+        .where(id: tasks.pluck(:story_id).uniq)
+    end
   end
-
-  private
 
   def tasks
     @tasks ||= begin
       SubTask.joins(:story)
         .merge(
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified])
-      )
+      ).where(owner_id: params_search[:user_ids]).includes(:owner).order(:start_date)
     end
   end
 end

@@ -6,4 +6,6 @@ class User < ApplicationRecord
     dev: 1,
     tester: 2
   }
+
+  scope :actived, -> { where actived: true }
 end
