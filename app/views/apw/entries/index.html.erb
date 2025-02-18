@@ -1,16 +1,32 @@
-<%= form_with url: apw_root_path, method: :get, local: true do |f| %>
-  <div class="checkbox-container">
-    <% User.actived.each do |user| %>
+<div class="display-flex">
+  <div style="width: 70%;">
+    <%= form_with url: apw_root_path, method: :get, local: true do |f| %>
+      <div class="checkbox-container">
+        <% User.actived.each do |user| %>
+          <label>
+            <%= check_box_tag "q[user_ids][]", user.id,
+              @support.params_search.dig(:user_ids).include?(user.id.to_s) %>
+            <%= user.name %>
+          </label>
+        <% end %>
+      </div>
+      <hr>
       <label>
-        <%= check_box_tag "q[user_ids][]", user.id,
-          @support.params_search.dig(:user_ids).include?(user.id.to_s) %>
-        <%= user.name %>
+        <%= check_box_tag "q[include_status_done]", 1,
+          @support.params_search.dig(:include_status_done) %>
+        <strong>Include done tasks</strong>
       </label>
+      <%= f.button "Search", type: :submit, id: :search_button %>
     <% end %>
   </div>
-  <hr>
-  <%= f.button "Search", type: :submit %>
-<% end %>
+  <div class="legend">
+    <div><span class="color-box done"></span>Completed tasks</div>
+    <div><span class="color-box today"></span>Current date</div>
+    <div><span class="color-box holiday"></span>Days off (weekends or holidays)</div>
+    <div><span class="color-box in_progress"></span>Partially completed task</div>
+    <div><span class="color-box activity"></span>Task completion plan</div>
+  </div>
+</div>
 
 <br>
 <div class="table-container">

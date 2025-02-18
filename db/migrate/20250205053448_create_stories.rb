@@ -6,7 +6,6 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.integer :status, null: false, default: 0
       t.integer :level
       t.string :subject
-      t.string :link_issue
       t.date :start_date
       t.date :due_date
       t.decimal :time_estimate_ratio, :scale => 2, :precision => 10

@@ -20,6 +20,8 @@ regex:
       test: !ruby/regexp /4. Testing -/
       bug: !ruby/regexp /5. Bug fixing -/
       release: !ruby/regexp /6. Release -/
+redmine:
+  issue_id_valid: [67210, 70517]
 
 redis:
   host: redis

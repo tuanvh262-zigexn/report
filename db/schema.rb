@@ -26,7 +26,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.integer "status", default: 0, null: false
     t.integer "level"
     t.string "subject"
-    t.string "link_issue"
     t.date "start_date"
     t.date "due_date"
     t.decimal "time_estimate_ratio", precision: 10, scale: 2

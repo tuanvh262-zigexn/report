@@ -16,8 +16,9 @@ class UserWorkingLogs::CategorizeActivities
       standardized: false,
       owner_issue: owner_issue
     )
-
-    FetchStoryWorker.perform_async(user_working_log.root_issue_id) if user_working_log.activity_for_story?
+    if user_working_log.activity_for_story? || user_working_log.support_customer? || user_working_log.document?
+      FetchStoryWorker.perform_async(user_working_log.root_issue_id)
+    end
   end
 
   private

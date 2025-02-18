@@ -2,11 +2,17 @@ class Entries::IndexSupport
   attr_accessor :params_q
 
   def initialize params_q
-    @params_q = params_q
+    @params_q = params_q || {}
   end
 
   def params_search
-    @params_search ||= params_q || { user_ids: User.actived.pluck(:id).map(&:to_s) }
+    @params_search ||= begin
+      if params_q.dig(:user_ids)
+        params_q
+      else
+        params_q.merge({ user_ids: User.actived.pluck(:id).map(&:to_s) })
+      end
+    end
   end
 
   def adsdsd
@@ -31,7 +37,7 @@ class Entries::IndexSupport
 
   def list_date
     date_ranges = adsdsd.keys
-    (Date.current - 2.week).beginning_of_week..(Date.current + 1.months)
+    (Date.current - 4.week).beginning_of_week..(Date.current + 1.months)
   end
 
   def class_name task, date
@@ -62,7 +68,17 @@ class Entries::IndexSupport
       SubTask.joins(:story)
         .merge(
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified])
-      ).where(owner_id: params_search[:user_ids]).includes(:owner).order(:start_date)
+      ).where(owner_id: params_search[:user_ids], status: task_statuses).includes(:owner).order(:start_date)
+    end
+  end
+
+  private
+
+  def task_statuses
+    if params_search[:include_status_done]
+      SubTask.statuses.keys
+    else
+      SubTask.statuses.keys - ["closed"]
     end
   end
 end

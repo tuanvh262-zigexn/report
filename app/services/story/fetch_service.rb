@@ -22,7 +22,6 @@ class Story::FetchService
         status: status,
         level: level,
         subject: redmine_issue.dig("subject"),
-        link_issue: redmine_issue.dig("description"),
         start_date: redmine_issue.dig("start_date"),
         due_date: redmine_issue.dig("due_date"),
         done_ratio: redmine_issue.dig("done_ratio").to_i,
@@ -86,7 +85,7 @@ class Story::FetchService
 
   def redmine_issue_test
     @redmine_issue_test ||= begin
-      issue_test_id = redmine_issue["children"].find{|x| x.dig("tracker", "id") == 9}&.dig("id")
+      issue_test_id = redmine_issue["children"]&.find{|x| x.dig("tracker", "id") == 9}&.dig("id")
       return {} if issue_test_id.nil?
       Redmine::Issue.new(issue_test_id).execute
     end
@@ -94,6 +93,10 @@ class Story::FetchService
 
   def sub_tasks
     @sub_tasks ||= begin
+      return [] unless redmine_issue["children"]
+      if Settings.redmine.issue_id_valid.include?(redmine_issue_id)
+        return redmine_issue["children"]
+      end
       redmine_issue["children"].map{|x| x&.try("[]", "children")}.compact.flatten
     end
   end

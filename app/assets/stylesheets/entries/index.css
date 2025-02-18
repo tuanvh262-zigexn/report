@@ -48,7 +48,49 @@ th {
   flex-wrap: wrap;
   width: 100%;
 }
+
 .checkbox-container label {
   width: 20%;
   text-align: left;
+}
+
+#search_button {
+  margin-left: 50px;
+  background-color: #007bff; /* Màu xanh dương */
+  color: white; /* Chữ trắng */
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+#search_button:hover {
+  background-color: #0056b3; /* Màu xanh đậm khi hover */
+}
+
+#search_button:active {
+  transform: scale(0.95); /* Hiệu ứng nhấn */
+}
+
+.legend {
+  margin-left: 50px;
+  width: 30%
+}
+.legend div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 10px;
+}
+.color-box {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.display-flex {
+  display: flex
 }

@@ -47,6 +47,7 @@ class SubTask::FetchService
     Settings.regex.sub_task.activity_types.each do |type, regex|
       return type if redmine_parent_issue.dig("subject")&.match(regex)
     end
+    nil
   end
 
   def user
