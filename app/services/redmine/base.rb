@@ -3,7 +3,7 @@ require "net/http"
 
 class Redmine::Base
   def execute
-    Rails.cache.fetch("redmine_#{full_url}", expires_in: 30.minutes) do
+    Rails.cache.fetch("redmine_#{full_url}", expires_in: 20.minutes) do
       url = URI(full_url)
       https = Net::HTTP.new(url.host, url.port)
       https.use_ssl = true
