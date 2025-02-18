@@ -57,7 +57,11 @@
               target: "_blank" %>
           </td>
           <td class="<%= :done if task.closed? %>"><%= task&.owner_name %></td>
-          <td class="<%= :done if task.closed? %>"><%= task&.status %></td>
+          <td class="<%= :done if task.closed? %>">
+            <%= task&.status %>
+            <br>
+            <%= "#{task&.done_ratio}%" %>
+          </td>
           <td class="<%= :done if task.closed? %>"><%= task&.total_estimated_hours.to_f %></td>
           <% @support.list_date.each do |date| %>
             <td class="<%= @support.class_name(task, date) %>"></td>
