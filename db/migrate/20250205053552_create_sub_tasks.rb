@@ -16,7 +16,6 @@ class CreateSubTasks < ActiveRecord::Migration[8.0]
       t.boolean :is_bug
       t.integer :bug_category, default: 0
       t.integer :defect_origin, default: 0
-      t.string :cause_analyze
       t.boolean :meet_deadline, default: false
       t.integer :activity_type
 
