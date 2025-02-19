@@ -66,7 +66,7 @@
             <%= link_to story.subject, "https://dev.zigexn.vn/issues/#{story.issue_id}",
               target: "_blank" %>
             <br>
-            <%= story.status %>
+            <strong><%= story.status %></strong>
           </td>
           <% task = sub_tasks.first %>
           <td class="text-align-left <%= :done if task.closed? %>">
