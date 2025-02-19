@@ -1,11 +1,12 @@
 <div class="display-flex">
   <div style="width: 70%;">
+    <label><input type="checkbox" id="select-all"> Select all</label>
     <%= form_with url: apw_root_path, method: :get, local: true do |f| %>
       <div class="checkbox-container">
         <% User.actived.each do |user| %>
           <label>
             <%= check_box_tag "q[user_ids][]", user.id,
-              @support.params_search.dig(:user_ids).include?(user.id.to_s) %>
+              @support.params_search.dig(:user_ids).include?(user.id.to_s), class: "checkbox-item" %>
             <%= user.name %>
           </label>
         <% end %>
@@ -114,4 +115,34 @@
 
 <%= content_for :stylesheet do %>
   <%= stylesheet_link_tag 'entries/index' %>
+<% end %>
+
+<%= content_for :javascripts do %>
+  <script type="text/javascript">
+
+    if (document.querySelectorAll(".checkbox-item:checked").length === document.querySelectorAll(".checkbox-item").length) {
+      document.getElementById("select-all").checked = true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const selectAll = document.getElementById("select-all");
+      const checkboxes = document.querySelectorAll(".checkbox-item");
+
+      selectAll.addEventListener("change", function () {
+          checkboxes.forEach(checkbox => {
+              checkbox.checked = selectAll.checked;
+          });
+      });
+
+      checkboxes.forEach(checkbox => {
+          checkbox.addEventListener("change", function () {
+              if (!this.checked) {
+                  selectAll.checked = false;
+              } else if (document.querySelectorAll(".checkbox-item:checked").length === checkboxes.length) {
+                  selectAll.checked = true;
+              }
+          });
+      });
+    });
+  </script>
 <% end %>
