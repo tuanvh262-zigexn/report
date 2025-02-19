@@ -19,7 +19,7 @@ class SubTask::FetchService
         time_estimate_ratio: time_estimate_ratio,
         bug_category: bug_category,
         defect_origin: defect_origin,
-        cause_analyze: redmine_issue["custom_fields"]&.find{|x| x["name"] == "Cause Analyze"}.try("[]", "value"),
+        # cause_analyze: redmine_issue["custom_fields"]&.find{|x| x["name"] == "Cause Analyze"}.try("[]", "value"),
         is_bug: is_bug?,
         meet_deadline: meet_deadline,
         activity_type: gen_activity_type
