@@ -37,7 +37,7 @@ class Entries::IndexSupport
 
   def list_date
     date_ranges = adsdsd.keys
-    (Date.current - 4.week).beginning_of_week..(Date.current + 1.months)
+    (Date.current - 2.week).beginning_of_week..(Date.current + 2.week)
   end
 
   def class_name task, date
