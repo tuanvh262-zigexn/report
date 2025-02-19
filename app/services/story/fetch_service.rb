@@ -29,11 +29,11 @@ class Story::FetchService
         total_spent_hours: redmine_issue.dig("total_spent_hours"),
         time_estimate_ratio: time_estimate_ratio,
         test_case_count: redmine_issue_test["custom_fields"]
-          &.find{|x| x["name"] == "Number of test cases"}.try("[]", "value")&.to_i,
+          &.find{|x| x["name"] == "Number of test cases"}.try("[]", "value").to_i,
         bug_count: redmine_issue_test["custom_fields"]
-          &.find{|x| x["name"] == "STG Bugs (VN)"}.try("[]", "value")&.to_i,
+          &.find{|x| x["name"] == "STG Bugs (VN)"}.try("[]", "value").to_i,
         prod_bug_count: redmine_issue_test["custom_fields"]
-          &.find{|x| x["name"] == "Production Bugs"}.try("[]", "value")&.to_i,
+          &.find{|x| x["name"] == "Production Bugs"}.try("[]", "value").to_i,
         requirement_start_at: requirement_logs.map(&:spent_on).first,
         requirement_end_at: requirement_logs.map(&:spent_on).last,
         design_start_at: design_logs.map(&:spent_on).first,
