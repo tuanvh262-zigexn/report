@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
   create_table "report_tasks", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "team_report_id", null: false
     t.bigint "sub_task_id"
@@ -97,6 +97,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_053609) do
     t.datetime "updated_at", null: false
     t.index ["type", "user_id", "start_date"], name: "index_team_reports_on_type_and_user_id_and_start_date", unique: true
     t.index ["user_id"], name: "index_team_reports_on_user_id"
+  end
+
+  create_table "time_crowd_tasks", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "story_id"
+    t.integer "time_crowd_id"
+    t.string "total_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_id", "time_crowd_id"], name: "index_time_crowd_tasks_on_story_id_and_time_crowd_id", unique: true
+    t.index ["story_id"], name: "index_time_crowd_tasks_on_story_id"
   end
 
   create_table "user_working_logs", charset: "utf8mb4", force: :cascade do |t|

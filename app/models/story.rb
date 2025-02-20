@@ -5,6 +5,8 @@ class Story < ApplicationRecord
   has_many :working_logs, class_name: UserWorkingLog.name,
     foreign_key: :root_issue_id, primary_key: :issue_id
 
+  has_one :time_crowd_task
+
   enum :status, {
     init: 0,
     pending: 1,
@@ -30,6 +32,7 @@ class Story < ApplicationRecord
   }
 
   delegate :name, to: :user, allow_nil: true, prefix: true
+  delegate :time_crowd_id, :total_time, to: :time_crowd_task, allow_nil: true
 
   def state_over_period_date period_date
     # return :release if

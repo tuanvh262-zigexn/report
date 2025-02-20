@@ -18,6 +18,16 @@ update_story_worker:
   class: UpdateStoryWorker
   queue: default
 
+search_all_time_crowd_task_worker:
+  cron: '30 8 * * 1-5'
+  class: SearchAllTimeCrowdTasksWorker
+  queue: default
+
+trigger_total_time_crowd_worker:
+  cron: '30 8 * * 1-5'
+  class: TriggerTotalTimeCrowdWorker
+  queue: default
+
 update_actived_story_worker:
   cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateActivedStoryWorker

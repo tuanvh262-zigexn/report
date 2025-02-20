@@ -59,7 +59,7 @@ class Entries::IndexSupport
   def stories
     @stories ||= begin
       Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :jp_side, :feedback])
-        .where(id: tasks.pluck(:story_id).uniq)
+        .where(id: tasks.pluck(:story_id).uniq).includes(:time_crowd_task)
     end
   end
 

@@ -64,10 +64,18 @@
         <% sub_tasks = @support.tasks.select{|x| x.story_id == story.id } %>
         <tr>
           <td rowspan="<%= sub_tasks.size.zero? ? 1 : sub_tasks.size %>">
-            <%= link_to story.subject, "https://dev.zigexn.vn/issues/#{story.issue_id}",
+            <%= link_to story.subject, apw_story_path(story.id),
               target: "_blank" %>
             <br>
             <strong><%= story.status %></strong>
+            <br>
+            <strong>
+              <%= link_to_if story.time_crowd_id.present?,
+                story.total_time,
+                "https://timecrowd.net/app/tasks/#{story.time_crowd_id}/edit",
+                target: "_blank"
+              %>
+            </strong>
           </td>
           <% task = sub_tasks.first %>
           <td class="text-align-left <%= :done if task.closed? %>">
