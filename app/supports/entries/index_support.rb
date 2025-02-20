@@ -70,7 +70,10 @@ class Entries::IndexSupport
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified])
             .where.not(issue_id: Settings.redmine.issue_id_valid)
       ).where(owner_id: params_search[:user_ids], status: task_statuses)
-      .or(SubTask.where("(sub_tasks.status != 11 AND stories.issue_id IN (67210, 70517))"))
+      .or(
+        SubTask.where("(sub_tasks.status != 11 AND stories.issue_id IN (67210, 70517))")
+          .where(owner_id: params_search[:user_ids])
+      )
       .includes(:owner).order(:start_date)
     end
   end
