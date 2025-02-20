@@ -30,4 +30,4 @@ redis:
   key:
     fetch_story: Fetch_story
   expried:
-    story: 1200
+    story: 600
