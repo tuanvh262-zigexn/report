@@ -31,7 +31,7 @@ class SubTask::FetchService
   private
 
   def sub_task
-    @sub_task ||= SubTask.find_by(id: sub_task_id)
+    @sub_task ||= SubTask.find(sub_task_id)
   end
 
   def redmine_issue
