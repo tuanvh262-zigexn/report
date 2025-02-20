@@ -18,6 +18,11 @@ update_story_worker:
   class: UpdateStoryWorker
   queue: default
 
+update_actived_story_worker:
+  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  class: UpdateActivedStoryWorker
+  queue: default
+
 update_init_story_redmine_worker:
   cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateStoryRedmineWorker
