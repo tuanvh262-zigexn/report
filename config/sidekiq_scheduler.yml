@@ -1,5 +1,5 @@
 daily_fetch_working_logs:
-  cron: '0 9,18 * * 1-6'
+  cron: '30 8,18 * * 1-6'
   class: DailyFetchWorkingLogsWorker
   queue: default
 
