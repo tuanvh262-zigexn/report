@@ -9,7 +9,7 @@ class Redmine::ListIssue < Redmine::Base
   }
 
   def initialize redmine_status_id
-    @redmine_status_id = MAPPING_STATUS[redmine_status_id]
+    @redmine_status_id = MAPPING_STATUS[redmine_status_id.to_sym]
   end
 
   private

@@ -18,7 +18,26 @@ update_story_worker:
   class: UpdateStoryWorker
   queue: default
 
-update_story_redmine_worker:
+update_init_story_redmine_worker:
   cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateStoryRedmineWorker
   queue: default
+  args: ['init']
+
+update_in_progress_story_redmine_worker:
+  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  class: UpdateStoryRedmineWorker
+  queue: default
+  args: ['in_progress']
+
+update_resolved_story_redmine_worker:
+  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  class: UpdateStoryRedmineWorker
+  queue: default
+  args: ['resolved']
+
+update_feedback_story_redmine_worker:
+  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  class: UpdateStoryRedmineWorker
+  queue: default
+  args: ['feedback']
