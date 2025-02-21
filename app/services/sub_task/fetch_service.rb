@@ -67,7 +67,7 @@ class SubTask::FetchService
   end
 
   def time_estimate_ratio
-    return 0 if redmine_issue.dig("total_estimated_hours").to_i.zero?
+    return 0 if redmine_issue.dig("total_estimated_hours").to_f.zero?
     redmine_issue.dig("total_spent_hours") / redmine_issue.dig("total_estimated_hours")
   end
 
