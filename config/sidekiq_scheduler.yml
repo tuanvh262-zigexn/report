@@ -3,6 +3,12 @@ daily_fetch_working_logs:
   class: DailyFetchWorkingLogsWorker
   queue: default
 
+
+create_reportWorker:
+  cron: '0 12 * * 1-5'
+  class: CreateReportWorker
+  queue: default
+
 update_reports_worker:
   cron: '0 19 * * 1-6'
   class: UpdateReportsWorker
