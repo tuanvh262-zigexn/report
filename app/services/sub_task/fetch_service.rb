@@ -59,7 +59,7 @@ class SubTask::FetchService
 
   def meet_deadline
     buffer_rate = (user&.buffer_rate || 0.8)
-    buffer_rate < time_estimate_ratio && time_estimate_ratio <= 1
+    buffer_rate <= time_estimate_ratio && time_estimate_ratio <= 1
   end
 
   def status
