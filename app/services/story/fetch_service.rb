@@ -8,7 +8,7 @@ class Story::FetchService
       port: Settings.redis.port,
       db: Settings.redis.db
     )
-    @redis_key = "#{Settings.redis.key.fetch_story}123_#{redmine_issue_id}"
+    @redis_key = "#{Settings.redis.key.fetch_story}_#{redmine_issue_id}"
   end
 
   def execute
