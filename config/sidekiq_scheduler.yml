@@ -3,7 +3,7 @@ daily_fetch_working_logs:
   class: DailyFetchWorkingLogsWorker
   queue: default
 
-create_eportWorker:
+create_report_worker:
   cron: '0 12 * * 1-5'
   class: CreateReportWorker
   queue: default
@@ -24,40 +24,40 @@ update_story_worker:
   queue: default
 
 search_all_time_crowd_task_worker:
-  cron: '30 8 * * 1-5'
+  cron: '30 7,18 * * 1-5'
   class: SearchAllTimeCrowdTasksWorker
   queue: default
 
 trigger_total_time_crowd_worker:
-  cron: '30 8 * * 1-5'
+  cron: '30 8,19 * * 1-5'
   class: TriggerTotalTimeCrowdWorker
   queue: default
 
 update_actived_story_worker:
-  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateActivedStoryWorker
   queue: default
 
 update_init_story_redmine_worker:
-  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateStoryRedmineWorker
   queue: default
   args: ['init']
 
 update_in_progress_story_redmine_worker:
-  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateStoryRedmineWorker
   queue: default
   args: ['in_progress']
 
 update_resolved_story_redmine_worker:
-  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateStoryRedmineWorker
   queue: default
   args: ['resolved']
 
 update_feedback_story_redmine_worker:
-  cron: '0,15,30,45 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
+  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateStoryRedmineWorker
   queue: default
   args: ['feedback']
