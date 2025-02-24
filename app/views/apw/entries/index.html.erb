@@ -63,7 +63,8 @@
       <% @support.stories.each do |story| %>
         <% sub_tasks = @support.tasks.select{|x| x.story_id == story.id } %>
         <tr>
-          <td rowspan="<%= sub_tasks.size.zero? ? 1 : sub_tasks.size %>">
+          <td rowspan="<%= sub_tasks.size.zero? ? 1 : sub_tasks.size %>"
+            class="story-detail" data-progress="<%= story.timecrowd_est_ratio %>">
             <%= link_to story.subject, apw_story_path(story.id),
               target: "_blank" %>
             <br>
@@ -76,6 +77,25 @@
                 target: "_blank"
               %>
             </strong>
+            <div class="progress-container">
+              <div class="progress-text">0%</div>  <!-- Text luôn ở giữa -->
+              <div class="progress-bar"></div>
+            </div>
+            <% if story.time_crowd_task_content.dig("users") %>
+              <div class="fire tooltip-target" data-tooltip="tooltip-table">🔥</div>
+              <div class="tooltip">
+                <table class="tooltip-table">
+                  <% story.time_crowd_task_content.dig("users").each do |user| %>
+                    <tr>
+                        <td>
+                          <img src="<%= user["avatar_url"] %>" class="avatar"></td>
+                        <td><%= user["nickname"] %></td>
+                        <td><%= user["total_time"] %></td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+            <% end %>
           </td>
           <% task = sub_tasks.first %>
           <td class="text-align-left <%= :done if task.closed? %>">
@@ -137,20 +157,62 @@
       const checkboxes = document.querySelectorAll(".checkbox-item");
 
       selectAll.addEventListener("change", function () {
-          checkboxes.forEach(checkbox => {
-              checkbox.checked = selectAll.checked;
-          });
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAll.checked;
+        });
       });
 
       checkboxes.forEach(checkbox => {
-          checkbox.addEventListener("change", function () {
-              if (!this.checked) {
-                  selectAll.checked = false;
-              } else if (document.querySelectorAll(".checkbox-item:checked").length === checkboxes.length) {
-                  selectAll.checked = true;
-              }
-          });
+        checkbox.addEventListener("change", function () {
+          if (!this.checked) {
+              selectAll.checked = false;
+          } else if (document.querySelectorAll(".checkbox-item:checked").length === checkboxes.length) {
+              selectAll.checked = true;
+          }
+        });
       });
+    });
+
+    $(".story-detail").each(function(index, element) {
+      let value = $(this).data('progress');
+      $(this).find(".progress-bar").css("width", value + "%");
+
+      $(this).find(".progress-text").text(value + "%");
+
+      let containerWidth = $(this).find(".progress-container").width();
+      let firePosition = (value / 100) * containerWidth;
+
+      $(this).find(".fire").css({
+        "left": (firePosition - 10) + "px",
+        "font-size": (20 + value) + "px",
+        "bottom": (5 + value / 10) + "px"
+      });
+    });
+
+    $(".tooltip-target").hover(function() {
+      let tooltip = $(this).siblings(".tooltip");
+
+
+      let offset = $(this).offset();
+      let tooltipWidth = tooltip.outerWidth();
+      let elementWidth = $(this).outerWidth();
+
+      tooltip.css({
+          top: offset.top - tooltip.outerHeight() - 15 + "px",
+          left: offset.left + (elementWidth / 2) - (tooltipWidth / 2) + "px"
+      }).fadeIn(200);
+    }, function() {
+      setTimeout(function() {
+        if (!$(this).siblings(".tooltip").is(":hover")) {
+          $(this).siblings(".tooltip").fadeOut(200);
+        }
+      }, 200);
+    });
+
+    $(".tooltip").hover(function() {
+      $(this).stop(true, true).show();
+    }, function() {
+      $(this).fadeOut(200);
     });
   </script>
 <% end %>

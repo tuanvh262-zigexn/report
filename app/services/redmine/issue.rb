@@ -1,4 +1,4 @@
-class Redmine::Issue < Redmine::Base
+class Redmine::Issue < Redmine::GetBase
   attr_reader :issue_id
 
   def initialize issue_id

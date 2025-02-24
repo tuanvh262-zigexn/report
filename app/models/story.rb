@@ -32,7 +32,8 @@ class Story < ApplicationRecord
   }
 
   delegate :name, to: :user, allow_nil: true, prefix: true
-  delegate :time_crowd_id, :total_time, to: :time_crowd_task, allow_nil: true
+  delegate :time_crowd_id, :total_time, :total_second, to: :time_crowd_task, allow_nil: true
+  delegate :content, to: :time_crowd_task, allow_nil: true, prefix: true
 
   def state_over_period_date period_date
     # return :release if

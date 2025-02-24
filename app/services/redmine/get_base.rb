@@ -1,7 +1,7 @@
 require "uri"
 require "net/http"
 
-class Redmine::Base
+class Redmine::GetBase
   def execute
     Rails.cache.fetch("redmine_#{full_url}", expires_in: 10.minutes) do
       url = URI(full_url)

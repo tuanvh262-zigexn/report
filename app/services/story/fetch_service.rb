@@ -8,7 +8,7 @@ class Story::FetchService
       port: Settings.redis.port,
       db: Settings.redis.db
     )
-    @redis_key = "#{Settings.redis.key.fetch_story}_#{redmine_issue_id}"
+    @redis_key = "#{Settings.redis.key.fetch_story}123_#{redmine_issue_id}"
   end
 
   def execute
@@ -21,6 +21,7 @@ class Story::FetchService
         user_id: user&.id,
         status: status,
         level: level,
+        time_crowd_est_hours: timecrowd_est,
         subject: redmine_issue.dig("subject"),
         start_date: redmine_issue.dig("start_date"),
         due_date: redmine_issue.dig("due_date"),
@@ -51,10 +52,13 @@ class Story::FetchService
         bug_fixing_hours: bug_fixing_logs.sum(&:hours),
         release_hours: release_logs.sum(&:hours),
         cross_support_hours: cross_support_logs.sum(&:hours),
-        finished_at: finished_at
+        finished_at: finished_at,
+        redmine_created_at: redmine_issue.dig("created_on")&.to_date,
+        redmine_updated_at:redmine_issue.dig("updated_on")&.to_date,
+        timecrowd_est_ratio: timecrowd_est_ratio
       )
 
-      user_changed = story.user_id_changed?
+      user_changed = story.user_id_changed? || story.level_changed?
       story.save!
       build_sub_tasks!
 
@@ -63,7 +67,7 @@ class Story::FetchService
       end
 
       if user_changed
-        UserWorkingLog.where(root_issue_id: story.issue_id).each do |log|
+        story.working_logs.each do |log|
           CategorizeActivitiesUserWorkingLogWorker.perform_async(log.id)
         end
       end
@@ -168,8 +172,20 @@ class Story::FetchService
     redmine_issue.dig("custom_fields").find{|x| x["name"] == "Difficulty Level"}.try("[]", "value").to_i
   end
 
+  def timecrowd_est
+    @timecrowd_est ||= begin
+      redmine_issue.dig("custom_fields").find{|x| x["name"] == "Timecword Estimate Hours"}.try("[]", "value").to_f
+    end
+  end
+
   def time_estimate_ratio
     return 0 if redmine_issue.dig("total_estimated_hours").to_i.zero?
     redmine_issue.dig("total_spent_hours") / redmine_issue.dig("total_estimated_hours")
+  end
+
+  def timecrowd_est_ratio
+    return 0 if story.total_second.nil? || timecrowd_est.zero?
+
+    story.total_second / (timecrowd_est * 3600) * 100
   end
 end

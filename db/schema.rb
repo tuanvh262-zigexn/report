@@ -35,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.integer "bug_count", default: 0
     t.integer "prod_bug_count", default: 0
     t.integer "done_ratio", default: 0
+    t.integer "timecrowd_est_ratio", default: 0
     t.date "requirement_start_at"
     t.date "requirement_end_at"
     t.date "design_start_at"
@@ -52,7 +53,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.decimal "bug_fixing_hours", precision: 10, scale: 2
     t.decimal "release_hours", precision: 10, scale: 2
     t.decimal "cross_support_hours", precision: 10, scale: 2
+    t.decimal "time_crowd_est_hours", precision: 10, scale: 2
     t.date "finished_at"
+    t.date "redmine_created_at"
+    t.date "redmine_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_stories_on_issue_id", unique: true
@@ -75,9 +79,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.boolean "is_bug"
     t.integer "bug_category", default: 0
     t.integer "defect_origin", default: 0
-    t.string "cause_analyze"
     t.boolean "meet_deadline", default: false
+    t.boolean "update_title", default: false
     t.integer "activity_type"
+    t.date "redmine_created_at"
+    t.date "redmine_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_sub_tasks_on_issue_id", unique: true
@@ -103,6 +109,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.bigint "story_id"
     t.integer "time_crowd_id"
     t.string "total_time"
+    t.integer "total_second"
+    t.json "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_id", "time_crowd_id"], name: "index_time_crowd_tasks_on_story_id_and_time_crowd_id", unique: true

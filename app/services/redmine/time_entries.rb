@@ -1,4 +1,4 @@
-class Redmine::TimeEntries < Redmine::Base
+class Redmine::TimeEntries < Redmine::GetBase
   attr_reader :user_id, :spent_on
 
   def initialize user_id, spent_on

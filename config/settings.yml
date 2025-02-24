@@ -1,8 +1,6 @@
 regex:
   user_working_log:
     activity_types:
-      document: !ruby/regexp /Document/
-      support_customer: !ruby/regexp /^\[\Support/
       leave_off: !ruby/regexp /Leave off -/
       idle: !ruby/regexp /Idle -/
       meeting: !ruby/regexp /Communication - Meeting/
@@ -12,6 +10,8 @@ regex:
       testing: !ruby/regexp /4. Testing -/
       bug_fixing: !ruby/regexp /5. Bug fixing -/
       release: !ruby/regexp /6. Release -/
+      document: !ruby/regexp /Document/
+      support_customer: !ruby/regexp /^\[\Support/
   sub_task:
     activity_types:
       clear_requirement: !ruby/regexp /1. Requirement -/

@@ -4,6 +4,8 @@ class CreateTimeCrowdTask < ActiveRecord::Migration[8.0]
       t.references :story
       t.integer :time_crowd_id
       t.string :total_time
+      t.integer :total_second
+      t.json :content, null: false
 
       t.timestamps
     end

@@ -3,6 +3,8 @@ class UserWorkingLog < ApplicationRecord
 
   has_one :task, class_name: SubTask.name,
     foreign_key: :issue_id, primary_key: :issue_id
+  has_one :story, class_name: Story.name,
+    foreign_key: :issue_id, primary_key: :root_issue_id
 
   enum :activity_type, {
     not_found: 0,
@@ -20,6 +22,8 @@ class UserWorkingLog < ApplicationRecord
   }
 
   delegate :name, to: :user, allow_nil: true, prefix: true
+  delegate :level, :unset?, :basic?, :intermediate?, :upper_intermediate?,
+    :advanced?, :expert?, to: :story, allow_nil: true, prefix: true
 
   # def support_activity?
   #   coding? || design? || bug_fixing?

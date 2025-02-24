@@ -56,6 +56,11 @@
 </div>
 <div class="charts-container">
   <div class="chart">
+    <div id="chart_with_role" class="chart-canvas"></div>
+  </div>
+</div>
+<div class="charts-container">
+  <div class="chart">
     <h3>Accuracy of estimates</h3>
     <div id="chart_task_div" class="chart-canvas"></div>
   </div>
@@ -266,7 +271,7 @@
       dataTable.push(
         [
           'Week',
-          'The number of stories', 'Completed stories', 'Released stories'
+          'The number of stories', 'Completed stories', 'New stories', 'Released stories'
         ]
       )
       <% @support.story_chart.each do |data| %>
@@ -275,6 +280,7 @@
             '<%= data[:title] %>',
             <%= data[:total_tasks] %>,
             <%= data[:waiting_release] %>,
+            <%= data[:new_tasks] %>,
             <%= data[:released] %>
           ]
         )
@@ -286,10 +292,47 @@
         title : 'The chart depicts the number of stories',
         vAxis: {title: 'Stories'},
         seriesType: 'bars',
-        series: {2: {type: 'line'}}
+        series: {3: {type: 'line'}},
+        tooltip: {
+          trigger: 'selection'
+        }
       };
 
       var comboChart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+      comboChart.draw(dataComboChart, options);
+    }
+
+    google.charts.setOnLoadCallback(drawStoryCodingVisualization);
+    function drawStoryCodingVisualization() {
+      var dataTable = []
+      dataTable.push(
+        [
+          'Week',
+          'Stories for dev', 'Stories for test'
+        ]
+      )
+      <% @support.story_chart_for_role.each do |data| %>
+        dataTable.push(
+          [
+            '<%= data[:title] %>',
+            <%= data[:coding] %>,
+            <%= data[:testing] %>,
+          ]
+        )
+      <% end %>
+
+      var dataComboChart = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title : 'The chart depicts the number of stories with role',
+        vAxis: {title: 'Stories'},
+        seriesType: 'bars',
+        tooltip: {
+          trigger: 'selection'
+        }
+      };
+
+      var comboChart = new google.visualization.ComboChart(document.getElementById('chart_with_role'));
       comboChart.draw(dataComboChart, options);
     }
 
@@ -310,6 +353,9 @@
       var optionsPiechart = {
         title: 'The entire workload',
         is3D: true,
+        tooltip: {
+          trigger: 'selection'
+        }
       };
 
       var piechart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
@@ -331,6 +377,9 @@
       var optionsDetailPiechart = {
         title: 'Workload related to completing tasks',
         is3D: true,
+        tooltip: {
+          trigger: 'selection'
+        }
       };
 
       var piechart = new google.visualization.PieChart(document.getElementById('piechart_3d_detail'));
@@ -363,7 +412,10 @@
         title : 'The chart depicts the number of tasks',
         vAxis: {title: 'Tasks'},
         seriesType: 'bars',
-        series: {2: {type: 'line'}}
+        series: {2: {type: 'line'}},
+        tooltip: {
+          trigger: 'selection'
+        }
       };
 
       var comboChart = new google.visualization.ComboChart(document.getElementById('chart_task_div'));
@@ -376,7 +428,7 @@
       dataBugTable.push(
         [
           'Week',
-          'Bug', 'Prod Bug'
+          'Bug', 'Must be fixed', 'Prod Bug'
         ]
       )
       <% @support.bug_chart.each do |data| %>
@@ -384,6 +436,7 @@
           [
             '<%= data[:title] %>',
             <%= data[:total] %>,
+            <%= data[:bugs] %>,
             <%= data[:prod_bugs] %>
           ]
         )
@@ -395,7 +448,7 @@
         title : 'The number of bugs',
         vAxis: {title: 'Bug '},
         seriesType: 'bars',
-        series: {1: {type: 'line'}}
+        series: {2: {type: 'line'}}
       };
 
       var comboChart = new google.visualization.ComboChart(document.getElementById('chart_bug_div'));
@@ -425,7 +478,7 @@
 
       var options = {
         title : 'The number of test cases and execution time',
-        vAxis: {title: 'Testcases coun'},
+        vAxis: {title: 'Testcases count'},
         seriesType: 'bars',
         series: {1: {type: 'line'}}
       };
@@ -446,27 +499,36 @@
       <% @support.difficulty_chart.each do |data| %>
         dataTable.push(
           [
-            '<%= data[:title] %>',
-            <%= data[:unset] %>,
-            <%= data[:basic] %>,
-            <%= data[:intermediate] %>,
-            <%= data[:upper_intermediate] %>,
-            <%= data[:advanced] %>,
-            <%= data[:expert] %>,
+            '<%= data[:title].to_f %>',
+            <%= data["unset"].to_f %>,
+            <%= data["basic"].to_f %>,
+            <%= data["intermediate"].to_f %>,
+            <%= data["upper_intermediate"].to_f %>,
+            <%= data["advanced"].to_f %>,
+            <%= data["expert"].to_f %>,
           ]
         )
       <% end %>
       var data = google.visualization.arrayToDataTable(dataTable);
 
-      var options = {
+      var options_fullStacked = {
         title: 'Classify the workload based on tasks with different levels of difficulty',
-        curveType: 'function',
-        legend: { position: 'bottom' }
+        isStacked: 'relative',
+        height: 300,
+        legend: {position: 'top', maxLines: 10},
+        vAxis: {
+          minValue: 0,
+          ticks: [0, .25, .5, .75, 1],
+          format: 'percent'
+        },
+        <%# hAxis: {
+          format: 'percent'
+        }, %>
       };
 
-      var chart = new google.visualization.LineChart(document.getElementById('linechart_difficulty'));
+      var chart = new google.visualization.AreaChart(document.getElementById('linechart_difficulty'));
 
-      chart.draw(data, options);
+      chart.draw(data, options_fullStacked);
     }
 
     google.charts.setOnLoadCallback(drawDifficultyCodingChart);
@@ -482,25 +544,32 @@
         dataTable.push(
           [
             '<%= data[:title] %>',
-            <%= data[:unset] %>,
-            <%= data[:basic] %>,
-            <%= data[:intermediate] %>,
-            <%= data[:upper_intermediate] %>,
-            <%= data[:advanced] %>,
-            <%= data[:expert] %>,
+            <%= data["unset"].to_f %>,
+            <%= data["basic"].to_f %>,
+            <%= data["intermediate"].to_f %>,
+            <%= data["upper_intermediate"].to_f %>,
+            <%= data["advanced"].to_f %>,
+            <%= data["expert"].to_f %>,
           ]
         )
       <% end %>
       var data = google.visualization.arrayToDataTable(dataTable);
 
-      var options = {
+      var options_fullStacked = {
         title: 'Coding workload',
-        curveType: 'function',
+        isStacked: 'relative',
+        height: 300,
+        legend: {position: 'right', maxLines: 10},
+        vAxis: {
+          minValue: 0,
+          ticks: [0, .25, .5, .75, 1],
+          format: 'percent'
+        }
       };
 
-      var chart = new google.visualization.LineChart(document.getElementById('linechart_difficulty_coding'));
+      var chart = new google.visualization.AreaChart(document.getElementById('linechart_difficulty_coding'));
 
-      chart.draw(data, options);
+      chart.draw(data, options_fullStacked);
     }
 
     google.charts.setOnLoadCallback(drawDifficultyTestingChart);
@@ -516,25 +585,32 @@
         dataTable.push(
           [
             '<%= data[:title] %>',
-            <%= data[:unset] %>,
-            <%= data[:basic] %>,
-            <%= data[:intermediate] %>,
-            <%= data[:upper_intermediate] %>,
-            <%= data[:advanced] %>,
-            <%= data[:expert] %>,
+            <%= data["unset"].to_f %>,
+            <%= data["basic"].to_f %>,
+            <%= data["intermediate"].to_f %>,
+            <%= data["upper_intermediate"].to_f %>,
+            <%= data["advanced"].to_f %>,
+            <%= data["expert"].to_f %>,
           ]
         )
       <% end %>
       var data = google.visualization.arrayToDataTable(dataTable);
 
-      var options = {
+      var options_fullStacked = {
         title: 'Testing workload',
-        curveType: 'function',
+        isStacked: 'relative',
+        height: 300,
+        legend: {position: 'right', maxLines: 10},
+        vAxis: {
+          minValue: 0,
+          ticks: [0, .25, .5, .75, 1],
+          format: 'percent'
+        }
       };
 
-      var chart = new google.visualization.LineChart(document.getElementById('linechart_difficulty_testing'));
+      var chart = new google.visualization.AreaChart(document.getElementById('linechart_difficulty_testing'));
 
-      chart.draw(data, options);
+      chart.draw(data, options_fullStacked);
     }
 
     function sortTable(columnIndex) {

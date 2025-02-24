@@ -41,8 +41,8 @@
     </div>
 
   </body>
+  <%= javascript_include_tag  'jquery-1.7.2.min' %>
   <% if content_for? :javascripts %>
     <%= yield :javascripts %>
   <% end %>
-  <%= javascript_include_tag  'jquery-1.7.2.min' %>
 </html>

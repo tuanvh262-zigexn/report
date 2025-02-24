@@ -5,18 +5,6 @@ class Reports::IndexSupport
     @params_q = params_q || {}
   end
 
-  def story_chart
-    reports.map do |report|
-      stories = report.stories.uniq.to_a
-      {
-        title: report.start_date.strftime("%d/%m/%y"),
-        total_tasks: stories.size,
-        waiting_release: stories.select{|x| ['waiting_release', 'verified', 'jp_side'].include?(x.status)}.size,
-        released: stories.select{|x| ['closed', 'released'].include?(x.status)}.size,
-      }
-    end
-  end
-
   def params_search
     @params_search ||= begin
       {
@@ -24,6 +12,41 @@ class Reports::IndexSupport
         end_date: params_q.dig(:end_date)&.to_date || Date.current,
         report_type: params_q.dig(:report_type) || "weekly_report",
         user_id: params_q.dig(:user_id).presence
+      }
+    end
+  end
+
+  def story_chart
+    reports.map do |report|
+      stories = report.stories.uniq.to_a
+      {
+        title: report.start_date.strftime("%d/%m/%y"),
+        total_tasks: stories.count,
+        new_tasks: stories.count{|x| (report.start_date..report.end_date).include?(x.redmine_created_at)},
+        waiting_release: stories.count{|x| ['waiting_release', 'verified', 'jp_side', 'closed', 'released'].include?(x.status)},
+        released: stories.count{|x| ['closed', 'released'].include?(x.status)}
+      }
+    end
+  end
+
+  def story_chart_for_role
+    reports.map do |report|
+      {
+        title: report.start_date.strftime("%d/%m/%y"),
+        coding: report.content.dig("story_log", "coding"),
+        testing: report.content.dig("story_log", "testing")
+      }
+    end
+  end
+
+  def task_chart
+    reports.map do |report|
+      tasks = report.tasks.uniq.to_a
+      {
+        title: report.start_date.strftime("%d/%m/%y"),
+        total: tasks.size,
+        done_tasks: tasks.select{|x| ['closed', 'released'].include?(x.status)}.size,
+        meeting_deadline: tasks.select{|x| x.meet_deadline}.size
       }
     end
   end
@@ -52,26 +75,14 @@ class Reports::IndexSupport
     }
   end
 
-  def task_chart
-    reports.map do |report|
-      tasks = report.tasks.uniq.to_a
-      {
-        title: report.start_date.strftime("%d/%m/%y"),
-        total: tasks.size,
-        done_tasks: tasks.select{|x| ['closed', 'released'].include?(x.status)}.size,
-        meeting_deadline: tasks.select{|x| x.meet_deadline}.size
-      }
-    end
-  end
-
   def bug_chart
     reports.map do |report|
       tasks = report.tasks.uniq.to_a
       stories = report.stories.uniq.to_a
       {
         title: report.start_date.strftime("%d/%m/%y"),
-        total: tasks.select(&:is_bug).size,
-        testcases: stories.sum(&:test_case_count),
+        total: tasks.count {|x| (x.kind == "bug") && (report.start_date..report.end_date).include?(x.redmine_created_at)},
+        bugs: tasks.count{|x| x.is_bug && (report.start_date..report.end_date).include?(x.redmine_created_at)},
         prod_bugs: stories.sum(&:prod_bug_count),
       }
     end
@@ -90,88 +101,25 @@ class Reports::IndexSupport
 
   def difficulty_chart
     reports.map do |report|
-      stories = report.stories.uniq.to_a
       {
         title: report.start_date.strftime("%d/%m/%y"),
-        unset: stories.select(&:unset?).sum(&:requirement_hours) +
-          stories.select(&:unset?).sum(&:design_hours) +
-          stories.select(&:unset?).sum(&:coding_hours) +
-          stories.select(&:unset?).sum(&:testing_hours) +
-          stories.select(&:unset?).sum(&:bug_fixing_hours) +
-          stories.select(&:unset?).sum(&:release_hours),
-        basic: stories.select(&:basic?).sum(&:requirement_hours) +
-          stories.select(&:basic?).sum(&:design_hours) +
-          stories.select(&:basic?).sum(&:coding_hours) +
-          stories.select(&:basic?).sum(&:testing_hours) +
-          stories.select(&:basic?).sum(&:bug_fixing_hours) +
-          stories.select(&:basic?).sum(&:release_hours),
-        intermediate: stories.select(&:intermediate?).sum(&:requirement_hours) +
-          stories.select(&:intermediate?).sum(&:design_hours) +
-          stories.select(&:intermediate?).sum(&:coding_hours) +
-          stories.select(&:intermediate?).sum(&:testing_hours) +
-          stories.select(&:intermediate?).sum(&:bug_fixing_hours) +
-          stories.select(&:intermediate?).sum(&:release_hours),
-        upper_intermediate: stories.select(&:upper_intermediate?).sum(&:requirement_hours) +
-          stories.select(&:upper_intermediate?).sum(&:design_hours) +
-          stories.select(&:upper_intermediate?).sum(&:coding_hours) +
-          stories.select(&:upper_intermediate?).sum(&:testing_hours) +
-          stories.select(&:upper_intermediate?).sum(&:bug_fixing_hours) +
-          stories.select(&:upper_intermediate?).sum(&:release_hours),
-        advanced: stories.select(&:advanced?).sum(&:requirement_hours) +
-          stories.select(&:advanced?).sum(&:design_hours) +
-          stories.select(&:advanced?).sum(&:coding_hours) +
-          stories.select(&:advanced?).sum(&:testing_hours) +
-          stories.select(&:advanced?).sum(&:bug_fixing_hours) +
-          stories.select(&:advanced?).sum(&:release_hours),
-        expert: stories.select(&:expert?).sum(&:requirement_hours) +
-          stories.select(&:expert?).sum(&:design_hours) +
-          stories.select(&:expert?).sum(&:coding_hours) +
-          stories.select(&:expert?).sum(&:testing_hours) +
-          stories.select(&:expert?).sum(&:bug_fixing_hours) +
-          stories.select(&:expert?).sum(&:release_hours)
-      }
+      }.merge(report.content.dig("working_log", "difficulty_chart") || {})
     end
   end
 
   def difficulty_coding_chart
     reports.map do |report|
-      stories = report.stories.uniq.to_a
       {
         title: report.start_date.strftime("%d/%m/%y"),
-        unset: stories.select(&:unset?).sum(&:bug_fixing_hours) +
-          stories.select(&:unset?).sum(&:design_hours) +
-          stories.select(&:unset?).sum(&:coding_hours),
-        basic: stories.select(&:basic?).sum(&:bug_fixing_hours) +
-          stories.select(&:basic?).sum(&:design_hours) +
-          stories.select(&:basic?).sum(&:coding_hours),
-        intermediate: stories.select(&:intermediate?).sum(&:bug_fixing_hours) +
-          stories.select(&:intermediate?).sum(&:design_hours) +
-          stories.select(&:intermediate?).sum(&:coding_hours),
-        upper_intermediate: stories.select(&:upper_intermediate?).sum(&:bug_fixing_hours) +
-          stories.select(&:upper_intermediate?).sum(&:design_hours) +
-          stories.select(&:upper_intermediate?).sum(&:coding_hours),
-        advanced: stories.select(&:advanced?).sum(&:bug_fixing_hours) +
-          stories.select(&:advanced?).sum(&:design_hours) +
-          stories.select(&:advanced?).sum(&:coding_hours),
-        expert: stories.select(&:expert?).sum(&:bug_fixing_hours) +
-          stories.select(&:expert?).sum(&:design_hours) +
-          stories.select(&:expert?).sum(&:coding_hours)
-      }
+      }.merge(report.content.dig("working_log", "difficulty_coding_chart") || {})
     end
   end
 
   def difficulty_testing_chart
     reports.map do |report|
-      stories = report.stories.uniq.to_a
       {
         title: report.start_date.strftime("%d/%m/%y"),
-        unset: stories.select(&:unset?).sum(&:testing_hours),
-        basic: stories.select(&:basic?).sum(&:testing_hours),
-        intermediate: stories.select(&:intermediate?).sum(&:testing_hours),
-        upper_intermediate: stories.select(&:upper_intermediate?).sum(&:testing_hours),
-        advanced: stories.select(&:advanced?).sum(&:testing_hours),
-        expert: stories.select(&:expert?).sum(&:testing_hours)
-      }
+      }.merge(report.content.dig("working_log", "difficulty_testing_chart") || {})
     end
   end
 
@@ -184,7 +132,7 @@ class Reports::IndexSupport
   def finished_stories
     @finished_stories ||= begin
       stories.select do |story|
-        (params_search[:start_date]..params_search[:end_date]).include?(story.finished_at)
+        (params_search[:start_date]..params_search[:end_date]).include?(story.redmine_created_at)
       end
     end
   end

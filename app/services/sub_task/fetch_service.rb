@@ -21,7 +21,9 @@ class SubTask::FetchService
         defect_origin: defect_origin,
         is_bug: is_bug?,
         meet_deadline: meet_deadline,
-        activity_type: gen_activity_type
+        activity_type: gen_activity_type,
+        redmine_created_at: redmine_issue.dig("created_on")&.to_date,
+        redmine_updated_at:redmine_issue.dig("updated_on")&.to_date
       )
 
       sub_task.save!

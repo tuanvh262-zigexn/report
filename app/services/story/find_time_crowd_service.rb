@@ -11,7 +11,12 @@ class Story::FindTimeCrowdService
     if task
       time_crowd_task.assign_attributes(
         time_crowd_id: task["id"],
-        total_time: task["total_time"]
+        total_time: task["total_time"],
+        content: {}
+      )
+    else
+      time_crowd_task.assign_attributes(
+        content: {}
       )
     end
 

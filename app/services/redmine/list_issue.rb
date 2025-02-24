@@ -1,4 +1,4 @@
-class Redmine::ListIssue < Redmine::Base
+class Redmine::ListIssue < Redmine::GetBase
   attr_reader :redmine_status_id
 
   MAPPING_STATUS = {
