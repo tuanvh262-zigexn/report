@@ -8,3 +8,4 @@ id,name,redmine_id,role,actived,part_time,buffer_rate
 7,Nguyen Tien Phong,361,"dev",1,0,0.7
 8,Ba Thi Thom,348,"tester",1,0,0.85
 9,Phạm Thị Loan,395,"tester",1,0,0.85
+10,Phạm Văn Hoàng,398,"dev",1,0,0.0.8
