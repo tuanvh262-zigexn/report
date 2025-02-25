@@ -83,7 +83,7 @@
                 <div class="progress-bar"></div>
               </div>
             <% end %>
-            <% if story.time_crowd_task_content.dig("users") %>
+            <% if story.time_crowd_task_content&.dig("users") %>
               <div class="fire tooltip-target" data-tooltip="tooltip-table">🔥</div>
               <div class="tooltip">
                 <table class="tooltip-table">
