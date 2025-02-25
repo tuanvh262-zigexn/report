@@ -9,10 +9,16 @@ class TimeCrowd::DetailTask < TimeCrowd::Base
   private
 
   def full_url
-    "https://timecrowd.net/api/v2/tasks/#{time_crowd_id}?user_id=#{user_id}"
+    "https://timecrowd.net/api/v2/tasks/#{time_crowd_id}"
   end
 
   def response_format data_json
     data_json
+  end
+
+  def body_payload
+    {
+      user_id: user_id
+    }
   end
 end

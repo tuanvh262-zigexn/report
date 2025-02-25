@@ -4,6 +4,7 @@ require "net/http"
 class TimeCrowd::Base
   def execute
     url = URI(full_url)
+    url.query = URI.encode_www_form(body_payload)
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
 
@@ -26,5 +27,9 @@ class TimeCrowd::Base
 
   def response_format data_json
     raise NotImplementedError
+  end
+
+  def body_payload
+    {}
   end
 end
