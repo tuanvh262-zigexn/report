@@ -33,6 +33,16 @@ trigger_total_time_crowd_worker:
   class: TriggerTotalTimeCrowdWorker
   queue: default
 
+trigger_update_subject_redmine_worker:
+  cron: '0 22 * * 1-5'
+  class: TriggerUpdateSubjectRedmineWorker
+  queue: default
+
+trigger_update_status_redmine_worker:
+  cron: '0 22 * * 1-5'
+  class: TriggerUpdateStatusRedmineWorker
+  queue: default
+
 update_actived_story_worker:
   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: UpdateActivedStoryWorker

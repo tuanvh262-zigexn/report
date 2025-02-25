@@ -16,7 +16,7 @@ class Redmine::PutBase
 
     response = https.request(request)
 
-    raise unless response.is_a?(Net::HTTPSuccess)
+    raise response.body unless response.is_a?(Net::HTTPSuccess)
   end
 
   private

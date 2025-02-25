@@ -1,7 +1,7 @@
 class Story::FetchService
-  attr_accessor :redmine_issue_id, :redis, :redis_key
+  attr_accessor :redmine_issue_id, :redis, :redis_key, :options
 
-  def initialize redmine_issue_id
+  def initialize redmine_issue_id, options = {}
     @redmine_issue_id = redmine_issue_id
     @redis = Redis.new(
       host: Settings.redis.host,
@@ -9,6 +9,7 @@ class Story::FetchService
       db: Settings.redis.db
     )
     @redis_key = "#{Settings.redis.key.fetch_story}_#{redmine_issue_id}"
+    @options = options
   end
 
   def execute
@@ -63,7 +64,7 @@ class Story::FetchService
       build_sub_tasks!
 
       story.sub_tasks.each do |task|
-        FetchSubTaskWorker.perform_async(task.id)
+        FetchSubTaskWorker.perform_async(task.id, options[:force_update])
       end
 
       if user_changed

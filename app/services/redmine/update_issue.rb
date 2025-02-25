@@ -1,10 +1,11 @@
 class Redmine::UpdateIssue < Redmine::PutBase
-  attr_reader :issue_id, :subject
+  attr_reader :issue_id, :subject, :status
 
   def initialize issue_id, payload_json = {}.to_json
     @issue_id = issue_id
     payload = JSON.parse(payload_json)
     @subject = payload["subject"]
+    @status = payload["status"]
   end
 
   private
@@ -17,7 +18,10 @@ class Redmine::UpdateIssue < Redmine::PutBase
     issue = {}
     if subject
       issue[:subject] = subject
+    elsif status
+      issue[:status_id] = status
     end
+
     {
       issue: issue
     }

@@ -1,12 +1,13 @@
 class SubTask::FetchService
-  attr_accessor :sub_task_id
+  attr_accessor :sub_task_id, :options
 
-  def initialize sub_task_id
+  def initialize sub_task_id, options = {}
     @sub_task_id = sub_task_id
+    @options = options
   end
 
   def execute
-    return if sub_task.closed?
+    return if sub_task.closed? && !options[:force_update]
 
     ActiveRecord::Base.transaction do
       sub_task.assign_attributes(
