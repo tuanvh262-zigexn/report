@@ -6,6 +6,8 @@ class SubTask::FetchService
   end
 
   def execute
+    return if sub_task.closed?
+
     ActiveRecord::Base.transaction do
       sub_task.assign_attributes(
         owner_id: user&.id,
