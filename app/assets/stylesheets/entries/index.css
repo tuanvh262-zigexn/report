@@ -123,13 +123,70 @@ th {
   color: black;
   z-index: 2;
 }
+
 .fire {
+  margin: auto;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  width: 50px; /* Giảm kích thước */
+  height: 60px; /* Giảm chiều cao */
+}
+
+/* Ảnh GIF ngọn lửa */
+.fire-icon {
+  width: auto;
+  height: 0px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  animation: flicker 0.2s infinite alternate ease-in-out;
+}
+
+@keyframes flicker {
+  0% { filter: brightness(1); transform: scale(1); }
+  100% { filter: brightness(1.2); transform: scale(1.05); }
+}
+
+/* Hiệu ứng khói */
+.smoke {
+  position: absolute;
+  width: 15px; /* Giảm kích thước khói */
+  height: 15px;
+  background: radial-gradient(circle, rgba(150,150,150,0.5) 20%, rgba(0,0,0,0) 90%);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: smokeRise 4s infinite ease-in-out;
+}
+
+.smoke:nth-child(1) {
+  left: 5px;
+  animation-duration: 3.5s;
+}
+
+.smoke:nth-child(2) {
+  left: 15px;
+  animation-duration: 4s;
+}
+
+.smoke:nth-child(3) {
+  left: 25px;
+  animation-duration: 4.5s;
+}
+
+@keyframes smokeRise {
+  0% { transform: translateY(0px) scale(0.5); opacity: 0.3; }
+  100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
+}
+
+/*.fire {*/
 /*  position: absolute;*/
 /*  left: 0;*/
 /*  font-size: 20px;*/
-  transition: all 0.3s ease-in-out;
+/*  transition: all 0.3s ease-in-out;*/
 /*  pointer-events: none;*/
-}
+/*}*/
 
 /* Tooltip */
 .tooltip {
@@ -198,7 +255,6 @@ th {
   color: white;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 50px;
   font-size: 14px;
   font-weight: bold;
   transition: background 0.3s;

@@ -84,7 +84,14 @@
               </div>
             <% end %>
             <% if story.time_crowd_task_content&.dig("users") %>
-              <div class="fire tooltip-target" data-tooltip="tooltip-table">🔥</div>
+              <div class="fire tooltip-target">
+                <%= image_tag "fire.gif", alt: "fire", class: "fire-icon" %>
+
+                <div class="smoke"></div>
+                <div class="smoke"></div>
+                <div class="smoke"></div>
+              </div>
+              <%# <div class="fire tooltip-target" data-tooltip="tooltip-table">🔥</div> %>
               <div class="tooltip">
                 <table class="tooltip-table">
                   <% story.time_crowd_task_content.dig("users").each do |user| %>
@@ -184,10 +191,8 @@
       let containerWidth = $(this).find(".progress-container").width();
       let firePosition = (value / 100) * containerWidth;
 
-      $(this).find(".fire").css({
-        "left": (firePosition - 10) + "px",
-        "font-size": (20 + value / 3) + "px",
-        "bottom": (5 + value / 10) + "px"
+      $(this).find(".fire-icon").css({
+        "height": value * 1.5 + "px",
       });
     });
 
@@ -211,32 +216,5 @@
         }
       });
     });
-
-
-    <%# $(".tooltip-target").hover(function() {
-      let tooltip = $(this).siblings(".tooltip");
-
-
-      var offset = $(this).offset();
-      var tooltipWidth = tooltip.outerWidth();
-      var elementWidth = $(this).outerWidth();
-
-      tooltip.css({
-          top: offset.top - tooltip.outerHeight() - 15 + "px",
-          left: offset.left + (elementWidth / 2) - (tooltipWidth / 2) + "px"
-      }).fadeIn(200);
-    }, function() {
-      setTimeout(function() {
-        if (!$(this).siblings(".tooltip").is(":hover")) {
-          $(this).siblings(".tooltip").fadeOut(200);
-        }
-      }, 200);
-    });
-
-    $(".tooltip").hover(function() {
-      $(this).stop(true, true).show();
-    }, function() {
-      $(this).fadeOut(200);
-    }); %>
   </script>
 <% end %>
