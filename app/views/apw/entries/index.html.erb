@@ -186,18 +186,40 @@
 
       $(this).find(".fire").css({
         "left": (firePosition - 10) + "px",
-        "font-size": (20 + value) + "px",
+        "font-size": (20 + value / 3) + "px",
         "bottom": (5 + value / 10) + "px"
       });
     });
 
-    $(".tooltip-target").hover(function() {
+    $(document).ready(function() {
+      $(".tooltip-target").click(function() {
+        var tooltip =  $(this).siblings(".tooltip");
+        if ($(this).data('active') != 1) {
+          var offset = $(this).offset();
+          var tooltipWidth = tooltip.outerWidth();
+          var elementWidth = $(this).outerWidth();
+
+          tooltip.css({
+            top: offset.top - tooltip.outerHeight() - 15 + "px",
+            left: offset.left + (elementWidth / 2) - (tooltipWidth / 2) + "px"
+          }).fadeIn(200);
+
+          $(this).data('active', 1)
+        } else {
+          tooltip.fadeOut(200);
+          $(this).data('active', 0)
+        }
+      });
+    });
+
+
+    <%# $(".tooltip-target").hover(function() {
       let tooltip = $(this).siblings(".tooltip");
 
 
-      let offset = $(this).offset();
-      let tooltipWidth = tooltip.outerWidth();
-      let elementWidth = $(this).outerWidth();
+      var offset = $(this).offset();
+      var tooltipWidth = tooltip.outerWidth();
+      var elementWidth = $(this).outerWidth();
 
       tooltip.css({
           top: offset.top - tooltip.outerHeight() - 15 + "px",
@@ -215,6 +237,6 @@
       $(this).stop(true, true).show();
     }, function() {
       $(this).fadeOut(200);
-    });
+    }); %>
   </script>
 <% end %>
