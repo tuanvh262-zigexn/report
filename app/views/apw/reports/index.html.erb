@@ -496,10 +496,11 @@
           'Unset', 'Basic', 'Intermediate', 'Upper Intermediate', 'Advanced', 'Expert'
         ]
       )
+
       <% @support.difficulty_chart.each do |data| %>
         dataTable.push(
           [
-            '<%= data[:title].to_f %>',
+            '<%= data[:title] %>',
             <%= data["unset"].to_f %>,
             <%= data["basic"].to_f %>,
             <%= data["intermediate"].to_f %>,
@@ -520,10 +521,7 @@
           minValue: 0,
           ticks: [0, .25, .5, .75, 1],
           format: 'percent'
-        },
-        <%# hAxis: {
-          format: 'percent'
-        }, %>
+        }
       };
 
       var chart = new google.visualization.AreaChart(document.getElementById('linechart_difficulty'));
