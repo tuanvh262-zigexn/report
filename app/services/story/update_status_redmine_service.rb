@@ -14,6 +14,8 @@ class Story::UpdateStatusRedmineService
     children_issue.each do |issue|
       UpdateRedmineIssueWorker.perform_async(issue, {status: 5}.to_json)
     end
+
+    FetchStoryWorker.set(wait: 10.minute).perform_async(story.issue_id, true)
   end
 
   private
