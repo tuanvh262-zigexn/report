@@ -11,28 +11,28 @@ namespace :db do
     end
 
     reports = []
-    ('2023-01-01'.to_date..Time.current.to_date).each do |t|
+    ('2024-01-01'.to_date..Time.current.to_date).each do |t|
       User.all.each do |user|
         reports << UserDailyReport.new(user_id: user.id, content: {}, start_date: t)
       end
       reports << DailyReport.new(content: {}, start_date: t)
     end
 
-    ('2023-01-01'.to_date..Time.current.to_date).map(&:beginning_of_week).uniq.each do |t|
+    ('2024-01-01'.to_date..Time.current.to_date).map(&:beginning_of_week).uniq.each do |t|
       User.all.each do |user|
         reports << UserWeeklyReport.new(user_id: user.id, content: {}, start_date: t)
       end
       reports << WeeklyReport.new(content: {}, start_date: t)
     end
 
-    ('2023-01-01'.to_date..Time.current.to_date).map(&:beginning_of_month).uniq.each do |t|
+    ('2024-01-01'.to_date..Time.current.to_date).map(&:beginning_of_month).uniq.each do |t|
       User.all.each do |user|
         reports << UserMonthlyReport.new(user_id: user.id, content: {}, start_date: t)
       end
       reports << MonthlyReport.new(content: {}, start_date: t)
     end
 
-    ('2023-01-01'.to_date..Time.current.to_date).map(&:beginning_of_quarter).uniq.each do |t|
+    ('2024-01-01'.to_date..Time.current.to_date).map(&:beginning_of_quarter).uniq.each do |t|
       User.all.each do |user|
         reports << UserQuarterReport.new(user_id: user.id, content: {}, start_date: t)
       end
@@ -43,7 +43,7 @@ namespace :db do
 
   task async_user_working_logs: :environment do
     User.all.each do |user|
-      ('2023-01-01'.to_date..Time.current.to_date).each do |time|
+      ('2024-01-01'.to_date..Time.current.to_date).each do |time|
         FetchUserWorkingLogWorker.perform_async(user.id, time.strftime('%Y-%m-%d'))
       end
     end

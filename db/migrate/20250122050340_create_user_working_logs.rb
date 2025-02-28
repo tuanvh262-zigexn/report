@@ -12,6 +12,7 @@ class CreateUserWorkingLogs < ActiveRecord::Migration[8.0]
       t.string :comments
       t.integer :root_issue_id
       t.boolean :owner_issue, default: true
+      t.boolean :soft_delete, default: false
 
       t.timestamps
     end
