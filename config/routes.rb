@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     root "entries#index"
     resources :reports, only: :index
     resources :stories, only: :show
+    namespace :ajax do
+      resources :stories, only: :index
+    end
 
     mount Sidekiq::Web, at: '/sidekiq'
   end

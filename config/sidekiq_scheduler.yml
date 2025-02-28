@@ -24,12 +24,12 @@ update_story_worker:
   queue: default
 
 search_all_time_crowd_task_worker:
-  cron: '30 7,18 * * 1-5'
+  cron: '30 7,12,18 * * 1-5'
   class: SearchAllTimeCrowdTasksWorker
   queue: default
 
 trigger_total_time_crowd_worker:
-  cron: '30 8,19 * * 1-5'
+  cron: '30 8,10,12,14,16,18 * * 1-5'
   class: TriggerTotalTimeCrowdWorker
   queue: default
 

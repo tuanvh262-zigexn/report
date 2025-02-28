@@ -30,9 +30,14 @@
 
       <!-- Navbar -->
       <nav class="navbar">
-        <%= link_to "Home", apw_root_path %>
-        <%= link_to "Report", apw_reports_path %>
-        <%# <a href="#contact">Liên Hệ</a> %>
+        <div class="nav-links">
+            <%= link_to "Home", apw_root_path %>
+            <%= link_to "Report", apw_reports_path %>
+        </div>
+        <div class="search-container">
+          <input type="text" id="search" placeholder="Searching...">
+          <div class="dropdown" id="results"></div>
+        </div>
       </nav>
     </header>
 
@@ -45,4 +50,59 @@
   <% if content_for? :javascripts %>
     <%= yield :javascripts %>
   <% end %>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      let typingTimer;
+      let doneTypingInterval = 300;
+
+      $("#search").on("input", function() {
+        clearTimeout(typingTimer);
+
+        typingTimer = setTimeout(function () {
+          let query = $("#search").val().toLowerCase();
+          searchFunction(query);
+        }, doneTypingInterval);
+      });
+
+      function searchFunction(query) {
+        if (!query) {
+          $("#results").hide();
+          return;
+        }
+
+        $.ajax({
+          url: "<%= apw_ajax_stories_path %>",
+          type: "GET",
+          data: {subject: query},
+          dataType: "json",  // Kiểu dữ liệu trả về (json, html, text,...)
+          success: function(response) {
+            var resultsDiv = $("#results");
+
+            resultsDiv.empty();
+            if (query && response.length) {
+              response.forEach(item => {
+                resultsDiv.append(
+                  `<div class='result-item'>
+                  <a target="_blank" href="/apw/stories/${item["id"]}">${item["subject"]}</a>
+                  </div>`
+                );
+              });
+              resultsDiv.show();
+            } else {
+              resultsDiv.hide();
+            }
+          },
+          error: function(xhr, status, error) {
+              console.error(error); // Xử lý khi có lỗi
+          }
+        });
+      }
+
+      $(document).click(function(e) {
+        if (!$(e.target).closest('.search-container').length) {
+          $("#results").hide();
+        }
+      });
+    });
+  </script>
 </html>
