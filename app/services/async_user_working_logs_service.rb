@@ -36,7 +36,10 @@ class AsyncUserWorkingLogsService
       )
     end
 
-    UserWorkingLog.where(user: user, spent_on: spent_on).where.not(id: user_working_logs.compact).destroy_all
+    if UserWorkingLog.where(user: user, spent_on: spent_on).where.not(id: user_working_logs.compact).present?
+      UserWorkingLog.where(user: user, spent_on: spent_on).where.not(id: user_working_logs.compact).destroy_all
+      UserWorkingLog.where(user: user, spent_on: spent_on).update_all(standardized: false)
+    end
 
     UserWorkingLog.import! user_working_logs_new, batch_size: BATCH_SIZE, validate: false
 
