@@ -74,7 +74,7 @@ class Entries::IndexSupport
         SubTask.where("(sub_tasks.status != 11 AND stories.issue_id IN (67210, 70517))")
           .where(owner_id: params_search[:user_ids])
       )
-      .includes(:owner).order(issue_id: :desc, :owner_id, :start_date)
+      .includes(:owner).order(issue_id: :desc, owner_id: :asc, start_date: :asc)
     end
   end
 
