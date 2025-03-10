@@ -19,7 +19,8 @@ class Story < ApplicationRecord
     feedback: 8,
     waiting_release: 9,
     released: 10,
-    closed: 11
+    closed: 11,
+    ready_for_test: 12
   }
 
   enum :level, {
