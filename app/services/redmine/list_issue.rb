@@ -15,7 +15,7 @@ class Redmine::ListIssue < Redmine::GetBase
   private
 
   def full_url
-    "https://dev.zigexn.vn/issues.json?project_id=157&tracker_id=12&limit=100&status_id=#{redmine_status_id}"
+    "https://dev.zigexn.vn/issues.json?project_id=133&tracker_id=12&limit=100&status_id=#{redmine_status_id}"
   end
 
   def response_format data_json
