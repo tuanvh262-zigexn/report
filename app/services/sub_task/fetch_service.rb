@@ -25,8 +25,8 @@ class SubTask::FetchService
         is_bug: is_bug?,
         meet_deadline: meet_deadline,
         activity_type: gen_activity_type,
-        redmine_created_at: redmine_issue.dig("created_on")&.to_date,
-        redmine_updated_at:redmine_issue.dig("updated_on")&.to_date
+        redmine_created_at: redmine_issue.dig("created_on")&.to_datetime,
+        redmine_updated_at:redmine_issue.dig("updated_on")&.to_datetime
       )
 
       sub_task.save!
@@ -40,7 +40,7 @@ class SubTask::FetchService
   end
 
   def redmine_issue
-    @redmine_issue ||= Redmine::Issue.new(sub_task.issue_id).execute
+    @redmine_issue ||= Redmine::Issue.new(sub_task.issue_id, !options[:force_update]).execute
   end
 
   def redmine_parent_issue

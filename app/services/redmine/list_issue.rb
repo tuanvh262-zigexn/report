@@ -8,17 +8,17 @@ class Redmine::ListIssue < Redmine::GetBase
     feedback: 4
   }
 
-  def initialize redmine_status_id
-    @redmine_status_id = MAPPING_STATUS[redmine_status_id.to_sym]
-  end
-
   private
 
   def full_url
-    "https://dev.zigexn.vn/issues.json?project_id=133&tracker_id=12&limit=100&status_id=#{redmine_status_id}"
+    "https://dev.zigexn.vn/issues.json?project_id=133&tracker_id=12&limit=100&status_id=open"
   end
 
   def response_format data_json
     data_json["issues"]
+  end
+
+  def use_cache
+    false
   end
 end

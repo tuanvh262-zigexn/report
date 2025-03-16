@@ -43,31 +43,36 @@ trigger_update_status_redmine_worker:
   class: TriggerUpdateStatusRedmineWorker
   queue: default
 
-update_actived_story_worker:
-  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
-  class: UpdateActivedStoryWorker
-  queue: default
-
 update_init_story_redmine_worker:
-  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
+  cron: '* 8,9,10,11,12,13,14,15,16 * * 1-5'
   class: UpdateStoryRedmineWorker
   queue: default
-  args: ['init']
 
-update_in_progress_story_redmine_worker:
-  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
-  class: UpdateStoryRedmineWorker
-  queue: default
-  args: ['in_progress']
+# update_actived_story_worker:
+#   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
+#   class: UpdateActivedStoryWorker
+#   queue: default
 
-update_resolved_story_redmine_worker:
-  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
-  class: UpdateStoryRedmineWorker
-  queue: default
-  args: ['resolved']
+# update_init_story_redmine_worker:
+#   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
+#   class: UpdateStoryRedmineWorker
+#   queue: default
+#   args: ['init']
 
-update_feedback_story_redmine_worker:
-  cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
-  class: UpdateStoryRedmineWorker
-  queue: default
-  args: ['feedback']
+# update_in_progress_story_redmine_worker:
+#   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
+#   class: UpdateStoryRedmineWorker
+#   queue: default
+#   args: ['in_progress']
+
+# update_resolved_story_redmine_worker:
+#   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
+#   class: UpdateStoryRedmineWorker
+#   queue: default
+#   args: ['resolved']
+
+# update_feedback_story_redmine_worker:
+#   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
+#   class: UpdateStoryRedmineWorker
+#   queue: default
+#   args: ['feedback']

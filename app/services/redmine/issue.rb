@@ -1,8 +1,9 @@
 class Redmine::Issue < Redmine::GetBase
-  attr_reader :issue_id
+  attr_reader :issue_id, :cached
 
-  def initialize issue_id
+  def initialize issue_id, cached = true
     @issue_id = issue_id
+    @cached = cached
   end
 
   private
@@ -13,5 +14,9 @@ class Redmine::Issue < Redmine::GetBase
 
   def response_format data_json
     data_json["issue"]
+  end
+
+  def use_cache
+    cached
   end
 end

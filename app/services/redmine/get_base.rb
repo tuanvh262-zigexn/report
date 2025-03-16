@@ -3,7 +3,7 @@ require "net/http"
 
 class Redmine::GetBase
   def execute
-    Rails.cache.fetch("redmine_#{full_url}", expires_in: 5.minutes) do
+    fetch_or_compute("redmine_#{full_url}") {
       url = URI(full_url)
       https = Net::HTTP.new(url.host, url.port)
       https.use_ssl = true
@@ -15,7 +15,7 @@ class Redmine::GetBase
       response = https.request(request)
 
       response_format(JSON.parse(response.read_body))
-    end
+    }
   end
 
   private
@@ -26,5 +26,17 @@ class Redmine::GetBase
 
   def response_format data_json
     raise NotImplementedError
+  end
+
+  def use_cache
+    true
+  end
+
+  def fetch_or_compute(key, expires_in: 5.minutes)
+    if use_cache
+      Rails.cache.fetch(key, expires_in: expires_in) { yield }
+    else
+      yield
+    end
   end
 end

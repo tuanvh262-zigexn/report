@@ -13,9 +13,11 @@ class Story::FetchService
   end
 
   def execute
-    return unless redis.setnx(redis_key, Time.current.to_i)
-    redis.getex(redis_key, ex: Settings.redis.expried.story)
-    user_changed = false
+    unless options[:force_update]
+      return unless redis.setnx(redis_key, Time.current.to_i)
+      redis.getex(redis_key, ex: Settings.redis.expried.story)
+      user_changed = false
+    end
 
     ActiveRecord::Base.transaction do
       story.assign_attributes(
@@ -54,14 +56,15 @@ class Story::FetchService
         release_hours: release_logs.sum(&:hours),
         cross_support_hours: cross_support_logs.sum(&:hours),
         finished_at: finished_at,
-        redmine_created_at: redmine_issue.dig("created_on")&.to_date,
-        redmine_updated_at:redmine_issue.dig("updated_on")&.to_date,
+        redmine_created_at: redmine_issue.dig("created_on")&.to_datetime,
+        redmine_updated_at:redmine_issue.dig("updated_on")&.to_datetime,
         timecrowd_est_ratio: timecrowd_est_ratio
       )
 
       user_changed = story.user_id_changed? || story.level_changed?
       story.save!
       build_sub_tasks!
+      remove_sub_tasks!
 
       story.sub_tasks.each do |task|
         FetchSubTaskWorker.perform_async(task.id, options[:force_update])
@@ -85,7 +88,7 @@ class Story::FetchService
   end
 
   def redmine_issue
-    @redmine_issue ||= Redmine::Issue.new(redmine_issue_id).execute
+    @redmine_issue ||= Redmine::Issue.new(redmine_issue_id, !options[:force_update]).execute
   end
 
   def redmine_issue_test
@@ -154,6 +157,12 @@ class Story::FetchService
   def build_sub_tasks!
     (sub_tasks.map{|x| x["id"]} - story.sub_tasks.pluck(:issue_id)).each do |x|
       SubTask.create! issue_id: x, story_id: story.id, kind: tracker_mapping[x]
+    end
+  end
+
+  def remove_sub_tasks!
+    (story.sub_tasks.pluck(:issue_id) - sub_tasks.map{|x| x["id"]}).each do |x|
+      SubTask.find_by(issue_id: x).destroy!
     end
   end
 

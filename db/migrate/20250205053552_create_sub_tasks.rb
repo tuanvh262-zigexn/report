@@ -19,8 +19,8 @@ class CreateSubTasks < ActiveRecord::Migration[8.0]
       t.boolean :meet_deadline, default: false
       t.boolean :update_title, default: false
       t.integer :activity_type
-      t.date :redmine_created_at
-      t.date :redmine_updated_at
+      t.datetime :redmine_created_at
+      t.datetime :redmine_updated_at
 
       t.timestamps
     end

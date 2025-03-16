@@ -1,9 +1,9 @@
 class UpdateStoryRedmineWorker
   include Sidekiq::Worker
 
-  def perform status
-    Redmine::ListIssue.new(status).execute.each do |story|
-      FetchStoryWorker.perform_async(story["id"])
+  def perform
+    Redmine::ListIssue.new.execute.each do |data|
+      ForceUpdateStoryWorker.perform_async(data["id"], data["updated_on"])
     end
   end
 end

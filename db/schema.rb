@@ -55,8 +55,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.decimal "cross_support_hours", precision: 10, scale: 2
     t.decimal "time_crowd_est_hours", precision: 10, scale: 2
     t.date "finished_at"
-    t.date "redmine_created_at"
-    t.date "redmine_updated_at"
+    t.datetime "redmine_created_at"
+    t.datetime "redmine_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_stories_on_issue_id", unique: true
@@ -82,8 +82,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.boolean "meet_deadline", default: false
     t.boolean "update_title", default: false
     t.integer "activity_type"
-    t.date "redmine_created_at"
-    t.date "redmine_updated_at"
+    t.datetime "redmine_created_at"
+    t.datetime "redmine_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_sub_tasks_on_issue_id", unique: true

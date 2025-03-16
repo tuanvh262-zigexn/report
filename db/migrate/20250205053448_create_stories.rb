@@ -35,8 +35,8 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.decimal :cross_support_hours, :scale => 2, :precision => 10
       t.decimal :time_crowd_est_hours, :scale => 2, :precision => 10
       t.date :finished_at
-      t.date :redmine_created_at
-      t.date :redmine_updated_at
+      t.datetime :redmine_created_at
+      t.datetime :redmine_updated_at
 
       t.timestamps
     end
