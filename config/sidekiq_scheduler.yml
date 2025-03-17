@@ -19,7 +19,7 @@ fetch_all_report_worker:
   queue: default
 
 update_story_worker:
-  cron: '0 8,12,20 * * 1-5'
+  cron: '0 20 * * 1-5'
   class: UpdateStoryWorker
   queue: default
 
