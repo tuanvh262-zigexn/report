@@ -22,7 +22,7 @@ class Reports::IndexSupport
       {
         title: report.start_date.strftime("%d/%m/%y"),
         total_tasks: stories.count,
-        new_tasks: stories.count{|x| (report.start_date..report.end_date).include?(x.redmine_created_at)},
+        new_tasks: stories.count{|x| (report.start_date..report.end_date).include?(x.redmine_created_at.to_date)},
         waiting_release: stories.count{|x| ['waiting_release', 'verified', 'jp_side', 'closed', 'released'].include?(x.status)},
         released: stories.count{|x| ['closed', 'released'].include?(x.status)}
       }
@@ -81,8 +81,8 @@ class Reports::IndexSupport
       stories = report.stories.uniq.to_a
       {
         title: report.start_date.strftime("%d/%m/%y"),
-        total: tasks.count {|x| (x.kind == "bug") && (report.start_date..report.end_date).include?(x.redmine_created_at)},
-        bugs: tasks.count{|x| x.is_bug && (report.start_date..report.end_date).include?(x.redmine_created_at)},
+        total: tasks.count {|x| (x.kind == "bug") && (report.start_date..report.end_date).include?(x.redmine_created_at.to_date)},
+        bugs: tasks.count{|x| x.is_bug && (report.start_date..report.end_date).include?(x.redmine_created_at.to_date)},
         prod_bugs: stories.sum(&:prod_bug_count),
       }
     end
@@ -132,7 +132,7 @@ class Reports::IndexSupport
   def finished_stories
     @finished_stories ||= begin
       stories.select do |story|
-        (params_search[:start_date]..params_search[:end_date]).include?(story.redmine_created_at)
+        (params_search[:start_date]..params_search[:end_date]).include?(story.redmine_created_at.to_date)
       end
     end
   end
