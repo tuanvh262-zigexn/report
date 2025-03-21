@@ -2,6 +2,22 @@ class SubTask < ApplicationRecord
   belongs_to :story
   belongs_to :owner, class_name: User.name, foreign_key: :owner_id, optional: true
 
+  STATUS_DISPLAYS = {
+    'init' => 'Init',
+    'pending_review' => 'Pending Review',
+    'in_progress' => 'In Progress',
+    'resolved' => 'Resolved',
+    'code_review' => 'Code Review',
+    'testing' => 'Testing',
+    'verified' => 'Verified',
+    'jp_side' => 'JP Side',
+    'feedback' => 'Feedback',
+    'waiting_release' => 'Waiting Release',
+    'released' => 'Released',
+    'closed' => 'Closed',
+    'ready_for_test' => 'Ready for Test',
+  }.freeze
+
   enum :status, {
     init: 0,
     pending: 1,
@@ -50,4 +66,16 @@ class SubTask < ApplicationRecord
   }
 
   delegate :name, to: :owner, prefix: true, allow_nil: true
+
+  def status_display
+    return if status.blank?
+
+    STATUS_DISPLAYS[status]
+  end
+
+  def kind_display
+    return if kind.blank?
+
+    kind.capitalize
+  end
 end

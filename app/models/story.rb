@@ -7,6 +7,22 @@ class Story < ApplicationRecord
 
   has_one :time_crowd_task
 
+  STATUS_DISPLAYS = {
+    'init' => 'Init',
+    'pending_review' => 'Pending Review',
+    'in_progress' => 'In Progress',
+    'resolved' => 'Resolved',
+    'code_review' => 'Code Review',
+    'testing' => 'Testing',
+    'verified' => 'Verified',
+    'jp_side' => 'JP Side',
+    'feedback' => 'Feedback',
+    'waiting_release' => 'Waiting Release',
+    'released' => 'Released',
+    'closed' => 'Closed',
+    'ready_for_test' => 'Ready for Test',
+  }.freeze
+
   enum :status, {
     init: 0,
     pending: 1,
@@ -48,5 +64,11 @@ class Story < ApplicationRecord
     ].each do |state, key|
       return state if (self.send(key).present? && self.send(key) < period_date)
     end
+  end
+
+  def status_display
+    return if status.blank?
+
+    STATUS_DISPLAYS[status]
   end
 end

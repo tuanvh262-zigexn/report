@@ -1,24 +1,26 @@
+/* Base Styles */
 body {
-  font-family: 'Montserrat', sans-serif;
   margin: 0;
   padding: 0;
   color: #444;
   background-color: #f9f9f9;
 }
 
+/* Header Section */
 header {
-  background: linear-gradient(135deg, #4A90E2, #50E3C2);
+  background: linear-gradient(135deg, #4885cf, #4ed3ad);
   color: white;
   text-align: center;
-  padding: 80px 0;
+  padding: 100px 0 80px 0;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 10;
   transition: all 0.3s ease;
 }
 
+/* Header Title */
 header h1 {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-size: 50px;
   margin: 0;
   font-weight: 700;
@@ -27,8 +29,9 @@ header h1 {
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Header Subtitle */
 header p {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 20px;
   margin-top: 10px;
   font-weight: 400;
@@ -36,26 +39,80 @@ header p {
   opacity: 0.8;
 }
 
+/* Header Navigation Bar */
 header .navbar {
   position: absolute;
-  top: 20px;
-/*  left: 20px;*/
-  font-family: 'Montserrat', sans-serif;
+  top: 5px;
+  /*  left: 20px;*/
+  font-family: "Montserrat", sans-serif;
   font-size: 18px;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 40px);
+  padding: 15px 20px;
+  transition: all 0.25s ease-in-out;
 }
 
+/* Navigation Links */
+header .nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+header .nav-links a:hover {
+  color: #50e3c2;
+  transform: scale(1.1);
+}
+
+/* Scrolled Header State */
+header.scrolled {
+  background: linear-gradient(135deg, #2f66a5, #3bb8a9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 50px 0;
+}
+
+header.scrolled .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: white;
+  color: #444;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+header.scrolled .nav-links a {
+  color: #444;
+}
+
+header.scrolled .nav-links a:hover {
+  color: #4e8fdd;
+}
+
+header.scrolled .search-container {
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  text-decoration: none;
+}
+
+/* Search Container */
 .search-container {
   position: relative;
   width: 300px;
 }
 
 .search-container input {
-  width: 100%;
+  width: calc(100% - 25px);
   padding: 10px;
   border: none;
   border-radius: 20px;
@@ -64,6 +121,7 @@ header .navbar {
   padding-left: 15px;
 }
 
+/* Search Results Dropdown */
 .dropdown {
   position: absolute;
   width: 100%;
@@ -76,14 +134,17 @@ header .navbar {
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
+
 .dropdown div {
   padding: 5px;
   cursor: pointer;
 }
+
 .dropdown div:hover {
   background: #f0f0f0;
 }
 
+/* Search Result Items */
 .result-item {
   text-align: left;
 }
@@ -94,35 +155,48 @@ header .navbar {
   text-decoration: none;
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-header .nav-links a {
-  color: white;
-  text-decoration: none;
-  margin: 0 15px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-header .nav-links a:hover {
-  color: #50E3C2;
-  transform: scale(1.1);
-}
-
-header.scrolled {
-  background: linear-gradient(135deg, #2F66A5, #3BB8A9);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 50px 0;
-}
-
+/* Content Container */
 .container {
-  margin: 50px auto;
-  padding: 40px;
+  margin: 20px auto;
+  margin-bottom: 100px;
+  padding: 20px;
+  font-family: "Inter", sans-serif;
+}
+
+.sub-container {
+  width: calc(100% - 40px);
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+/* Scroll Top Button */
+.scroll-top-button {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 25px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #4e8fdd;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.scroll-top-button:hover {
+  background-color: white;
+  transform: scale(1.05);
+  border: 1px solid #4e8fdd;
+  color: #4e8fdd;
+  transition: all 0.3s ease;
+}
+
+.scroll-top-button:hover svg {
+  fill: #4e8fdd;
 }

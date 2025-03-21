@@ -1,0 +1,28 @@
+<div class="scroll-top-button">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24px" height="24px" viewBox="0 0 24 24">
+    <path d="M17.657 15.657a1 1 0 0 1-.707-.293L12 10.414l-4.95 4.95a1 1 0 0 1-1.414-1.414l5.657-5.657a1 1 0 0 1 1.414 0l5.657 5.657a1 1 0 0 1-.707 1.707z"/>
+  </svg>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // Hide the button initially if at the top of the page
+    if ($(window).scrollTop() === 0) {
+      $('.scroll-top-button').hide();
+    }
+
+    // Show/hide the button based on scroll position
+    $(window).scroll(function() {
+      if ($(this).scrollTop() > 100) {
+        $('.scroll-top-button').fadeIn();
+      } else {
+        $('.scroll-top-button').fadeOut();
+      }
+    });
+
+    // Scroll to top when button is clicked
+    $('.scroll-top-button').on('click', function() {
+      $('html, body').animate({ scrollTop: 0 }, 'smooth');
+    });
+  });
+</script>

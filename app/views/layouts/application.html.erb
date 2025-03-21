@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -15,38 +16,27 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%= javascript_include_tag  'jquery-1.7.2.min' %>
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%# <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
 
+    <%= stylesheet_link_tag 'global' %>
     <%= stylesheet_link_tag 'header' %>
     <% if content_for? :stylesheet %>
       <%= yield :stylesheet %>
     <% end %>
   </head>
   <body>
-    <header>
-      <h1>Team Work Performance Report</h1>
-      <p>Evaluate, analyze, and improve the work performance of team members</p>
-
-      <!-- Navbar -->
-      <nav class="navbar">
-        <div class="nav-links">
-            <%= link_to "Home", apw_root_path %>
-            <%= link_to "Report", apw_reports_path %>
-        </div>
-        <div class="search-container">
-          <input type="text" id="search" placeholder="Searching...">
-          <div class="dropdown" id="results"></div>
-        </div>
-      </nav>
-    </header>
+    <%= render 'layouts/header' %>
 
     <div class="container">
       <%= yield %>
     </div>
 
+    <%= render 'layouts/scroll_top_button' %>
+
   </body>
-  <%= javascript_include_tag  'jquery-1.7.2.min' %>
+
   <% if content_for? :javascripts %>
     <%= yield :javascripts %>
   <% end %>

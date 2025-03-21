@@ -1,177 +1,182 @@
-<h1>Story Detail</h1>
+<div class="sub-container" style="padding-bottom: 40px;">
+  <h1>Story Detail</h1>
 
-<div class="data-row highlight-row">
-  <div class="data-left">Subject</div>
-  <div class="data-right"><%= @story.subject %></div>
-</div>
-
-<div class="data-row">
-  <div class="data-left">Owner</div>
-  <div class="data-right"><%= @story.user_name %></div>
-</div>
-
-<div class="data-row">
-  <div class="data-left">Status</div>
-  <div class="data-right"><span class="status <%= @story.status %>"><%= @story.status %></span></div>
-</div>
-
-<div class="data-row">
-  <div class="data-left">Difficulty</div>
-  <div class="data-right"><%= @story.level %></div>
-</div>
-
-<div class="data-row">
-  <div class="data-left">Remine Issue</div>
-  <div class="data-right">
-    <%= link_to @story.issue_id, "https://dev.zigexn.vn/issues/#{@story.issue_id}",
-      target: "_blank" %>
-  </div>
-</div>
-
-<div class="data-row">
-  <div class="data-left">Start Date</div>
-  <div class="data-right"><%= @story.start_date %></div>
-</div>
-
-<div class="data-row">
-  <div class="data-left">Due Date</div>
-  <div class="data-right"><%= @story.due_date %></div>
-</div>
-
-<button class="accordion">Estimated Time</button>
-<div class="panel">
-  <div class="data-row">
-    <div class="data-left">Total Estimated Hours</div>
-    <div class="data-right"><%= @story.total_estimated_hours %></div>
+  <div class="data-row highlight-row">
+    <div class="data-left">Subject</div>
+    <div class="data-right"><%= @story.subject %></div>
   </div>
 
   <div class="data-row">
-    <div class="data-left">Total Spent Hours</div>
-    <div class="data-right"><%= @story.total_spent_hours %></div>
+    <div class="data-left">Owner</div>
+    <div class="data-right"><%= @story.user_name %></div>
   </div>
 
   <div class="data-row">
-    <div class="data-left">Time Estimate Ratio</div>
-    <div class="data-right"><%= @story.time_estimate_ratio %></div>
+    <div class="data-left">Status</div>
+    <div class="data-right"><span class="status <%= @story.status %>"><%= @story.status %></span></div>
   </div>
 
   <div class="data-row">
-    <div class="data-left">Test Case Count</div>
-    <div class="data-right"><%= @story.test_case_count %></div>
+    <div class="data-left">Difficulty</div>
+    <div class="data-right"><%= @story.level %></div>
   </div>
 
   <div class="data-row">
-    <div class="data-left">Bug Count</div>
-    <div class="data-right"><%= @story.bug_count %></div>
+    <div class="data-left">Remine Issue</div>
+    <div class="data-right">
+      <%= link_to @story.issue_id, "https://dev.zigexn.vn/issues/#{@story.issue_id}",
+        target: "_blank" %>
+    </div>
   </div>
 
   <div class="data-row">
-    <div class="data-left">Prod Bug Count</div>
-    <div class="data-right"><%= @story.prod_bug_count %></div>
-  </div>
-</div>
-
-<button class="accordion">Activities</button>
-<div class="panel">
-  <div class="data-row">
-    <div class="data-left">Requirement Hours</div>
-    <div class="data-right"><%= @story.requirement_hours %></div>
+    <div class="data-left">Start Date</div>
+    <div class="data-right"><%= @story.start_date %></div>
   </div>
 
   <div class="data-row">
-    <div class="data-left">Design Hours</div>
-    <div class="data-right"><%= @story.design_hours %></div>
+    <div class="data-left">Due Date</div>
+    <div class="data-right"><%= @story.due_date %></div>
   </div>
+  <div style="display: flex; gap: 16px; ">
+    <div style="flex: 1">
+      <button class="accordion">Estimated Time</button>
+      <div class="panel">
+        <div class="data-row">
+          <div class="data-left">Total Estimated Hours</div>
+          <div class="data-right"><%= @story.total_estimated_hours %></div>
+        </div>
 
-  <div class="data-row">
-    <div class="data-left">Coding Hours</div>
-    <div class="data-right"><%= @story.coding_hours %></div>
+        <div class="data-row">
+          <div class="data-left">Total Spent Hours</div>
+          <div class="data-right"><%= @story.total_spent_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Time Estimate Ratio</div>
+          <div class="data-right"><%= @story.time_estimate_ratio %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Test Case Count</div>
+          <div class="data-right"><%= @story.test_case_count %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Bug Count</div>
+          <div class="data-right"><%= @story.bug_count %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Prod Bug Count</div>
+          <div class="data-right"><%= @story.prod_bug_count %></div>
+        </div>
+      </div>
+    </div>
+    <div style="flex: 1">
+      <button class="accordion">Activities</button>
+      <div class="panel">
+        <div class="data-row">
+          <div class="data-left">Requirement Hours</div>
+          <div class="data-right"><%= @story.requirement_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Design Hours</div>
+          <div class="data-right"><%= @story.design_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Coding Hours</div>
+          <div class="data-right"><%= @story.coding_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Testing Hours</div>
+          <div class="data-right"><%= @story.testing_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Bug Fixing Hours</div>
+          <div class="data-right"><%= @story.bug_fixing_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Release Hours</div>
+          <div class="data-right"><%= @story.release_hours %></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-left">Cross Support Hours</div>
+          <div class="data-right"><%= @story.cross_support_hours %></div>
+        </div>
+      </div>
+    </div>
   </div>
+  <br><br>
+  <hr>
+  <h3>Time line</h3>
+  <div id="timeline" style="height: 300px;"></div>
 
-  <div class="data-row">
-    <div class="data-left">Testing Hours</div>
-    <div class="data-right"><%= @story.testing_hours %></div>
-  </div>
-
-  <div class="data-row">
-    <div class="data-left">Bug Fixing Hours</div>
-    <div class="data-right"><%= @story.bug_fixing_hours %></div>
-  </div>
-
-  <div class="data-row">
-    <div class="data-left">Release Hours</div>
-    <div class="data-right"><%= @story.release_hours %></div>
-  </div>
-
-  <div class="data-row">
-    <div class="data-left">Cross Support Hours</div>
-    <div class="data-right"><%= @story.cross_support_hours %></div>
-  </div>
-</div>
-<br><br>
-<hr>
-<h3>Time line</h3>
-<div id="timeline" style="height: 300px;"></div>
-
-<h4>Detail Time line</h3>
-<div id="detail_timeline" style="height: 300px;"></div>
-<br><br>
-<hr>
-<h3>Detail Sub Tasks</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Activity Type</th>
-      <th>Subject</th>
-      <th>Owner</th>
-      <th>Status</th>
-      <th>Due date</th>
-      <th>Spent / Estimate</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Nhiệm vụ chính 1 -->
-    <% @support.sub_tasks_mapping_activity.each do |data| %>
+  <h4>Detail Time line</h3>
+  <div id="detail_timeline" style="height: 300px;"></div>
+  <br><br>
+  <hr>
+  <h3>Detail Sub Tasks</h1>
+  <table>
+    <thead>
       <tr>
-        <% first_task = data[:tasks].shift %>
-        <td rowspan="<%= data[:tasks].size + 1 %>">
-          <strong>
-            <%= data[:type].upcase %>
-          </strong>
-        </td>
-        <td>
-          <strong>
-            <%= link_to first_task.subject, "https://dev.zigexn.vn/issues/#{first_task.issue_id}",
-              target: "_blank" %>
-          </strong>
-        </td>
-        <td><%= first_task.owner_name %></td>
-        <td><span class="status-label <%= first_task.status %>"><%= first_task.status %></span></td>
-        <td><%= first_task.due_date %></td>
-        <td class="<%= 'highlight-row' unless first_task.meet_deadline %>">
-          <%= "#{first_task.total_spent_hours} / #{first_task.total_estimated_hours}" %>
-        </td>
+        <th>Activity Type</th>
+        <th>Subject</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Due date</th>
+        <th>Spent / Estimate</th>
       </tr>
-      <% data[:tasks].each do |task| %>
+    </thead>
+    <tbody>
+      <!-- Nhiệm vụ chính 1 -->
+      <% @support.sub_tasks_mapping_activity.each do |data| %>
         <tr>
+          <% first_task = data[:tasks].shift %>
+          <td rowspan="<%= data[:tasks].size + 1 %>">
+            <strong>
+              <%= data[:type].upcase %>
+            </strong>
+          </td>
           <td>
             <strong>
-              <%= link_to task.subject, "https://dev.zigexn.vn/issues/#{task.issue_id}",
+              <%= link_to first_task.subject, "https://dev.zigexn.vn/issues/#{first_task.issue_id}",
                 target: "_blank" %>
             </strong>
           </td>
-          <td><%= task.owner_name %></td>
-          <td><span class="status-label <%= task.status %>"><%= task.status %></span></td>
-          <td><%= task.due_date %></td>
-          <td class="<%= 'highlight-row' unless task.meet_deadline %>">
-            <%= "#{task.total_spent_hours} / #{task.total_estimated_hours}" %>
+          <td><%= first_task.owner_name %></td>
+          <td><span class="status-label <%= first_task.status %>"><%= first_task.status %></span></td>
+          <td><%= first_task.due_date %></td>
+          <td class="<%= 'highlight-row' unless first_task.meet_deadline %>">
+            <%= "#{first_task.total_spent_hours} / #{first_task.total_estimated_hours}" %>
           </td>
         </tr>
+        <% data[:tasks].each do |task| %>
+          <tr>
+            <td>
+              <strong>
+                <%= link_to task.subject, "https://dev.zigexn.vn/issues/#{task.issue_id}",
+                  target: "_blank" %>
+              </strong>
+            </td>
+            <td><%= task.owner_name %></td>
+            <td><span class="status-label <%= task.status %>"><%= task.status %></span></td>
+            <td><%= task.due_date %></td>
+            <td class="<%= 'highlight-row' unless task.meet_deadline %>">
+              <%= "#{task.total_spent_hours} / #{task.total_estimated_hours}" %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
-    <% end %>
-  </tbody>
-</table>
-
+    </tbody>
+  </table>
+</div>
 <%= content_for :stylesheet do %>
   <%= stylesheet_link_tag 'story/show' %>
 <% end %>
