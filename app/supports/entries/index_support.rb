@@ -73,7 +73,7 @@ class Entries::IndexSupport
 
       if params_search[:include_status_done]
         query = query.or(
-          SubTask.where("(((sub_tasks.status = 11 AND sub_tasks.redmine_created_at > ?) OR sub_tasks.status != 11) AND stories.issue_id IN (67210, 70517))", Date.current - 4.weeks)
+          SubTask.where("(((sub_tasks.status = 11 AND sub_tasks.redmine_created_at > ?) OR sub_tasks.status != 11) AND stories.issue_id IN (67210, 70517))", Date.current - 2.weeks)
             .where(owner_id: params_search[:user_ids])
         )
       else
