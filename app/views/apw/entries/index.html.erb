@@ -1,153 +1,161 @@
-<div class="display-flex">
-  <div style="width: 70%;">
-    <label><input type="checkbox" id="select-all"> Select all</label>
-    <%= form_with url: apw_root_path, method: :get, local: true do |f| %>
-      <div class="checkbox-container">
-        <% User.actived.each do |user| %>
-          <label>
-            <%= check_box_tag "q[user_ids][]", user.id,
-              @support.params_search.dig(:user_ids).include?(user.id.to_s), class: "checkbox-item" %>
-            <%= user.name %>
-          </label>
-        <% end %>
+<div class="sub-container">
+  <div class="table-header-section">
+    <div style="width: 70%;">
+      <div style="margin-bottom: 10px;">
+        <label><input type="checkbox" id="select-all"> Select all</label>
       </div>
-      <hr>
-      <label>
-        <%= check_box_tag "q[include_status_done]", 1,
-          @support.params_search.dig(:include_status_done) %>
-        <strong>Include done tasks</strong>
-      </label>
-      <%= f.button "Search", type: :submit, id: :search_button %>
-    <% end %>
-  </div>
-  <div class="legend">
-    <div><span class="color-box done"></span>Completed tasks</div>
-    <div><span class="color-box today"></span>Current date</div>
-    <div><span class="color-box holiday"></span>Days off (weekends or holidays)</div>
-    <div><span class="color-box in_progress"></span>Partially completed task</div>
-    <div><span class="color-box activity"></span>Task completion plan</div>
-  </div>
-</div>
-
-<br>
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th colspan=5></th>
-        <% @support.data_ranges.each do |k, value| %>
-          <th colspan="<%= value.size %>"><%= k %></th>
-        <% end %>
-      </tr>
-      <tr>
-        <th rowspan=2>Subject</th>
-        <th rowspan=2>Task Description</th>
-        <th rowspan=2>Owner</th>
-        <th rowspan=2>Status</th>
-        <th rowspan=2>Est</th>
-        <% @support.list_date.each do |date| %>
-          <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>">
-            <%= date.strftime("%d") %>
-          </th>
-        <% end %>
-      </tr>
-      <tr>
-        <% @support.list_date.each do |date| %>
-          <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>">
-            <%= date.strftime("%a") %>
-          </th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% @support.stories.each do |story| %>
-        <% sub_tasks = @support.tasks.select{|x| x.story_id == story.id } %>
-        <tr>
-          <td rowspan="<%= sub_tasks.size.zero? ? 1 : sub_tasks.size %>"
-            class="story-detail" data-progress="<%= story.timecrowd_est_ratio %>">
-            <%= link_to story.subject, apw_story_path(story.id),
-              target: "_blank" %>
-            <br>
-            <strong><%= story.status %></strong>
-            <br>
-            <strong>
-              <%= link_to_if story.time_crowd_id.present?,
-                story.total_time,
-                "https://timecrowd.net/app/tasks/#{story.time_crowd_id}/edit",
-                target: "_blank"
-              %>
-            </strong>
-            <% unless story.timecrowd_est_ratio.zero? %>
-              <div class="progress-container">
-                <div class="progress-text">0%</div>  <!-- Text luôn ở giữa -->
-                <div class="progress-bar"></div>
-              </div>
-            <% end %>
-            <% if story.time_crowd_task_content&.dig("users") %>
-              <div class="fire tooltip-target">
-                <%= image_tag "fire.gif", alt: "fire", class: "fire-icon" %>
-
-                <div class="smoke"></div>
-                <div class="smoke"></div>
-                <div class="smoke"></div>
-              </div>
-              <%# <div class="fire tooltip-target" data-tooltip="tooltip-table">🔥</div> %>
-              <div class="tooltip">
-                <table class="tooltip-table">
-                  <% story.time_crowd_task_content.dig("users").each do |user| %>
-                    <tr>
-                        <td>
-                          <img src="<%= user["avatar_url"] %>" class="avatar"></td>
-                        <td><%= user["nickname"] %></td>
-                        <td><%= user["total_time"] %></td>
-                    </tr>
-                  <% end %>
-                </table>
-              </div>
-            <% end %>
-          </td>
-          <% task = sub_tasks.first %>
-          <td class="text-align-left <%= :done if task.closed? %>">
-            <%= link_to "[#{task.kind}] #{task.subject}",
-              "https://dev.zigexn.vn/issues/#{task.issue_id}",
-              target: "_blank" %>
-          </td>
-          <td class="<%= :done if task.closed? %>"><%= task&.owner_name %></td>
-          <td class="<%= :done if task.closed? %>">
-            <%= task&.status %>
-            <br>
-            <%= "#{task&.done_ratio}%" %>
-          </td>
-          <td class="<%= :done if task.closed? %>"><%= task&.total_estimated_hours.to_f %></td>
-          <% @support.list_date.each do |date| %>
-            <td class="<%= @support.class_name(task, date) %>"></td>
+      <%= form_with url: apw_root_path, method: :get, local: true do |f| %>
+        <div class="checkbox-container">
+          <% User.actived.each do |user| %>
+            <label>
+              <%= check_box_tag "q[user_ids][]", user.id,
+                @support.params_search.dig(:user_ids).include?(user.id.to_s), class: "checkbox-item" %>
+              <%= user.name %>
+            </label>
           <% end %>
-        </tr>
-        <% sub_tasks.each.with_index(0) do |task, i| %>
-          <% next if i.zero? %>
-          <tr>
-            <td class="text-align-left <%= :done if task.closed? %>">
-              <%= link_to "[#{task.kind}] #{task.subject}",
-              "https://dev.zigexn.vn/issues/#{task.issue_id}",
-              target: "_blank" %>
-            </td>
-            <td class="<%= :done if task.closed? %>"><%= task.owner_name %></td>
-            <td class="<%= :done if task.closed? %>">
-              <%= task.status %>
-              <br>
-              <%= "#{task.done_ratio}%" %>
-            </td class="<%= :done if task.closed? %>">
-            <td class="<%= :done if task.closed? %>">
-              <%= task.total_estimated_hours.to_f %>
-            </td>
-            <% @support.list_date.each do |date| %>
-              <td class="<%= @support.class_name(task, date) %>"></td>
-            <% end %>
-          </tr>
-        <% end %>
+        </div>
+        <hr>
+        <label>
+          <%= check_box_tag "q[include_status_done]", 1,
+            @support.params_search.dig(:include_status_done) %>
+          <strong>Include done tasks</strong>
+        </label>
+        <%= f.button "Search", type: :submit, id: :search_button %>
       <% end %>
-    </tbody>
-  </table>
+    </div>
+    <div class="legend">
+      <div><span class="color-box done"></span>Completed tasks</div>
+      <div><span class="color-box today"></span>Current date</div>
+      <div><span class="color-box holiday"></span>Days off (weekends or holidays)</div>
+      <div><span class="color-box in_progress"></span>Partially completed task</div>
+      <div><span class="color-box activity"></span>Task completion plan</div>
+    </div>
+  </div>
+
+    <br>
+    <div class="table-wrapper">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th colspan=5></th>
+              <% @support.data_ranges.each do |k, value| %>
+                <th colspan="<%= value.size %>"><%= k %></th>
+              <% end %>
+            </tr>
+            <tr>
+              <th rowspan=2 style="width: 18%">Subject</th>
+              <th rowspan=2 style="width: 23%">Task Description</th>
+              <th rowspan=2 style="width: 5%">Owner</th>
+              <th rowspan=2 style="width: 5%">Status</th>
+              <th rowspan=2 style="width: 2%">Est</th>
+              <% list_date_size = @support.list_date.count%>
+              <% @support.list_date.each do |date| %>
+                <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>" style="width: <%= 45 / list_date_size.to_f %>%">
+                  <%= date.strftime("%d") %>
+                </th>
+              <% end %>
+            </tr>
+            <tr>
+              <% @support.list_date.each do |date| %>
+                <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>" style="width: <%= 45 / list_date_size.to_f %>%">
+                  <%= date.strftime("%a") %>
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @support.stories.each do |story| %>
+              <% sub_tasks = @support.tasks.select{|x| x.story_id == story.id } %>
+              <tr>
+                <td rowspan="<%= sub_tasks.size.zero? ? 1 : sub_tasks.size %>"
+                  class="story-detail" data-progress="<%= story.timecrowd_est_ratio %>" style="padding:4px;">
+                  <%= link_to story.subject, apw_story_path(story.id),
+                    target: "_blank" %>
+                  <br>
+                  <strong><%= story.status_display %></strong>
+                  <br>
+                  <strong>
+                    <%= link_to_if story.time_crowd_id.present?,
+                      story.total_time,
+                      "https://timecrowd.net/app/tasks/#{story.time_crowd_id}/edit",
+                      target: "_blank"
+                    %>
+                  </strong>
+                  <% unless story.timecrowd_est_ratio.zero? %>
+                    <div class="progress-container">
+                      <div class="progress-text">0%</div>  <!-- Text luôn ở giữa -->
+                      <div class="progress-bar"></div>
+                    </div>
+                  <% end %>
+                  <% if story.time_crowd_task_content&.dig("users") %>
+                    <div class="fire tooltip-target">
+                      <%= image_tag "fire.gif", alt: "fire", class: "fire-icon" %>
+
+                      <div class="smoke"></div>
+                      <div class="smoke"></div>
+                      <div class="smoke"></div>
+                    </div>
+                    <%# <div class="fire tooltip-target" data-tooltip="tooltip-table">🔥</div> %>
+                    <div class="tooltip">
+                      <table class="tooltip-table">
+                        <% story.time_crowd_task_content.dig("users").each do |user| %>
+                          <tr>
+                              <td>
+                                <img src="<%= user["avatar_url"] %>" class="avatar"></td>
+                              <td><%= user["nickname"] %></td>
+                              <td><%= user["total_time"] %></td>
+                          </tr>
+                        <% end %>
+                      </table>
+                    </div>
+                  <% end %>
+                </td>
+                <% task = sub_tasks.first %>
+                <td class="text-align-left <%= :done if task.closed? %>" style="padding:4px;">
+                  <%= link_to "[#{task.kind_display}] #{task.subject}",
+                    "https://dev.zigexn.vn/issues/#{task.issue_id}",
+                    target: "_blank" %>
+                </td>
+                <td class="<%= :done if task.closed? %>" style="padding:4px;"><%= task&.owner_name %></td>
+                <td class="<%= :done if task.closed? %>">
+                  <%= task&.status_display %>
+                  <br>
+                  <%= "#{task&.done_ratio}%" %>
+                </td>
+                <td class="<%= :done if task.closed? %>"><%= task&.total_estimated_hours.to_f %></td>
+                <% @support.list_date.each do |date| %>
+                  <td class="<%= @support.class_name(task, date) %>"></td>
+                <% end %>
+              </tr>
+              <% sub_tasks.each.with_index(0) do |task, i| %>
+                <% next if i.zero? %>
+                <tr>
+                  <td class="text-align-left <%= :done if task.closed? %>" style="padding:4px;">
+                    <%= link_to "[#{task.kind_display}] #{task.subject}",
+                    "https://dev.zigexn.vn/issues/#{task.issue_id}",
+                    target: "_blank" %>
+                  </td>
+                  <td class="<%= :done if task.closed? %>" style="padding:4px;"><%= task.owner_name %></td>
+                  <td class="<%= :done if task.closed? %>">
+                    <%= task.status_display %>
+                    <br>
+                    <%= "#{task.done_ratio}%" %>
+                  </td class="<%= :done if task.closed? %>">
+                  <td class="<%= :done if task.closed? %>">
+                    <%= task.total_estimated_hours.to_f %>
+                  </td>
+                  <% @support.list_date.each do |date| %>
+                    <td class="<%= @support.class_name(task, date) %>"></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%= content_for :stylesheet do %>

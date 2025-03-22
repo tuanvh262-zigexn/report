@@ -1,0 +1,77 @@
+.init {
+  background-color: #f0f0f0;
+  color: #333333;
+}
+.pending {
+  background-color: #ffcc80;
+  color: #5d4200;
+}
+.in_progress {
+  background-color: #90caf9;
+  color: #00427f;
+}
+.resolved {
+  background-color: #81c784;
+  color: #144017;
+}
+.code_review {
+  background-color: #ff7043;
+  color: #5a1a00;
+}
+.testing {
+  background-color: #ffeb3b;
+  color: #6a5d00;
+}
+.verified {
+  background-color: #8e24aa;
+  color: #ffffff;
+}
+.ready_for_test {
+  background-color: #80deea;
+  color: #00626e;
+}
+.jp_side {
+  background-color: #d32f2f;
+  color: #ffffff;
+}
+.feedback {
+  background-color: #f57c00;
+  color: #ffffff;
+}
+.waiting_release {
+  background-color: #0288d1;
+  color: #ffffff;
+}
+.released {
+  background-color: #43a047;
+  color: #ffffff;
+}
+.closed {
+  background-color: #757575;
+  color: #ffffff;
+}
+
+.unset {
+  background-color: #e0e0e0;
+  color: #333333;
+}
+.basic {
+  background-color: #c1e1c1;
+  color: #1e5e1e;
+}
+.intermediate {
+  background-color: #90caf9;
+  color: #00427f;
+}
+.upper_intermediate {
+  background-color: #ffcc80;
+  color: #5d4200;
+}
+.advanced {
+  background-color: #ff7043;
+  color: #5a1a00;
+}
+.expert {
+  background-color: #8e24aa;
+  color: #ffffff;
+}

@@ -12,7 +12,8 @@
   padding-left: 20px;
 }
 
-.filters select, .filters input {
+.filters select,
+.filters input {
   padding: 12px 15px;
   font-size: 16px;
   border-radius: 8px;
@@ -21,14 +22,16 @@
   transition: all 0.3s ease;
 }
 
-.filters select:focus, .filters input:focus {
+.filters select:focus,
+.filters input:focus {
   outline: none;
-  border-color: #50E3C2;
+  border-color: #50e3c2;
   box-shadow: 0 0 8px rgba(80, 227, 194, 0.6);
 }
 
-.filters select:hover, .filters input:hover {
-  border-color: #50E3C2;
+.filters select:hover,
+.filters input:hover {
+  border-color: #50e3c2;
 }
 
 .filters {
@@ -47,14 +50,14 @@
 }
 
 .filters input[type="date"]:focus {
-  border-color: #50E3C2;
+  border-color: #50e3c2;
   box-shadow: 0 0 6px rgba(80, 227, 194, 0.6);
 }
 
 .filters button {
   padding: 12px 20px;
   font-size: 16px;
-  background-color: #50E3C2;
+  background-color: #4a90e2;
   border: none;
   border-radius: 8px;
   color: white;
@@ -63,7 +66,7 @@
 }
 
 .filters button:hover {
-  background-color: #4A90E2;
+  background-color: #4abfa1;
   transform: scale(1.05);
 }
 
@@ -85,18 +88,43 @@
 
 /* Bảng dữ liệu */
 .table-container {
-  width: 100%;
-  overflow-x: auto; /* Cho phép cuộn ngang */
+  width: 1800px;
+  min-width: 100%;
   margin-top: 20px;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 1600px) {
+  .table-container {
+    width: 1700px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .table-container {
+    width: 1600px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .table-container {
+    width: 1200px;
+  }
 }
 
 .fixed-column {
   position: sticky;
   left: 0;
-/*  background-color: #f4f4f4;*/
+  transform: translateY(-1px);
+  /*  background-color: #f4f4f4;*/
   z-index: 2; /* Đảm bảo cột cố định luôn ở trên */
 }
-.fixed-column + th, .fixed-column + td {
+.fixed-column + th,
+.fixed-column + td {
   border-left: none; /* Ẩn border bên trái của cột cố định */
 }
 
@@ -107,14 +135,16 @@ table {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
+th,
+td {
+  box-sizing: border-box;
   padding: 12px;
   text-align: center;
   border: 1px solid #ddd;
 }
 
 th {
-  background-color: #50E3C2;
+  background-color: rgb(67, 118, 220);
   color: white;
   cursor: pointer;
   position: relative;
@@ -133,25 +163,25 @@ tr:hover td {
 }
 
 th:after {
-  content: ''; /* Không hiển thị mũi tên ban đầu */
+  content: ""; /* Không hiển thị mũi tên ban đầu */
   position: absolute;
   right: 10px;
   font-size: 12px;
 }
 th.asc:after {
-    content: ' ▲'; /* Mũi tên lên khi sắp xếp tăng dần */
+  content: " ▲"; /* Mũi tên lên khi sắp xếp tăng dần */
 }
 th.desc:after {
-    content: ' ▼'; /* Mũi tên xuống khi sắp xếp giảm dần */
+  content: " ▼"; /* Mũi tên xuống khi sắp xếp giảm dần */
 }
 th.sortable:hover {
-    background-color: #4abfa1;
+  background-color: #4abfa1;
 }
 tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 tbody tr:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .filter-icon {
@@ -180,7 +210,7 @@ tbody tr:hover {
   margin-right: 8px;
 }
 .filter-icon:hover {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .level-label {
@@ -192,79 +222,26 @@ tbody tr:hover {
   transition: background-color 0.3s ease;
 }
 .level-label:hover {
-    background-color: #ddd;
-}
-.unset {
-    background-color: #e0e0e0;
-}
-.basic {
-    background-color: #c1e1c1;
-}
-.intermediate {
-    background-color: #90caf9;
-}
-.upper_intermediate {
-    background-color: #ffcc80;
-}
-.advanced {
-    background-color: #ff7043;
-}
-.expert {
-    background-color: #8e24aa;
+  background-color: #ddd;
 }
 
 .status-label {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 .status-label:hover {
-    background-color: #ddd;
-}
-.init {
-    background-color: #f0f0f0;
-}
-.pending {
-    background-color: #ffcc80;
-}
-.in_progress {
-    background-color: #90caf9;
-}
-.resolved {
-    background-color: #81c784;
-}
-.code_review {
-    background-color: #ff7043;
-}
-.testing {
-    background-color: #ffeb3b;
-}
-.verified {
-    background-color: #8e24aa;
-}
-.jp_side {
-    background-color: #d32f2f;
-}
-.feedback {
-    background-color: #f57c00;
-}
-.waiting_release {
-    background-color: #0288d1;
-}
-.released {
-    background-color: #43a047;
-}
-.closed {
-    background-color: #757575;
+  background-color: #ddd;
+  color: black;
 }
 
 .btn {
   display: inline-block;
-  padding: 10px 20px;
-  background-color: #4CAF50;
+  padding: 6px 8px 2px 8px;
+  background-color: #4caf50;
   color: white;
   text-align: center;
   text-decoration: none;

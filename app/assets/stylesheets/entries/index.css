@@ -2,11 +2,11 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #000;
-  padding: 1px;
   text-align: center;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 th {
@@ -18,9 +18,32 @@ th {
 }
 
 .table-container {
-  width: 100%;
-  overflow-x: auto; /* Cho phép cuộn ngang */
+  min-width: 100%;
+  width: 1900px;
   margin-top: 20px;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 1600px) {
+  .table-container {
+    width: 1700px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .table-container {
+    width: 1600px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .table-container {
+    width: 1200px;
+  }
 }
 
 .activity {
@@ -47,6 +70,7 @@ th {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  font-size: 14px;
 }
 
 .checkbox-container label {
@@ -74,15 +98,22 @@ th {
   transform: scale(0.95); /* Hiệu ứng nhấn */
 }
 
+.table-header-section {
+  display: flex;
+  gap: 50px;
+}
+
 .legend {
-  margin-left: 50px;
-  width: 30%
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
 }
 .legend div {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
-  font-size: 10px;
+  font-size: 12px;
 }
 .color-box {
   width: 15px;
@@ -92,12 +123,12 @@ th {
 }
 
 .display-flex {
-  display: flex
+  display: flex;
 }
 
 .progress-container {
   width: 70%;
-/*  max-width: 400px;*/
+  /*  max-width: 400px;*/
   background: #ddd;
   border-radius: 30px;
   overflow: hidden;
@@ -116,6 +147,7 @@ th {
   left: 0;
 }
 .progress-text {
+  font-size: 9px;
   position: absolute;
   width: 100%;
   text-align: center;
@@ -145,8 +177,14 @@ th {
 }
 
 @keyframes flicker {
-  0% { filter: brightness(1); transform: scale(1); }
-  100% { filter: brightness(1.2); transform: scale(1.05); }
+  0% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  100% {
+    filter: brightness(1.2);
+    transform: scale(1.05);
+  }
 }
 
 /* Hiệu ứng khói */
@@ -154,7 +192,11 @@ th {
   position: absolute;
   width: 15px; /* Giảm kích thước khói */
   height: 15px;
-  background: radial-gradient(circle, rgba(150,150,150,0.5) 20%, rgba(0,0,0,0) 90%);
+  background: radial-gradient(
+    circle,
+    rgba(150, 150, 150, 0.5) 20%,
+    rgba(0, 0, 0, 0) 90%
+  );
   border-radius: 50%;
   opacity: 0.4;
   animation: smokeRise 4s infinite ease-in-out;
@@ -176,8 +218,14 @@ th {
 }
 
 @keyframes smokeRise {
-  0% { transform: translateY(0px) scale(0.5); opacity: 0.3; }
-  100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
+  0% {
+    transform: translateY(0px) scale(0.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-40px) scale(0.8);
+    opacity: 0;
+  }
 }
 
 /*.fire {*/
@@ -227,7 +275,8 @@ th {
   font-size: 12px;
 }
 
-.tooltip-table th, .tooltip-table td {
+.tooltip-table th,
+.tooltip-table td {
   padding: 6px; /* Giảm padding */
 }
 
