@@ -34,7 +34,7 @@ trigger_total_time_crowd_worker:
   queue: default
 
 trigger_update_subject_redmine_worker:
-  cron: '0 8,10,12,14,16,18 * * 1-5'
+  cron: '0 8,9,10,11,12,13,14,15,16,17,18 * * 1-5'
   class: TriggerUpdateSubjectRedmineWorker
   queue: default
 
