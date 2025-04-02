@@ -1,17 +1,19 @@
 regex:
   user_working_log:
     activity_types:
-      leave_off: !ruby/regexp /Leave off -/
-      idle: !ruby/regexp /Idle -/
-      meeting: !ruby/regexp /Communication - Meeting/
-      requirement: !ruby/regexp /1. Requirement -/
-      design: !ruby/regexp /2. Design -/
-      coding: !ruby/regexp /3. Coding -/
-      testing: !ruby/regexp /4. Testing -/
-      bug_fixing: !ruby/regexp /5. Bug fixing -/
-      release: !ruby/regexp /6. Release -/
-      document: !ruby/regexp /Document/
-      support_customer: !ruby/regexp /^\[\Support/
+      on_task:
+        requirement: !ruby/regexp /1. Requirement -/
+        design: !ruby/regexp /2. Design -/
+        coding: !ruby/regexp /3. Coding -/
+        testing: !ruby/regexp /4. Testing -/
+        bug_fixing: !ruby/regexp /5. Bug fixing -/
+        release: !ruby/regexp /6. Release -/
+        document: !ruby/regexp /Document/
+        support_customer: !ruby/regexp /^\[\Support/
+      out_task:
+        leave_off: !ruby/regexp /Leave off -/
+        idle: !ruby/regexp /Idle -/
+        meeting: !ruby/regexp /Communication - Meeting/
   sub_task:
     activity_types:
       clear_requirement: !ruby/regexp /1. Requirement -/
@@ -20,8 +22,6 @@ regex:
       test: !ruby/regexp /4. Testing -/
       bug: !ruby/regexp /5. Bug fixing -/
       release: !ruby/regexp /6. Release -/
-redmine:
-  issue_id_valid: [67210, 70517]
 
 redis:
   host: redis

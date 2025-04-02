@@ -24,7 +24,7 @@ class Story::FetchService
         user_id: user&.id,
         status: status,
         level: level,
-        time_crowd_est_hours: timecrowd_est,
+        time_crowd_est: timecrowd_est,
         subject: redmine_issue.dig("subject"),
         start_date: redmine_issue.dig("start_date"),
         due_date: redmine_issue.dig("due_date"),
@@ -58,7 +58,8 @@ class Story::FetchService
         finished_at: finished_at,
         redmine_created_at: redmine_issue.dig("created_on")&.to_datetime,
         redmine_updated_at:redmine_issue.dig("updated_on")&.to_datetime,
-        timecrowd_est_ratio: timecrowd_est_ratio
+        timecrowd_est_ratio: timecrowd_est_ratio,
+        request_from_jp: request_from_jp?
       )
 
       user_changed = story.user_id_changed? || story.level_changed?
@@ -102,7 +103,7 @@ class Story::FetchService
   def sub_tasks
     @sub_tasks ||= begin
       return [] unless redmine_issue["children"]
-      if Settings.redmine.issue_id_valid.include?(redmine_issue_id)
+      unless request_from_jp?
         return redmine_issue["children"]
       end
       redmine_issue["children"].map{|x| x&.try("[]", "children")}.compact.flatten
@@ -182,9 +183,22 @@ class Story::FetchService
     redmine_issue.dig("custom_fields").find{|x| x["name"] == "Difficulty Level"}.try("[]", "value").to_i
   end
 
+  def request_from_jp?
+    redmine_issue.dig("custom_fields").find{|x| x["name"] == "JP Request"}.try("[]", "value") != "none"
+  end
+
   def timecrowd_est
     @timecrowd_est ||= begin
-      redmine_issue.dig("custom_fields").find{|x| x["name"] == "Timecword Estimate Hours"}.try("[]", "value").to_f
+      data = redmine_issue.dig("custom_fields")
+        .find{|x| x["name"] == "Timecword Estimate Hours"}.try("[]", "value")
+        &.split(",") || []
+
+      {
+        investigate: data[0].to_i || 0,
+        design: data[1].to_i || 0,
+        coding: data[2].to_i || 0,
+        testing: data[3].to_i || 0,
+      }
     end
   end
 
@@ -194,8 +208,14 @@ class Story::FetchService
   end
 
   def timecrowd_est_ratio
-    return 0 if story.total_second.nil? || timecrowd_est.zero?
+    return 0 if story.time_crowd_tasks.empty? || timecrowd_est.values.all?(&:zero?)
 
-    story.total_second / (timecrowd_est * 3600) * 100
+    story.time_crowd_tasks.map do |x|
+      if timecrowd_est[x.activity_type.to_sym].zero?
+        0
+      else
+        x.total_second / (timecrowd_est[x.activity_type.to_sym] * 3600) * 100
+      end
+    end.max
   end
 end

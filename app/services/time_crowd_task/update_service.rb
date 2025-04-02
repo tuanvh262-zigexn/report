@@ -1,28 +1,30 @@
-class Story::UpdateTotalTimeCrowdService
-  attr_accessor :story_id
+class TimeCrowdTask::UpdateService
+  attr_accessor :task_id
 
-  def initialize story_id
-    @story_id = story_id
+  def initialize task_id
+    @task_id = task_id
   end
 
   def execute
-    raise ActiveRecord::RecordNotFound unless time_crowd_task
-
-    time_crowd_task.update!(
-      total_time: format_time(task["total_time"]),
-      total_second: task["total_time"],
-      content: content_data
-    )
+    if task
+      time_crowd_task.update!(
+        total_time: format_time(task["total_time"]),
+        total_second: task["total_time"],
+        content: content_data
+      )
+    else
+      time_crowd_task.destroy!
+    end
   end
 
   private
 
-  def story
-    @story ||= Story.find(story_id)
-  end
-
   def task
     @task ||= TimeCrowd::DetailTask.new(time_crowd_task.time_crowd_id).execute
+  end
+
+  def time_crowd_task
+    @time_crowd_task ||= TimeCrowdTask.find(task_id)
   end
 
   def content_data
@@ -34,10 +36,6 @@ class Story::UpdateTotalTimeCrowdService
         )
       end
     }
-  end
-
-  def time_crowd_task
-    @time_crowd_task ||= story.time_crowd_task
   end
 
   def format_time(seconds)

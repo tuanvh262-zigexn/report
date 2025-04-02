@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_30_101631) do
   create_table "report_tasks", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.bigint "team_report_id", null: false
     t.bigint "sub_task_id"
@@ -35,7 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.integer "bug_count", default: 0
     t.integer "prod_bug_count", default: 0
     t.integer "done_ratio", default: 0
-    t.integer "timecrowd_est_ratio", default: 0
+    t.decimal "timecrowd_est_ratio", precision: 10, scale: 2
     t.date "requirement_start_at"
     t.date "requirement_end_at"
     t.date "design_start_at"
@@ -53,10 +53,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
     t.decimal "bug_fixing_hours", precision: 10, scale: 2
     t.decimal "release_hours", precision: 10, scale: 2
     t.decimal "cross_support_hours", precision: 10, scale: 2
-    t.decimal "time_crowd_est_hours", precision: 10, scale: 2
+    t.json "time_crowd_est"
     t.date "finished_at"
     t.datetime "redmine_created_at"
     t.datetime "redmine_updated_at"
+    t.boolean "request_from_jp", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_stories_on_issue_id", unique: true
@@ -108,13 +109,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_095502) do
   create_table "time_crowd_tasks", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.bigint "story_id"
     t.integer "time_crowd_id"
+    t.integer "activity_type"
     t.string "total_time"
     t.integer "total_second"
     t.json "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["story_id", "time_crowd_id"], name: "index_time_crowd_tasks_on_story_id_and_time_crowd_id", unique: true
+    t.index ["activity_type", "story_id", "time_crowd_id"], name: "idx_on_activity_type_story_id_time_crowd_id_d7f3311b7f", unique: true
     t.index ["story_id"], name: "index_time_crowd_tasks_on_story_id"
+  end
+
+  create_table "timecrowd_members", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
+    t.integer "timecrowd_id", null: false
+    t.string "nickname"
+    t.text "avatar_url"
+    t.boolean "vn_side", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["timecrowd_id"], name: "index_timecrowd_members_on_timecrowd_id", unique: true
   end
 
   create_table "user_working_logs", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|

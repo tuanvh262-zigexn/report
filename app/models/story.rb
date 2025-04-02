@@ -2,10 +2,9 @@ class Story < ApplicationRecord
   belongs_to :user, optional: true
 
   has_many :sub_tasks
+  has_many :time_crowd_tasks
   has_many :working_logs, class_name: UserWorkingLog.name,
     foreign_key: :root_issue_id, primary_key: :issue_id
-
-  has_one :time_crowd_task
 
   STATUS_DISPLAYS = {
     'init' => 'Init',
@@ -48,9 +47,11 @@ class Story < ApplicationRecord
     expert: 5
   }
 
+  scope :from_jp, -> { where(request_from_jp: true) }
+
   delegate :name, to: :user, allow_nil: true, prefix: true
-  delegate :time_crowd_id, :total_time, :total_second, to: :time_crowd_task, allow_nil: true
-  delegate :content, to: :time_crowd_task, allow_nil: true, prefix: true
+  # delegate :time_crowd_id, :total_time, :total_second, to: :time_crowd_task, allow_nil: true
+  # delegate :content, to: :time_crowd_task, allow_nil: true, prefix: true
 
   def state_over_period_date period_date
     # return :release if

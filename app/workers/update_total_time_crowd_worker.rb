@@ -1,7 +1,7 @@
 class UpdateTotalTimeCrowdWorker
   include Sidekiq::Worker
 
-  def perform story_id
-    Story::UpdateTotalTimeCrowdService.new(story_id).execute
+  def perform task_id
+    TimeCrowdTask::UpdateService.new(task_id).execute
   end
 end

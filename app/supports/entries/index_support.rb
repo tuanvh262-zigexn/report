@@ -59,7 +59,7 @@ class Entries::IndexSupport
   def stories
     @stories ||= begin
       Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
-        .where(id: tasks.pluck(:story_id).uniq).includes(:time_crowd_task)
+        .where(id: tasks.pluck(:story_id).uniq).includes(:time_crowd_tasks)
     end
   end
 
@@ -68,20 +68,7 @@ class Entries::IndexSupport
       query = SubTask.joins(:story)
         .merge(
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
-            .where.not(issue_id: Settings.redmine.issue_id_valid)
       ).where(owner_id: params_search[:user_ids], status: task_statuses)
-
-      if params_search[:include_status_done]
-        query = query.or(
-          SubTask.where("(((sub_tasks.status = 11 AND sub_tasks.redmine_created_at > ?) OR sub_tasks.status != 11) AND stories.issue_id IN (67210, 70517))", Date.current - 2.weeks)
-            .where(owner_id: params_search[:user_ids])
-        )
-      else
-        query = query.or(
-          SubTask.where("(sub_tasks.status != 11 AND stories.issue_id IN (67210, 70517))")
-            .where(owner_id: params_search[:user_ids])
-        )
-      end
 
       query.includes(:owner).order(start_date: :asc)
     end

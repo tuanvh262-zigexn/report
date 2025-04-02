@@ -1,0 +1,2 @@
+class TimecrowdMember < ApplicationRecord
+end

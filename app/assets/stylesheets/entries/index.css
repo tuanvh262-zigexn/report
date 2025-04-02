@@ -308,3 +308,11 @@ th {
   font-weight: bold;
   transition: background 0.3s;
 }
+
+.hidden-row {
+  display: none; /* Ẩn hàng con ban đầu */
+}
+.toggle-arrow {
+  cursor: pointer;
+  user-select: none;
+}

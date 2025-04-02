@@ -34,14 +34,23 @@ class UserWorkingLogs::CategorizeActivities
 
   def gen_activity_type
     redmine_issue = get_redmine_issue(user_working_log.issue_id)
+    times_fetch_redmine = 0
     while redmine_issue
-      if activity_type == :not_found
-        Settings.regex.user_working_log.activity_types.each do |type, regex|
+      if times_fetch_redmine == 0 && activity_type == :not_found
+        Settings.regex.user_working_log.activity_types.out_task.each do |type, regex|
           @activity_type = type if redmine_issue.dig("subject")&.match(regex)
           break if activity_type != :not_found
         end
       end
 
+      if times_fetch_redmine == 1 && activity_type == :not_found
+        Settings.regex.user_working_log.activity_types.on_task.each do |type, regex|
+          @activity_type = type if redmine_issue.dig("subject")&.match(regex)
+          break if activity_type != :not_found
+        end
+      end
+
+      times_fetch_redmine += 1
       redmine_issue = get_redmine_issue(redmine_issue.dig("parent", "id"))
     end
   end

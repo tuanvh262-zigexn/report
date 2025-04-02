@@ -15,7 +15,7 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.integer :bug_count, default: 0
       t.integer :prod_bug_count, default: 0
       t.integer :done_ratio, default: 0
-      t.integer :timecrowd_est_ratio, default: 0
+      t.decimal :timecrowd_est_ratio, :scale => 2, :precision => 10
       t.date :requirement_start_at
       t.date :requirement_end_at
       t.date :design_start_at
@@ -33,10 +33,11 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.decimal :bug_fixing_hours, :scale => 2, :precision => 10
       t.decimal :release_hours, :scale => 2, :precision => 10
       t.decimal :cross_support_hours, :scale => 2, :precision => 10
-      t.decimal :time_crowd_est_hours, :scale => 2, :precision => 10
+      t.json :time_crowd_est
       t.date :finished_at
       t.datetime :redmine_created_at
       t.datetime :redmine_updated_at
+      t.boolean :request_from_jp, default: true
 
       t.timestamps
     end
