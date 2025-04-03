@@ -117,7 +117,7 @@
                             </td>
                           </tr>
 
-                          <% time_crowd_task.content.dig("users").each do |user| %>
+                          <% time_crowd_task.content&.dig("users")&.each do |user| %>
                             <tr class="hidden-row">
                               <td><img src="<%= user["avatar_url"] %>" class="avatar"></td>
                               <td><%= user["nickname"] %></td>
