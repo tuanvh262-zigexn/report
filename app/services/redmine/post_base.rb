@@ -1,7 +1,7 @@
 require "uri"
 require "net/http"
 
-class Redmine::PutBase
+class Redmine::PostBase
   def execute
     url = URI(full_url)
     https = Net::HTTP.new(url.host, url.port)

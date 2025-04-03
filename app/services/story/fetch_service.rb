@@ -194,10 +194,10 @@ class Story::FetchService
         &.split(",") || []
 
       {
-        investigate: data[0].to_i || 0,
-        design: data[1].to_i || 0,
-        coding: data[2].to_i || 0,
-        testing: data[3].to_i || 0,
+        investigate: data[0].to_f || 0,
+        design: data[1].to_f || 0,
+        coding: data[2].to_f || 0,
+        testing: data[3].to_f || 0,
       }
     end
   end
