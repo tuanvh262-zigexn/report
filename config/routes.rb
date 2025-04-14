@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # get "up" => "rails/health#show", as: :rails_health_check
   namespace :apw do
     root "entries#index"
+    get 'timecrowds', to: 'timecrowds#index'
     resources :reports, only: :index
     resources :stories, only: :show
     namespace :ajax do
@@ -18,4 +19,3 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/sidekiq'
   end
 end
-

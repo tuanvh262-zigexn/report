@@ -48,6 +48,7 @@ class Story < ApplicationRecord
   }
 
   scope :from_jp, -> { where(request_from_jp: true) }
+  scope :static, -> { where(request_from_jp: false) }
 
   delegate :name, to: :user, allow_nil: true, prefix: true
   # delegate :time_crowd_id, :total_time, :total_second, to: :time_crowd_task, allow_nil: true

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_30_101631) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_07_072112) do
   create_table "report_tasks", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.bigint "team_report_id", null: false
     t.bigint "sub_task_id"
@@ -119,6 +119,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_30_101631) do
     t.index ["story_id"], name: "index_time_crowd_tasks_on_story_id"
   end
 
+  create_table "timecrowd_categories", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
+    t.integer "timecrowd_id", null: false
+    t.text "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["timecrowd_id"], name: "index_timecrowd_categories_on_timecrowd_id", unique: true
+  end
+
   create_table "timecrowd_members", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.integer "timecrowd_id", null: false
     t.string "nickname"
@@ -127,6 +135,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_30_101631) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["timecrowd_id"], name: "index_timecrowd_members_on_timecrowd_id", unique: true
+  end
+
+  create_table "timecrowd_tasks", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
+    t.integer "timecrowd_id", null: false
+    t.bigint "timecrowd_category_id"
+    t.text "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["timecrowd_category_id"], name: "index_timecrowd_tasks_on_timecrowd_category_id"
+    t.index ["timecrowd_id"], name: "index_timecrowd_tasks_on_timecrowd_id", unique: true
+  end
+
+  create_table "timecrowd_time_entries", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
+    t.integer "timecrowd_id", null: false
+    t.bigint "timecrowd_member_id", null: false
+    t.bigint "timecrowd_task_id"
+    t.integer "duration"
+    t.boolean "vn_side", default: false
+    t.date "spent_on", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["timecrowd_id"], name: "index_timecrowd_time_entries_on_timecrowd_id", unique: true
+    t.index ["timecrowd_member_id"], name: "index_timecrowd_time_entries_on_timecrowd_member_id"
+    t.index ["timecrowd_task_id"], name: "index_timecrowd_time_entries_on_timecrowd_task_id"
   end
 
   create_table "user_working_logs", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|

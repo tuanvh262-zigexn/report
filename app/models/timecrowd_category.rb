@@ -1,0 +1,2 @@
+class TimecrowdCategory < ApplicationRecord
+end

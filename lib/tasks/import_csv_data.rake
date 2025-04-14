@@ -5,6 +5,8 @@ namespace :db do
   end
 
   task import_master_data: :environment do
+    Timecrowd::FetchAllUsersWorker.perform_async
+
     %w(users).each do |model|
       csv_path = Rails.root.join "db", "fixtures", "#{model}.csv"
       ImportCsvService.new(model, csv_path, false).execute
@@ -45,6 +47,12 @@ namespace :db do
     User.all.each do |user|
       ('2024-01-01'.to_date..Time.current.to_date).each do |time|
         FetchUserWorkingLogWorker.perform_async(user.id, time.strftime('%Y-%m-%d'))
+      end
+    end
+
+    TimecrowdMember.pluck(:id).each do |member_id|
+       ('2024-01-01'.to_date..Time.current.to_date).each do |date|
+        Timecrowd::FetchTimeEntriesWorker.perform_async(date.strftime('%Y-%m-%d'), member_id)
       end
     end
   end

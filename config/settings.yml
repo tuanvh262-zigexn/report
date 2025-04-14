@@ -8,7 +8,7 @@ regex:
         testing: !ruby/regexp /4. Testing -/
         bug_fixing: !ruby/regexp /5. Bug fixing -/
         release: !ruby/regexp /6. Release -/
-        document: !ruby/regexp /Document/
+        document: !ruby/regexp /Documents/
         support_customer: !ruby/regexp /^\[\Support/
       out_task:
         leave_off: !ruby/regexp /Leave off -/
