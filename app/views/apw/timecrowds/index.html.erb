@@ -3,7 +3,7 @@
   <input type="month" id="monthPicker">
   <%= form_with url: apw_timecrowds_path, method: :get, local: true, id: 'formSearch' do |f| %>
     <%= f.text_field :search_date, name: "q[search_date]",
-      value: @support.params_search[:search_date], id: 'formattedDate', class: 'hidden1' %>
+      value: @support.params_search[:search_date], id: 'formattedDate', class: 'hidden' %>
   <% end %>
   <div class="charts-container">
     <div class="chart">
