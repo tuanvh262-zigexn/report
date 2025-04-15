@@ -53,11 +53,10 @@ update_actived_story_worker:
   class: UpdateActivedStoryWorker
   queue: default
 
-# update_init_story_redmine_worker:
-#   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
-#   class: UpdateStoryRedmineWorker
-#   queue: default
-#   args: ['init']
+create_static_story_worker:
+  cron: '0 7 * * 1-5'
+  class: CreateStaticStoryWorker
+  queue: default
 
 # update_in_progress_story_redmine_worker:
 #   cron: '0,10,20,30,40,50 8,9,10,11,12,13,14,15,16,17 * * 1-5'
