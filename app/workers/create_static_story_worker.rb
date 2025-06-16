@@ -3,7 +3,8 @@ class CreateStaticStoryWorker
 
   STATIC_SUBJECT = [
     '[ Documents ] -',
-    '[ Support ] -'
+    '[ Support ] -',
+    '[ Company support ] -'
   ]
 
   def perform
