@@ -23,155 +23,186 @@
         <%= f.button "Search", type: :submit, id: :search_button %>
       <% end %>
     </div>
-    <div class="legend">
-      <div><span class="color-box done"></span>Completed tasks</div>
-      <div><span class="color-box today"></span>Current date</div>
-      <div><span class="color-box holiday"></span>Days off (weekends or holidays)</div>
-      <div><span class="color-box in_progress"></span>Partially completed task</div>
-      <div><span class="color-box activity"></span>Task completion plan</div>
-    </div>
   </div>
 
-    <br>
-    <div class="table-wrapper">
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th colspan=5></th>
-              <% @support.data_ranges.each do |k, value| %>
-                <th colspan="<%= value.size %>"><%= k %></th>
-              <% end %>
-            </tr>
-            <tr>
-              <th rowspan=2 style="width: 18%">Subject</th>
-              <th rowspan=2 style="width: 23%">Task Description</th>
-              <th rowspan=2 style="width: 5%">Owner</th>
-              <th rowspan=2 style="width: 5%">Status</th>
-              <th rowspan=2 style="width: 2%">Est</th>
-              <% list_date_size = @support.list_date.count%>
-              <% @support.list_date.each do |date| %>
-                <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>" style="width: <%= 45 / list_date_size.to_f %>%">
-                  <%= date.strftime("%d") %>
-                </th>
-              <% end %>
-            </tr>
-            <tr>
-              <% @support.list_date.each do |date| %>
-                <th class="<%= :today if date.today? %> <%= :holiday if date.saturday? || date.sunday? %>" style="width: <%= 45 / list_date_size.to_f %>%">
-                  <%= date.strftime("%a") %>
-                </th>
-              <% end %>
-            </tr>
-          </thead>
-          <tbody>
-            <% @support.stories.each do |story| %>
-              <% sub_tasks = @support.tasks.select{|x| x.story_id == story.id } %>
-              <tr>
-                <td rowspan="<%= sub_tasks.size.zero? ? 1 : sub_tasks.size %>"
-                  class="story-detail" data-progress="<%= story.timecrowd_est_ratio %>" style="padding:4px;">
-                  <%= link_to story.subject, apw_story_path(story.id),
-                    target: "_blank" %>
-                  <br>
-                  <strong><%= story.status_display %></strong>
-                  <br>
-                  <%# <strong> %>
-                    <%# <%= link_to_if story.time_crowd_id.present?,
-                      story.total_time,
-                      "https://timecrowd.net/app/tasks/#{story.time_crowd_id}/edit",
-                      target: "_blank"
-                    %>
-                  <%# </strong> %>
-                  <% unless story.timecrowd_est_ratio.zero? %>
-                    <div class="progress-container">
-                      <div class="progress-text">0%</div>  <!-- Text luôn ở giữa -->
-                      <div class="progress-bar"></div>
-                    </div>
-                  <% end %>
-                  <% if story.time_crowd_tasks.present? %>
-                    <div class="fire tooltip-target">
-                      <%= image_tag "fire.gif", alt: "fire", class: "fire-icon" %>
-                      <div class="smoke"></div>
-                      <div class="smoke"></div>
-                      <div class="smoke"></div>
-                    </div>
-                    <div class="fire tooltipx-target" data-tooltip="tooltip-table"></div>
-                    <div class="tooltip">
-                      <table class="tooltip-table">
-                        <% time_crowd_est = story.time_crowd_est %>
-                        <% story.time_crowd_tasks.order(:activity_type).each do |time_crowd_task| %>
-                          <tr class="parent-row">
-                            <td class="toggle-arrow">▼</td>
-                            <td>
-                              <%= link_to time_crowd_task.activity_type,
-                                "https://timecrowd.net/app/tasks/#{time_crowd_task.time_crowd_id}/edit",
-                                target: "_blank" %>
-                            </td>
-                            <td><%= time_crowd_task.total_time %></td>
-                            <td>
-                              <% if time_crowd_est[time_crowd_task.activity_type].zero? %>
-                                0%
-                              <% else %>
-                                <%= time_crowd_task.total_second / (time_crowd_est[time_crowd_task.activity_type] * 3600) * 100 %>%
-                              <% end %>
-                            </td>
-                          </tr>
+  <br>
+  <div class="gantt-wrapper" style="position:relative;">
+    <div id="gantt-loading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+    <div class="bg-white mt-4 border rounded gantt-container">
+      <!-- Gantt Header -->
+      <div class="flex border-b gantt-header">
+        <div class="w-64 p-2 border-r">
+          <div class="font-bold">Task name</div>
+        </div>
+        <div class="w-24 p-2 border-r text-center">
+          <div class="font-bold">Owner</div>
+        </div>
+        <div class="w-24 p-2 border-r text-center">
+          <div class="font-bold">Status</div>
+        </div>
+        <div class="w-24 p-2 border-r text-center">
+          <div class="font-bold">Estimate</div>
+        </div>
+        <div class="flex-1 timeline-scroll-container">
 
-                          <% time_crowd_task.content&.dig("users")&.each do |user| %>
-                            <tr class="hidden-row">
-                              <td><img src="<%= user["avatar_url"] %>" class="avatar"></td>
-                              <td><%= user["nickname"] %></td>
-                              <td><%= user["total_time"] %></td>
-                            </tr>
-                          <% end %>
+        <!-- Week headers -->
+        <div class="flex">
+          <% @support.data_ranges.each do |k, value| %>
+            <div class="week-header" style="min-width: <%= value.size * 40 %>px; width: <%= value.size * 40 %>px;">
+              <%= k %>
+            </div>
+          <% end %>
+        </div>
 
-                        <% end %>
-                      </table>
-                    </div>
-                  <% end %>
-                </td>
-                <% task = sub_tasks.first %>
-                <td class="text-align-left <%= :done if task.closed? %>" style="padding:4px;">
-                  <%= link_to "[#{task.kind_display}] #{task.subject}",
-                    "https://dev.zigexn.vn/issues/#{task.issue_id}",
-                    target: "_blank" %>
-                </td>
-                <td class="<%= :done if task.closed? %>" style="padding:4px;"><%= task&.owner_name %></td>
-                <td class="<%= :done if task.closed? %>">
-                  <%= task&.status_display %>
+        <!-- Day headers -->
+        <div class="flex">
+          <% @support.list_date.each do |date| %>
+            <div class="day-column day-header"><%= date.strftime("%d") %></div>
+          <% end %>
+        </div>
+        <div class="flex">
+          <% @support.list_date.each do |date| %>
+            <div class="day-column day-header"><%= date.strftime("%a") %></div>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+    <div class="timeline-scroll-container"></div>
+    <!-- Gantt Body -->
+    <div class="gantt-body">
+      <!-- Fixed part of the gantt body -->
+      <div class="gantt-body-fixed">
+        <!-- Office Itinerancy -->
+        <% @support.stories.each do |story| %>
+          <div class="task-group">
+            <div class="task-row border-b expandable-row story %>">
+              <div class="task-row-fixed">
+                <div class="w-64 p-2 border-r">
+                  <i class="fas fa-caret-down task-expand-icon"></i>
+                  <i class="fas fa-folder task-icon"></i>
+                    <%= story.subject %>
+                  </div>
+                <div class="w-24 p-2 border-r text-center"><%= story.user_name %></div>
+                <div class="w-24 p-2 border-r text-center">
+                  <%= story.status_display %>
                   <br>
-                  <%= "#{task&.done_ratio}%" %>
-                </td>
-                <td class="<%= :done if task.closed? %>"><%= task&.total_estimated_hours.to_f %></td>
-                <% @support.list_date.each do |date| %>
-                  <td class="<%= @support.class_name(task, date) %>"></td>
+                  <%= "#{story.done_ratio}%" %>
+                </div>
+                <div class="w-24 p-2 border-r text-center"><%= story.total_estimated_hours.to_f %></div>
+              </div>
+            </div>
+
+            <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
+              <div class="task-row subtask border-b expandable-subtask">
+                <div class="task-row-fixed">
+                  <div class="w-64 p-2 border-r pl-6">
+                    <i class="fas fa-caret-down task-expand-icon"></i>
+                    <i class="fas fa-folder task-icon"></i>
+                    <%= parent_task.subject %>
+                  </div>
+                  <div class="w-24 p-2 border-r text-center"><%= parent_task.owner_name %></div>
+                  <div class="w-24 p-2 border-r text-center">
+                  <%= parent_task.status_display %>
+                  <br>
+                  <%= "#{parent_task.done_ratio}%" %>
+                  </div>
+                  <div class="w-24 p-2 border-r text-center">
+                    <%= parent_task.total_estimated_hours.to_f %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="subtask-group">
+                <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
+                  <div class="task-row subtask border-b">
+                    <div class="task-row-fixed">
+                      <div class="w-64 p-2 border-r pl-10">
+                        <i class="fas fa-file task-icon"></i>
+                        <%= task.subject %>
+                      </div>
+                      <div class="w-24 p-2 border-r text-center"><%= task.owner_name %></div>
+                      <div class="w-24 p-2 border-r text-center">
+                        <%= task.status_display %>
+                        <br>
+                        <%= "#{task.done_ratio}%" %>
+                      </div>
+                      <div class="w-24 p-2 border-r text-center">
+                        <%= task.total_estimated_hours.to_f %>
+                      </div>
+                    </div>
+                  </div>
                 <% end %>
-              </tr>
-              <% sub_tasks.each.with_index(0) do |task, i| %>
-                <% next if i.zero? %>
-                <tr>
-                  <td class="text-align-left <%= :done if task.closed? %>" style="padding:4px;">
-                    <%= link_to "[#{task.kind_display}] #{task.subject}",
-                    "https://dev.zigexn.vn/issues/#{task.issue_id}",
-                    target: "_blank" %>
-                  </td>
-                  <td class="<%= :done if task.closed? %>" style="padding:4px;"><%= task.owner_name %></td>
-                  <td class="<%= :done if task.closed? %>">
-                    <%= task.status_display %>
-                    <br>
-                    <%= "#{task.done_ratio}%" %>
-                  </td class="<%= :done if task.closed? %>">
-                  <td class="<%= :done if task.closed? %>">
-                    <%= task.total_estimated_hours.to_f %>
-                  </td>
-                  <% @support.list_date.each do |date| %>
-                    <td class="<%= @support.class_name(task, date) %>"></td>
-                  <% end %>
-                </tr>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <div class="gantt-body-timeline">
+        <% start_date = @support.min_date %>
+        <% end_date   = @support.max_date %>
+        <% day_width  = 40 %>
+        <% total_days = (end_date - start_date + 1).to_i %>
+        <% today = Date.current %>
+        <% today_index = (today - start_date).to_i %>
+        <div class="timeline-content" style="width:<%= total_days * day_width %>px">
+          <% (start_date..end_date).each_with_index do |d, i| %>
+            <% if d == today %>
+              <div class="today-stripe" style="left:<%= i * day_width %>px"></div>
+            <% elsif d.saturday? || d.sunday? %>
+              <div class="weekend-stripe" style="left:<%= i * day_width %>px"></div>
+            <% end %>
+          <% end %>
+
+          <% @support.stories.each do |story| %>
+            <div class="task-row border-b">
+              <div class="task-row-timeline">
+                <div class="task-bar <%= (story.waiting_release? || story.released?) ? :done : (:overdue if story.due_date && story.due_date < Date.current) %>"
+                    style="left: <%= day_width * (story.start_date - start_date).to_i %>px;
+                    width: <%= day_width * ((story.due_date - story.start_date).to_i + 1) %>px;
+                    top: 8px;">
+                  <div class="task-progress" style="width:<%= story.done_ratio %>%;">
+                    <%= "#{story.done_ratio}%" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
+              <!-- Office Itinerancy -->
+              <div class="task-row border-b">
+                <div class="task-row-timeline">
+                  <div class="task-bar <%= (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) ? :done : (:overdue if parent_task.due_date && parent_task.due_date < Date.current) %>"
+                        style="left: <%= day_width * (parent_task.start_date.try('-', start_date)).to_i %>px;
+                        width: <%= day_width * ((parent_task.due_date.try('-', parent_task.start_date)).to_i + 1) %>px;
+                        top: 8px;">
+                    <div class="task-progress" style="width:<%= parent_task.done_ratio %>%;">
+                      <%= "#{parent_task.done_ratio}%" unless (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
+                 <!-- Office Itinerancy -->
+                  <div class="task-row border-b">
+                    <div class="task-row-timeline">
+                      <div class="task-bar <%= task.closed? ? :done : (:overdue if task.due_date && task.due_date < Date.current) %>"
+                          style="left: <%= day_width * (task.start_date.try('-', start_date)).to_i %>px;
+                          width: <%= day_width * ((task.due_date.try('-', task.start_date)).to_i + 1) %>px;
+                          top: 8px;">
+                        <div class="task-progress" style="width:<%= task.done_ratio %>%;">
+                          <%= "#{task.done_ratio}%" unless task.closed? %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
               <% end %>
             <% end %>
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -183,7 +214,6 @@
 
 <%= content_for :javascripts do %>
   <script type="text/javascript">
-
     if (document.querySelectorAll(".checkbox-item:checked").length === document.querySelectorAll(".checkbox-item").length) {
       document.getElementById("select-all").checked = true;
     }
@@ -209,50 +239,134 @@
       });
     });
 
-    $(".story-detail").each(function(index, element) {
-      let value = $(this).data('progress');
-      $(this).find(".progress-bar").css("width", value + "%");
 
-      $(this).find(".progress-text").text(value + "%");
+    $(document).ready(function () {
+      const $timelineContainer = $('.timeline-scroll-container'); // header
+      const $ganttBodyTimeline = $('.gantt-body-timeline');       // body timeline
+      const $ganttBodyFixed    = $('.gantt-body-fixed');          // body fixed
 
-      let containerWidth = $(this).find(".progress-container").width();
-      let firePosition = (value / 100) * containerWidth;
+      // --- Ẩn tất cả subtask-group ngay từ đầu ---
+      const $fixedRows = $('.gantt-body-fixed .task-row');
+      const $timelineRows = $('.gantt-body-timeline .task-row');
 
-      $(this).find(".fire-icon").css({
-        "height": value * 1.5 + "px",
+      $('.subtask-group').each(function () {
+        const $group = $(this);
+        $group.hide();
+
+        $group.find('.task-row.subtask').each(function () {
+          const index = $fixedRows.index(this);
+          if (index >= 0) {
+            $timelineRows.eq(index).hide();
+          }
+        });
       });
-    });
 
-    $(document).ready(function() {
-      $(".tooltip-target").click(function() {
-        var tooltip =  $(this).siblings(".tooltip");
-        if ($(this).data('active') != 1) {
-          var offset = $(this).offset();
-          var tooltipWidth = tooltip.outerWidth();
-          var elementWidth = $(this).outerWidth();
+      function syncRowHeights() {
+        const $fixedRows = $('.gantt-body-fixed .task-row');
+        const $timelineRows = $('.gantt-body-timeline .task-row');
 
-          tooltip.css({
-            top: offset.top - tooltip.outerHeight() - 15 + "px",
-            left: offset.left + (elementWidth / 2) - (tooltipWidth / 2) + "px"
-          }).fadeIn(200);
+        $fixedRows.each(function (i) {
+          const $fixedRow = $(this);
+          const $timelineRow = $timelineRows.eq(i);
+          if (!$timelineRow.length) return;
 
-          $(this).data('active', 1)
-        } else {
-          tooltip.fadeOut(200);
-          $(this).data('active', 0)
+          const maxHeight = Math.max($fixedRow.outerHeight(), $timelineRow.outerHeight());
+          $fixedRow.height(maxHeight);
+          $timelineRow.height(maxHeight);
+        });
+      }
+
+      syncRowHeights();
+      $(window).on('resize', syncRowHeights);
+
+      // --- Đồng bộ ngang ---
+      $timelineContainer.on('scroll', function () {
+        $ganttBodyTimeline.scrollLeft($(this).scrollLeft());
+      });
+
+      // --- Đồng bộ dọc ---
+      let syncing = false;
+
+      $ganttBodyTimeline.on('scroll', function () {
+        if (syncing) return;
+        syncing = true;
+        $timelineContainer.scrollLeft($(this).scrollLeft()); // ngang
+        $ganttBodyFixed.scrollTop($(this).scrollTop());      // dọc
+        syncing = false;
+      });
+
+      $ganttBodyFixed.on('scroll', function () {
+        if (syncing) return;
+        syncing = true;
+        $ganttBodyTimeline.scrollTop($(this).scrollTop());
+        syncing = false;
+      });
+
+      // --- Canh giữa "today stripe" ---
+      const $todayStripe = $('.today-stripe');
+      if ($todayStripe.length) {
+        const dayWidth = 40;
+        const left = parseInt($todayStripe.css('left')) || 0;
+        const scrollPos = Math.max(0, left - $ganttBodyTimeline.width() / 2 + dayWidth / 2);
+
+        $ganttBodyTimeline.scrollLeft(scrollPos);
+        $timelineContainer.scrollLeft(scrollPos);
+      }
+
+      // --- Đồng bộ chiều cao row ---
+
+      // --- Expand/Collapse row ---
+      $('.expandable-row, .expandable-subtask').on('click', function (e) {
+        e.stopPropagation();
+
+        // Toggle caret icon
+        const $caret = $(this).find('.fa-caret-down, .fa-caret-right').first();
+        if ($caret.length) {
+          $caret.toggleClass('fa-caret-down fa-caret-right');
+        }
+
+        const $fixedRows = $('.gantt-body-fixed .task-row');
+        const $timelineRows = $('.gantt-body-timeline .task-row');
+
+        // --- Subtask (level 2) ---
+        if ($(this).hasClass('expandable-subtask')) {
+          const $subtaskGroup = $(this).next('.subtask-group');
+          if ($subtaskGroup.length) {
+            const isHidden = $subtaskGroup.css('display') === 'none';
+            $subtaskGroup.css('display', isHidden ? 'block' : 'none');
+
+            $subtaskGroup.find('.task-row.subtask').each(function () {
+              const index = $fixedRows.index(this);
+              if (index >= 0) {
+                $timelineRows.eq(index).css('display', isHidden ? 'flex' : 'none');
+              }
+            });
+          }
+        }
+
+        // --- Task-group (level 1) ---
+        if ($(this).hasClass('expandable-row')) {
+          const $taskGroup = $(this).closest('.task-group');
+          const $subtasks = $taskGroup.find('.subtask, .subtask-group');
+
+          $subtasks.each(function () {
+            const isHidden = $(this).css('display') === 'none';
+            $(this).css('display', isHidden ? 'flex' : 'none');
+
+            const index = $fixedRows.index(this);
+            if (index >= 0) {
+              $timelineRows.eq(index).css('display', $(this).css('display'));
+            }
+          });
         }
       });
 
-      $(".toggle-arrow").click(function(){
-        // Tìm các hàng con tiếp theo và toggle hiển thị
-        $(this).closest("tr").nextUntil(".parent-row").toggle();
+      function finishLoading() {
+        $('#gantt-loading').fadeOut(300); // hoặc .remove()
+      }
 
-        // Đổi mũi tên ▼ <-> ▲
-        if ($(this).text() === "▼") {
-          $(this).text("▲");
-        } else {
-          $(this).text("▼");
-        }
+      requestAnimationFrame(() => {
+        finishLoading();
       });
     });
   </script>

@@ -3,6 +3,7 @@ class CreateSubTasks < ActiveRecord::Migration[8.0]
     create_table :sub_tasks do |t|
       t.references :story
       t.references :owner
+      t.integer :parent_task_id
       t.integer :issue_id
       t.integer :status, null: false, default: 0
       t.string :kind, null: false
@@ -26,5 +27,6 @@ class CreateSubTasks < ActiveRecord::Migration[8.0]
     end
 
     add_index :sub_tasks, :issue_id, unique: true
+    add_index :sub_tasks, :parent_task_id
   end
 end

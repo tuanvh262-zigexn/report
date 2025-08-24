@@ -1,5 +1,5 @@
 class Redmine::ListIssue < Redmine::GetBase
-  attr_reader :redmine_status_id
+  attr_reader :offset
 
   MAPPING_STATUS = {
     init: 1,
@@ -8,10 +8,14 @@ class Redmine::ListIssue < Redmine::GetBase
     feedback: 4
   }
 
+  def initialize offset = 0
+    @offset = offset
+  end
+
   private
 
   def full_url
-    "https://dev.zigexn.vn/issues.json?project_id=133&tracker_id=12&limit=100&status_id=open"
+    "https://dev.zigexn.vn/issues.json?project_id=17&tracker_id=12&limit=100&status_id=open&offset=#{offset}"
   end
 
   def response_format data_json

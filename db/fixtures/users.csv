@@ -1,11 +1,20 @@
 id,name,redmine_id,role,actived,part_time,buffer_rate
-1,Đinh Ngọc Hân,304,"brse",1,0,1
-2,Nguyễn Bình Minh,318,"dev",1,0,0.9
-3,Nguyen Phuc,342,"dev",1,0,0.95
-4,Nguyễn Thanh Tùng,317,"dev",1,0,0.8
-5,Chau Tan,290,"dev",1,0,0.8
-6,Huynh Nhut,243,"dev",1,1,0.9
-7,Nguyen Tien Phong,361,"dev",1,0,0.7
-8,Ba Thi Thom,348,"tester",1,0,0.85
-9,Phạm Thị Loan,395,"tester",1,0,0.85
-10,Phạm Văn Hoàng,398,"dev",1,0,0.0.8
+1,Hanh Vo,241,"brse",1,0,1
+2,Đinh Ngọc Hân,304,"brse",1,0,1
+3,Ann Nguyen,282,"brse",1,0,1
+4,Khiem Doan Van,412,"brse",1,0,1
+5,Anh Truong Nhat,383,"dev",1,0,0.9
+6,Dat Nguyen Nhu,333,"dev",1,0,0.9
+7,Doan Nguyen Ho Ba,422,"dev",1,0,0.9
+8,Duoc Thai Khac,415,"dev",1,0,0.9
+9,Khanh Do Thi Hong,423,"dev",1,0,0.9
+10,Khoi Le Tuan Nguyen,389,"dev",1,0,0.9
+11,Linh Le Van,413,"dev",1,0,0.9
+12,Loc Huynh Van,378,"dev",1,0,0.9
+13,Tam Nguyen,382,"dev",1,0,0.9
+14,Tham Hoang Thi Hong,379,"dev",1,0,0.9
+15,Thức Phan,341,"dev",1,0,0.9
+16,Nguyễn Thanh Tùng,317,"dev",1,0,0.8
+17,Kim Ngan Nguyen,425,"tester",1,0,0.85
+18,Thao Do Thi Phuong,404,"tester",1,0,0.85
+19,Truc Dinh Thanh,129,"tester",1,0,0.85

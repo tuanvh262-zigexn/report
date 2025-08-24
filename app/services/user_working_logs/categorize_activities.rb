@@ -43,10 +43,11 @@ class UserWorkingLogs::CategorizeActivities
         end
       end
 
-      if times_fetch_redmine == 1 && activity_type == :not_found
+      # if times_fetch_redmine == 1 && activity_type == :not_found
+      if activity_type == :not_found
         Settings.regex.user_working_log.activity_types.on_task.each do |type, regex|
           @activity_type = type if redmine_issue.dig("subject")&.match(regex)
-          break if activity_type != :not_found
+          break if times_fetch_redmine == 1 && activity_type != :not_found
         end
       end
 

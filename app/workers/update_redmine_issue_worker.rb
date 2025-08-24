@@ -2,7 +2,7 @@ class UpdateRedmineIssueWorker
   include Sidekiq::Worker
 
   def perform redmine_issue_id, payload = nil
-    task = SubTask.find_by(issue_id: redmine_issue_id)
+    task = SubTask.without_parent_tasks.find_by(issue_id: redmine_issue_id)
 
     return if task&.closed?
 

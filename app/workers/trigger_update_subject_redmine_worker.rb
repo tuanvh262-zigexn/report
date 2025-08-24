@@ -2,7 +2,7 @@ class TriggerUpdateSubjectRedmineWorker
   include Sidekiq::Worker
 
   def perform
-    SubTask.joins(:story)
+    SubTask.without_parent_tasks.joins(:story)
       .where.not(update_title: true)
       .merge(Story.from_jp)
       .each do |sub_task|

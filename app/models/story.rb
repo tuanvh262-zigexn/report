@@ -1,7 +1,9 @@
 class Story < ApplicationRecord
   belongs_to :user, optional: true
 
-  has_many :sub_tasks
+  has_many :sub_tasks, -> { without_parent_tasks }
+  has_many :raw_sub_tasks, class_name: SubTask.name
+  has_many :parent_tasks, -> { where(parent_task_id: nil) } , class_name: SubTask.name
   has_many :time_crowd_tasks
   has_many :working_logs, class_name: UserWorkingLog.name,
     foreign_key: :root_issue_id, primary_key: :issue_id

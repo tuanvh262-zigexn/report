@@ -1,71 +1,3 @@
-table {
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #000;
-  text-align: center;
-  font-size: 11px;
-}
-
-th {
-  background: #f2f2f2;
-}
-
-.text-align-left {
-  text-align: left;
-}
-
-.table-container {
-  min-width: 100%;
-  width: 1900px;
-  margin-top: 20px;
-}
-
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-@media (max-width: 1600px) {
-  .table-container {
-    width: 1700px;
-  }
-}
-
-@media (max-width: 1440px) {
-  .table-container {
-    width: 1600px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .table-container {
-    width: 1200px;
-  }
-}
-
-.activity {
-  background-color: lightgreen;
-}
-
-.done {
-  background-color: lightgray;
-}
-
-.today {
-  background-color: lightskyblue;
-}
-
-.holiday {
-  background-color: lightgoldenrodyellow;
-}
-
-.in_progress {
-  background-color: lightcoral;
-}
-
 .checkbox-container {
   display: flex;
   flex-wrap: wrap;
@@ -101,59 +33,6 @@ th {
 .table-header-section {
   display: flex;
   gap: 50px;
-}
-
-.legend {
-  width: 30%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-}
-.legend div {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-}
-.color-box {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.display-flex {
-  display: flex;
-}
-
-.progress-container {
-  width: 70%;
-  /*  max-width: 400px;*/
-  background: #ddd;
-  border-radius: 30px;
-  overflow: hidden;
-  margin: 20px auto;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
-  height: 10px;
-}
-.progress-bar {
-  width: 0;
-  height: 100%;
-  background: linear-gradient(45deg, #ff416c, #ff4b2b);
-  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.progress-text {
-  font-size: 9px;
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  font-weight: bold;
-  color: black;
-  z-index: 2;
 }
 
 .fire {
@@ -315,4 +194,446 @@ th {
 .toggle-arrow {
   cursor: pointer;
   user-select: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+        .task-row:hover {
+            background-color: #f3f4f6;
+        }
+        .gantt-bar {
+            height: 20px;
+            border-radius: 4px;
+        }
+        .gantt-bar-1 {
+            background-color: #3b82f6;
+        }
+        .gantt-bar-2 {
+            background-color: #f59e0b;
+        }
+        .gantt-bar-3 {
+            background-color: #10b981;
+        }
+        .expandable-row {
+            cursor: pointer;
+        }
+        .subtask {
+            display: table-row;
+        }
+    /* Add styles for the timeline view */
+    .gantt-timeline {
+        overflow-x: auto;
+    }
+    .day-column {
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        border-right: 1px solid #e5e7eb;
+    }
+    .week-header {
+        background-color: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: center;
+        font-weight: 600;
+        padding: 8px 0;
+        border-right-width: 1px;
+    }
+    .day-header {
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 4px 0;
+        font-weight: 600;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+/* Task bar container */
+.task-bar {
+  position: absolute;
+  height: 24px;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #ccfbf1; /* xanh mint rất nhạt */
+}
+
+/* Thanh tiến độ */
+.task-bar .task-progress {
+  height: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px 0 0 6px;
+  transition: width 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ===================== */
+/* STYLE OPTIONS (chọn 1) */
+/* ===================== */
+
+/* 1. Gradient nhẹ */
+/*.task-bar.in-progress .task-progress {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+.task-bar.done .task-progress {
+  background: linear-gradient(90deg, #6b7280, #4b5563);
+}
+.task-bar.overdue .task-progress {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}*/
+
+/* 2. Bóng trong (inset shadow) */
+/*.task-bar .task-progress {
+  background: #22c55e;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3),
+              inset 0 -1px 2px rgba(0,0,0,0.2);
+}
+.task-bar.done .task-progress {
+  background: #6b7280;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3),
+              inset 0 -1px 2px rgba(0,0,0,0.2);
+}
+.task-bar.overdue .task-progress {
+  background: #ef4444;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3),
+              inset 0 -1px 2px rgba(0,0,0,0.2);
+}*/
+
+/* 3. Highlight viền sáng */
+/*.task-bar .task-progress {
+  background: #22c55e;
+  border-top: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.task-bar.done .task-progress {
+  background: #6b7280;
+  border-top: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.task-bar.overdue .task-progress {
+  background: #ef4444;
+  border-top: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+*/
+/* 4. Animation sọc chéo (In-progress ONLY) */
+.task-bar .task-progress {
+  background: #22c55e;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3),
+              inset 0 -1px 2px rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.2) 0,
+    rgba(255,255,255,0.2) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  background-size: 40px 40px;
+  animation: moveStripes 1s linear infinite;
+}
+@keyframes moveStripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+.task-bar.done .task-progress {
+  background: #6b7280;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3),
+              inset 0 -1px 2px rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.task-bar.overdue .task-progress {
+  background: #ef4444;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3),
+              inset 0 -1px 2px rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.2) 0,
+    rgba(255,255,255,0.2) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  background-size: 40px 40px;
+  animation: moveStripes 1s linear infinite;
+}
+
+/* 5. Bo góc lớn + font đậm */
+.task-bar .task-progress {
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* 6. Text % nổi bật (canh giữa) */
+.task-bar .task-progress {
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+
+    /* New styles for fixed header and full-height layout */
+    .gantt-container {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .gantt-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background-color: white;
+    }
+
+    .gantt-body {
+  display: flex;
+  font-size: 11px;
+  height: 60vh;              /* hoặc chiều cao phù hợp layout của bạn */
+}
+
+.gantt-body-fixed {
+  overflow-y: auto;          /* phải có để JS set scrollTop mới có tác dụng */
+  overflow-x: hidden;
+}
+
+.gantt-body-timeline {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;          /* cho phép scroll dọc */
+}
+
+    .timeline-scroll-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .week-separator {
+        border-right: 2px solid #9ca3af !important;
+    }
+
+    .task-row {
+        min-height: 40px;
+        display: flex;
+    }
+
+    .task-row.story {
+      background: #f3f4f6; /* xám nhạt */
+    }
+
+    .task-row-fixed {
+        flex-shrink: 0;
+        display: flex;
+    }
+
+    .task-row-timeline {
+        position: relative;
+        height: 40px;
+        min-width: 1680px; /* 42 days × 40px (6 weeks) */
+    }
+
+    /* Gantt body container */
+
+:root{
+  --day-width: 40px;         /* Độ rộng 1 ngày - KHỚP header */
+  --row-height: 40px;        /* Chiều cao 1 dòng task */
+  --grid-color: #e0e0e0;     /* Màu lưới dọc */
+  --today-bg: rgba(255, 230, 0, 0.35);
+}
+
+/* Thân gantt */
+.gantt-body{
+  display:flex;
+  height:60vh;               /* Quan trọng: tạo chiều cao để có scroll dọc */
+}
+
+/* Cột trái cố định */
+.gantt-body-fixed{
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+/* Khu timeline (scroll ngang + dọc) */
+.gantt-body-timeline{
+  position:relative;
+  flex:1;
+  overflow-x:auto;
+  overflow-y:auto;
+}
+
+/* Wrapper chứa toàn bộ nội dung timeline; width lớn -> sinh scroll ngang
+   Đồng thời vẽ lưới dọc bằng background lặp theo --day-width */
+.timeline-content{
+  position:relative;
+  min-height:100%;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--grid-color) 0,
+      var(--grid-color) 1px,
+      transparent 1px,
+      transparent var(--day-width)
+    );
+  background-attachment: local; /* đảm bảo background đi theo scroll */
+}
+
+/* Vạch highlight ngày hiện tại */
+.timeline-content .today-stripe{
+  position:absolute;
+  top:0;
+  width:var(--day-width);
+  height:100%;
+  background:var(--today-bg);
+  pointer-events:none;
+  z-index:0;
+}
+
+.timeline-content .weekend-stripe {
+  position: absolute;
+  top: 0;
+  width: var(--day-width);
+  height: 100%;
+  background: rgba(200, 200, 200, 0.25); /* màu xám nhạt */
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Mỗi hàng task nằm trên lưới */
+.task-row-timeline{
+  position:relative;
+  z-index:1;
+  min-height:var(--row-height);
+  display:flex;
+  align-items:center;
+}
+
+
+
+/* (Khuyến nghị) Header day cell khớp width với body */
+.day-column.day-header{
+  width:var(--day-width);
+  min-width:var(--day-width);
+  flex:0 0 var(--day-width);
+  text-align:center;
+}
+
+
+
+
+
+
+
+
+/* Container tổng */
+.gantt-body {
+  display: flex;
+  height: 60vh; /* fix chiều cao cho scroll */
+}
+
+/* Cột trái */
+.gantt-body-fixed {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Timeline chính */
+.gantt-body-timeline {
+  position: relative;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.task-row-timeline {
+  position: relative;
+  z-index: 1; /* task-bar nằm trên grid */
+}
+
+
+.timeline-grid .day-column.today {
+  background: rgba(255, 255, 0, 0.3); /* highlight ngày hiện tại */
+}
+
+/* Task row */
+.task-row-timeline {
+  position: relative;
+  z-index: 1;  /* nổi lên trên grid */
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+
+
+    /* New styles to match the image */
+    .task-bar-wrapper {
+        position: relative;
+        height: 100%;
+    }
+
+    .task-dependency {
+        position: absolute;
+        border: 2px solid #f97316;
+        border-left: none;
+        border-bottom: none;
+        z-index: 5;
+    }
+
+    .parent-task {
+        font-weight: bold;
+    }
+
+    .child-task {
+        padding-left: 20px;
+    }
+
+    .task-icon {
+        margin-right: 5px;
+        color: #6b7280;
+    }
+
+    .task-expand-icon {
+        cursor: pointer;
+        margin-right: 5px;
+    }
+
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Spinner */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #d1d5db;       /* xám nhạt */
+  border-top-color: #22c55e;       /* xanh non, đồng bộ in-progress */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

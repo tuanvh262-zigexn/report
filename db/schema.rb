@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_072112) do
   create_table "sub_tasks", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.bigint "story_id"
     t.bigint "owner_id"
+    t.integer "parent_task_id"
     t.integer "issue_id"
     t.integer "status", default: 0, null: false
     t.string "kind", null: false
@@ -89,6 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_072112) do
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_sub_tasks_on_issue_id", unique: true
     t.index ["owner_id"], name: "index_sub_tasks_on_owner_id"
+    t.index ["parent_task_id"], name: "index_sub_tasks_on_parent_task_id"
     t.index ["story_id"], name: "index_sub_tasks_on_story_id"
   end
 

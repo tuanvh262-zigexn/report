@@ -9,7 +9,7 @@ class Redmine::TimeEntries < Redmine::GetBase
   private
 
   def full_url
-    "https://dev.zigexn.vn/time_entries.json?user_id=#{user_id}&spent_on=#{spent_on}&project_id=133"
+    "https://dev.zigexn.vn/time_entries.json?user_id=#{user_id}&spent_on=#{spent_on}&project_id=17"
   end
 
   def response_format data_json

@@ -29,15 +29,21 @@ class Entries::IndexSupport
   end
 
   def data_ranges
-    date_ranges = adsdsd.keys
-    list_date.each_with_object({}) do |date, data|
+    @data_ranges ||= list_date.each_with_object({}) do |date, data|
       data[date.strftime("%Y-%m")] = (data[date.strftime("%Y-%m")] || []).push(date)
     end
   end
 
   def list_date
-    date_ranges = adsdsd.keys
-    (Date.current - 2.week).beginning_of_week..(Date.current + 2.week).end_of_week
+    @list_date ||= min_date..max_date
+  end
+
+  def min_date
+    @min_date ||= ((stories.map(&:start_date).compact.min || Date.current) - 2.week).beginning_of_week
+  end
+
+  def max_date
+    @max_date ||= ((stories.map(&:due_date).compact.max || Date.current) + 2.week).end_of_week
   end
 
   def class_name task, date
@@ -59,18 +65,39 @@ class Entries::IndexSupport
   def stories
     @stories ||= begin
       Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
-        .where(id: tasks.pluck(:story_id).uniq).includes(:time_crowd_tasks)
+        .where(id: tasks.pluck(:story_id).uniq).includes(:user)
+    end
+  end
+
+  def parent_tasks_with_story_id
+    @parent_task ||= begin
+      tasks.each_with_object({}) do |task, data|
+        story_id = task.story_id
+
+        data[story_id] = data[story_id] ? data[story_id].push(task.parent) : [task.parent]
+      end
+    end
+  end
+
+  def tasks_with_parent_id
+    @tasks_with_parent_id ||= begin
+      tasks.each_with_object({}) do |task, data|
+        parent_id = task.parent_task_id
+
+        data[parent_id] = data[parent_id] ? data[parent_id].push(task) : [task]
+      end
     end
   end
 
   def tasks
     @tasks ||= begin
-      query = SubTask.joins(:story)
+      query = SubTask.without_parent_tasks.joins(:story)
         .merge(
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
       ).where(owner_id: params_search[:user_ids], status: task_statuses)
+      .where(start_date: Date.current-1.month..Date.current)
 
-      query.includes(:owner).order(start_date: :asc)
+      query.includes(:owner, parent: :owner).order(start_date: :asc)
     end
   end
 

@@ -1,6 +1,13 @@
 class SubTask < ApplicationRecord
+  default_scope { order(:issue_id)}
+
   belongs_to :story
   belongs_to :owner, class_name: User.name, foreign_key: :owner_id, optional: true
+  belongs_to :parent, class_name: SubTask.name,
+    foreign_key: :parent_task_id, primary_key: :issue_id, optional: true
+
+  has_many :children, class_name: SubTask.name,
+    foreign_key: :parent_task_id, primary_key: :issue_id
 
   STATUS_DISPLAYS = {
     'init' => 'Init',
@@ -65,7 +72,10 @@ class SubTask < ApplicationRecord
     release: 6
   }
 
+  scope :without_parent_tasks, -> { where.not(parent_task_id: nil) }
+
   delegate :name, to: :owner, prefix: true, allow_nil: true
+  delegate :issue_id, to: :story, prefix: true, allow_nil: true
 
   def status_display
     return if status.blank?

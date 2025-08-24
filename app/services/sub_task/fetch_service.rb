@@ -26,10 +26,14 @@ class SubTask::FetchService
         meet_deadline: meet_deadline,
         activity_type: gen_activity_type,
         redmine_created_at: redmine_issue.dig("created_on")&.to_datetime,
-        redmine_updated_at:redmine_issue.dig("updated_on")&.to_datetime
+        redmine_updated_at:redmine_issue.dig("updated_on")&.to_datetime,
+        parent_task_id: is_parent? ? nil : parent_task_id
       )
 
       sub_task.save!
+
+      return if is_parent?
+      create_parent_sub_task!
     end
   end
 
@@ -37,6 +41,17 @@ class SubTask::FetchService
 
   def sub_task
     @sub_task ||= SubTask.find(sub_task_id)
+  end
+
+  def create_parent_sub_task!
+    parent_task = SubTask.find_by(issue_id: sub_task.parent_task_id) ||
+      SubTask.create!(issue_id: sub_task.parent_task_id, story_id: sub_task.story_id, kind: sub_task.kind)
+
+    FetchSubTaskWorker.perform_async(parent_task.id)
+  end
+
+  def is_parent?
+    sub_task.story_issue_id == parent_task_id
   end
 
   def redmine_issue
@@ -48,6 +63,8 @@ class SubTask::FetchService
   end
 
   def gen_activity_type
+    return if is_parent?
+
     Settings.regex.sub_task.activity_types.each do |type, regex|
       return type if redmine_parent_issue.dig("subject")&.match(regex)
     end
@@ -88,5 +105,9 @@ class SubTask::FetchService
 
   def is_bug?
     sub_task.kind == "bug" && !redmine_issue.dig("subject").match("Not bug")
+  end
+
+  def parent_task_id
+    redmine_issue.dig("parent", "id")
   end
 end

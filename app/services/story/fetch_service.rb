@@ -67,7 +67,7 @@ class Story::FetchService
       build_sub_tasks!
       remove_sub_tasks!
 
-      story.sub_tasks.each do |task|
+      story.raw_sub_tasks.each do |task|
         FetchSubTaskWorker.perform_async(task.id, options[:force_update])
       end
 
@@ -103,9 +103,6 @@ class Story::FetchService
   def sub_tasks
     @sub_tasks ||= begin
       return [] unless redmine_issue["children"]
-      unless request_from_jp?
-        return redmine_issue["children"]
-      end
       redmine_issue["children"].map{|x| x&.try("[]", "children")}.compact.flatten
     end
   end

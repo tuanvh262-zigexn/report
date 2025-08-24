@@ -14,7 +14,7 @@ class Redmine::CreateIssue < Redmine::PostBase
   def body_payload
     {
       issue: {
-        project_id: 157,
+        project_id: 17,
         tracker_id: 12,
         assigned_to_id: 276,
         subject: payload["subject"],
