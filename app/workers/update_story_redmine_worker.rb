@@ -12,6 +12,7 @@ class UpdateStoryRedmineWorker
         ForceUpdateStoryWorker.perform_async(data["id"], data["updated_on"])
       end
 
+      break if issues.size < 100
       offset += 100
     end
   end
