@@ -119,7 +119,7 @@
                 <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
                   <div class="task-row subtask border-b">
                     <div class="task-row-fixed">
-                      <div class="w-64 p-2 border-r pl-10">
+                      <div class="w-64 p-2 border-r pl-10 truncate-text">
                         <i class="fas fa-file task-icon"></i>
                         <%= task.subject %>
                       </div>
@@ -368,6 +368,107 @@
       requestAnimationFrame(() => {
         finishLoading();
       });
+
+      $('.task-row-fixed > .w-64.p-2.border-r.pl-10').each(function () {
+        const $el = $(this);
+
+        // Gắn class truncate
+        $el.addClass('truncate-text');
+
+        // Nếu text dài hơn width thì set tooltip
+        if (this.scrollWidth > this.clientWidth) {
+          $el.attr('title', $el.text().trim());
+        }
+      });
+
+      $(function () {
+  // selector mục tiêu — chỉnh nếu html của bạn khác
+  const selector = '.task-row-fixed > .w-64.p-2.border-r.pl-10';
+
+  // thêm class truncate cho đảm bảo
+  const $targets = $(selector);
+  $targets.addClass('truncate-text');
+
+  // lưu full text và set title nếu đang overflow
+  function refreshTooltipsFor($els) {
+    $els.each(function () {
+      const el = this;
+      const $el = $(this);
+      const full = $el.text().trim();
+      $el.data('fullText', full);
+
+      // set title fallback nếu overflow
+      if (el.scrollWidth > el.clientWidth) {
+        $el.attr('title', full);
+      } else {
+        $el.removeAttr('title');
+      }
+    });
+  }
+
+  refreshTooltipsFor($targets);
+
+  // tạo element tooltip custom (append 1 lần)
+  const $tt = $('<div class="custom-tooltip" aria-hidden="true"></div>').appendTo('body');
+
+  // position tooltip (gần chuột, tránh tràn khỏi màn hình)
+  function posTooltip(event) {
+    const padding = 12;
+    const winW = $(window).width();
+    const winH = $(window).height();
+    const scrollLeft = $(window).scrollLeft();
+    const scrollTop = $(window).scrollTop();
+
+    const ttW = $tt.outerWidth();
+    const ttH = $tt.outerHeight();
+    let left = event.pageX + 12;
+    let top  = event.pageY + 12;
+
+    // nếu tràn phải => show bên trái chuột
+    if (left + ttW + padding > winW + scrollLeft) {
+      left = event.pageX - ttW - 12;
+    }
+    // nếu tràn dưới => show phía trên
+    if (top + ttH + padding > winH + scrollTop) {
+      top = event.pageY - ttH - 12;
+    }
+    $tt.css({ left: left, top: top });
+  }
+
+  // show only when truncated
+  $(document).on('mouseenter', selector, function (ev) {
+    const el = this;
+    if (el.scrollWidth <= el.clientWidth) return; // not truncated -> skip
+
+    const $el = $(this);
+    const full = $el.data('fullText') || $el.text().trim();
+    $tt.text(full).show();
+    posTooltip(ev);
+  });
+
+  $(document).on('mousemove', selector, function (ev) {
+    if ($tt.is(':visible')) posTooltip(ev);
+  });
+
+  $(document).on('mouseleave', selector, function () {
+    $tt.hide();
+  });
+
+  // nếu nội dung có thể thay đổi sau khi load, quan sát để cập nhật title/ dữ liệu
+  // (tự động cho những phần có sẵn)
+  const observer = new MutationObserver(function () {
+    refreshTooltipsFor($targets);
+  });
+  $targets.each(function () {
+    observer.observe(this, { childList: true, characterData: true, subtree: true });
+  });
+
+  // cũng cập nhật khi resize cửa sổ (vì overflow có thể thay đổi)
+  $(window).on('resize', function () {
+    refreshTooltipsFor($targets);
+  });
+});
+
     });
   </script>
 <% end %>
