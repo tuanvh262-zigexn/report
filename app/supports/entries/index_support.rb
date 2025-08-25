@@ -74,7 +74,11 @@ class Entries::IndexSupport
       tasks.each_with_object({}) do |task, data|
         story_id = task.story_id
 
-        data[story_id] = data[story_id] ? data[story_id].push(task.parent) : [task.parent]
+        data[story_id] = if data[story_id]
+          data[story_id].any?{|x| x[:id] == task.parent.id} ? data[story_id] : data[story_id].push(task.parent)
+        else
+          [task.parent]
+        end
       end
     end
   end
