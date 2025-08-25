@@ -71,6 +71,7 @@ class Entries::IndexSupport
 
   def parent_tasks_with_story_id
     @parent_task ||= begin
+      binding.pry
       tasks.each_with_object({}) do |task, data|
         story_id = task.story_id
 
@@ -99,7 +100,7 @@ class Entries::IndexSupport
         .merge(
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
       ).where(owner_id: params_search[:user_ids], status: task_statuses)
-      .where(start_date: Date.current-1.month..Date.current)
+      .where(start_date: Date.current-1.month..Date.current+1.month)
 
       query.includes(:owner, parent: :owner).order(start_date: :asc)
     end
