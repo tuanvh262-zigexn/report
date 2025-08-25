@@ -6,7 +6,7 @@ id,name,redmine_id,role,actived,part_time,buffer_rate
 5,Anh Truong Nhat,383,"dev",1,0,0.9
 6,Dat Nguyen Nhu,333,"dev",1,0,0.9
 7,Doan Nguyen Ho Ba,422,"dev",1,0,0.9
-8,Duoc Thai Khac,415,"dev",1,0,0.9
+8,Duoc Thai Khac,415,"dev",0,0,0.9
 9,Khanh Do Thi Hong,423,"dev",1,0,0.9
 10,Khoi Le Tuan Nguyen,389,"dev",1,0,0.9
 11,Linh Le Van,413,"dev",1,0,0.9

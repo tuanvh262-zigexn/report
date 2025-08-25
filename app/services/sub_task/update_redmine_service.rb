@@ -16,6 +16,7 @@ class SubTask::UpdateRedmineService
 
   def execute
     return if sub_task.update_title
+    return unless sub_task.activity_type
 
     if sub_task.subject.match(Settings.regex.sub_task.activity_types[sub_task.activity_type])
       sub_task.update!(update_title: true)

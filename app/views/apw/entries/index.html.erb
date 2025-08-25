@@ -316,50 +316,148 @@
       // --- Đồng bộ chiều cao row ---
 
       // --- Expand/Collapse row ---
-      $('.expandable-row, .expandable-subtask').on('click', function (e) {
-        e.stopPropagation();
+      $(function () {
+  // ====== PAIRING: ghép từng cặp row fixed <-> timeline theo index và gán data-row-id ======
+  function pairRowsAndIndex() {
+    const $fixedRows    = $('.gantt-body-fixed .task-row');
+    const $timelineRows = $('.gantt-body-timeline .task-row');
 
-        // Toggle caret icon
-        const $caret = $(this).find('.fa-caret-down, .fa-caret-right').first();
-        if ($caret.length) {
-          $caret.toggleClass('fa-caret-down fa-caret-right');
-        }
+    const count = Math.min($fixedRows.length, $timelineRows.length);
+    const map = new Map(); // id -> { $fixed, $timeline, defaultDisplayFixed, defaultDisplayTimeline }
 
-        const $fixedRows = $('.gantt-body-fixed .task-row');
-        const $timelineRows = $('.gantt-body-timeline .task-row');
+    for (let i = 0; i < count; i++) {
+      const $f = $fixedRows.eq(i);
+      const $t = $timelineRows.eq(i);
 
-        // --- Subtask (level 2) ---
-        if ($(this).hasClass('expandable-subtask')) {
-          const $subtaskGroup = $(this).next('.subtask-group');
-          if ($subtaskGroup.length) {
-            const isHidden = $subtaskGroup.css('display') === 'none';
-            $subtaskGroup.css('display', isHidden ? 'block' : 'none');
+      // lấy/đặt id
+      let id = $f.attr('data-row-id') || $t.attr('data-row-id');
+      if (!id) id = 'row-' + i + '-' + Math.random().toString(36).slice(2, 7);
 
-            $subtaskGroup.find('.task-row.subtask').each(function () {
-              const index = $fixedRows.index(this);
-              if (index >= 0) {
-                $timelineRows.eq(index).css('display', isHidden ? 'flex' : 'none');
-              }
-            });
-          }
-        }
+      $f.attr('data-row-id', id);
+      $t.attr('data-row-id', id);
 
-        // --- Task-group (level 1) ---
-        if ($(this).hasClass('expandable-row')) {
-          const $taskGroup = $(this).closest('.task-group');
-          const $subtasks = $taskGroup.find('.subtask, .subtask-group');
+      // lưu display mặc định từng bên (dùng computed style, tránh sai loại: flex/grid/block)
+      const defFix = ($f.css('display') && $f.css('display') !== 'none') ? $f.css('display') : 'flex';
+      const defTim = ($t.css('display') && $t.css('display') !== 'none') ? $t.css('display') : 'flex';
 
-          $subtasks.each(function () {
-            const isHidden = $(this).css('display') === 'none';
-            $(this).css('display', isHidden ? 'flex' : 'none');
+      $f.data('defaultDisplay', defFix);
+      $t.data('defaultDisplay', defTim);
 
-            const index = $fixedRows.index(this);
-            if (index >= 0) {
-              $timelineRows.eq(index).css('display', $(this).css('display'));
-            }
+      map.set(id, { $fixed: $f, $timeline: $t, defFix, defTim });
+    }
+
+    // (không bắt buộc) cảnh báo nếu số row lệch nhau
+    if ($fixedRows.length !== $timelineRows.length) {
+      console.warn('[Gantt] Số task-row không khớp:',
+        'fixed=', $fixedRows.length, 'timeline=', $timelineRows.length);
+    }
+
+    return map;
+  }
+
+  // tạo map ban đầu
+  let rowMap = pairRowsAndIndex();
+
+  // Nếu DOM thay đổi (thêm bớt row), build lại map
+  const fixedContainer = document.querySelector('.gantt-body-fixed');
+  const timelineContainer = document.querySelector('.gantt-body-timeline');
+  if (fixedContainer && timelineContainer) {
+    const mo = new MutationObserver(() => {
+      rowMap = pairRowsAndIndex();
+    });
+    mo.observe(fixedContainer, { childList: true, subtree: true });
+    mo.observe(timelineContainer, { childList: true, subtree: true });
+  }
+
+  // ====== Helpers show/hide theo id hoặc theo element fixed ======
+  function setVisibleById(id, visible) {
+    const rec = rowMap.get(id);
+    if (!rec) return;
+    if (visible) {
+      rec.$fixed.css('display', rec.defFix || 'flex');
+      rec.$timeline.css('display', rec.defTim || 'flex');
+    } else {
+      rec.$fixed.css('display', 'none');
+      rec.$timeline.css('display', 'none');
+    }
+  }
+
+  function setVisibleByFixed($fixedEl, visible) {
+    const id = $fixedEl.attr('data-row-id');
+    if (id) setVisibleById(id, visible);
+  }
+
+  // ====== Ẩn tất cả .subtask-group ngay từ đầu (và đồng bộ timeline) ======
+  $('.subtask-group').each(function () {
+    const $group = $(this);
+    $group.hide();
+
+    // Ẩn luôn các .task-row.subtask phía fixed và timeline (theo id cặp)
+    $group.find('.task-row.subtask').each(function () {
+      setVisibleByFixed($(this), false);
+    });
+  });
+
+  // ====== Expand/Collapse (group 1 & group 2) — đảm bảo đồng bộ timeline ======
+  $(document).on('click', '.expandable-row, .expandable-subtask', function (e) {
+    e.stopPropagation();
+    const $btn = $(this);
+
+    // toggle caret
+    const $caret = $btn.find('.fa-caret-down, .fa-caret-right').first();
+    if ($caret.length) $caret.toggleClass('fa-caret-down fa-caret-right');
+
+    // --- Level 2: .expandable-subtask -> điều khiển .subtask-group liền kề ---
+    if ($btn.hasClass('expandable-subtask')) {
+      const $subtaskGroup = $btn.next('.subtask-group');
+      if (!$subtaskGroup.length) return;
+
+      const willShow = !$subtaskGroup.is(':visible');
+      $subtaskGroup.toggle(willShow);
+
+      $subtaskGroup.find('.task-row.subtask').each(function () {
+        setVisibleByFixed($(this), willShow);
+      });
+
+      $btn.attr('data-expanded', willShow ? 'true' : 'false');
+      return;
+    }
+
+    // --- Level 1: .expandable-row -> điều khiển tất cả .subtask và .subtask-group bên trong .task-group ---
+    if ($btn.hasClass('expandable-row')) {
+      const $taskGroup = $btn.closest('.task-group');
+      if (!$taskGroup.length) return;
+
+      const $children = $taskGroup.find('.subtask, .subtask-group');
+      const anyVisible = $children.filter(':visible').length > 0;
+      const willShowAll = !anyVisible;
+
+      $children.each(function () {
+        const $ch = $(this);
+        if ($ch.hasClass('subtask-group')) {
+          $ch.toggle(willShowAll);
+          // đồng thời bật/tắt tất cả con subtask bên trong group này
+          $ch.find('.task-row.subtask').each(function () {
+            setVisibleByFixed($(this), willShowAll);
           });
+        } else {
+          // là 1 .subtask (task-row) đơn lẻ
+          setVisibleByFixed($ch, willShowAll);
         }
       });
+
+      $btn.attr('data-expanded', willShowAll ? 'true' : 'false');
+    }
+  });
+
+  // ====== Khi bạn hide/show caret (ẩn button bằng CSS rồi show lại) ======
+  // Nếu việc “ẩn caret” của bạn đang làm đổi display/layout gây mất map,
+  // sau khi show lại caret, gọi rebuild map:
+  $(document).on('show-gantt-caret', function () {
+    rowMap = pairRowsAndIndex();
+  });
+});
+
 
       function finishLoading() {
         $('#gantt-loading').fadeOut(300); // hoặc .remove()
