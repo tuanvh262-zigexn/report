@@ -71,7 +71,6 @@ class Entries::IndexSupport
 
   def parent_tasks_with_story_id
     @parent_task ||= begin
-      binding.pry
       tasks.each_with_object({}) do |task, data|
         story_id = task.story_id
 
