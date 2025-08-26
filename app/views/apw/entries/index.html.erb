@@ -83,7 +83,9 @@
                 <div class="w-64 p-2 border-r">
                   <i class="fas fa-caret-down task-expand-icon"></i>
                   <i class="fas fa-folder task-icon"></i>
-                    <%= story.subject %>
+                    <%= link_to story.subject,
+                      "https://dev.zigexn.vn/issues/#{story.issue_id}",
+                      target: "_blank" %>
                   </div>
                 <div class="w-24 p-2 border-r text-center"><%= story.user_name %></div>
                 <div class="w-24 p-2 border-r text-center">
@@ -101,7 +103,9 @@
                   <div class="w-64 p-2 border-r pl-6">
                     <i class="fas fa-caret-down task-expand-icon"></i>
                     <i class="fas fa-folder task-icon"></i>
-                    <%= parent_task.subject %>
+                    <%= link_to parent_task.subject,
+                      "https://dev.zigexn.vn/issues/#{parent_task.issue_id}",
+                      target: "_blank" %>
                   </div>
                   <div class="w-24 p-2 border-r text-center"><%= parent_task.owner_name %></div>
                   <div class="w-24 p-2 border-r text-center">
@@ -121,7 +125,9 @@
                     <div class="task-row-fixed">
                       <div class="w-64 p-2 border-r pl-10 truncate-text">
                         <i class="fas fa-file task-icon"></i>
-                        <%= task.subject %>
+                        <%= link_to task.subject,
+                          "https://dev.zigexn.vn/issues/#{task.issue_id}",
+                          target: "_blank" %>
                       </div>
                       <div class="w-24 p-2 border-r text-center"><%= task.owner_name %></div>
                       <div class="w-24 p-2 border-r text-center">
