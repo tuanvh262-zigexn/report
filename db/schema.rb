@@ -58,6 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_072112) do
     t.datetime "redmine_created_at"
     t.datetime "redmine_updated_at"
     t.boolean "request_from_jp", default: true
+    t.boolean "display_childrent", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["issue_id"], name: "index_stories_on_issue_id", unique: true

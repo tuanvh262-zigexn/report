@@ -1,11 +1,7 @@
 class CreateStaticStoryWorker
   include Sidekiq::Worker
 
-  STATIC_SUBJECT = [
-    '[ Documents ] -',
-    '[ Support ] -',
-    '[ Investment Plan ] -'
-  ]
+  STATIC_SUBJECT = Settings.static_subjects.has_not_parent + Settings.static_subjects.has_parent
 
   def perform
     STATIC_SUBJECT.each do |subject|

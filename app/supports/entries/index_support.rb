@@ -15,19 +15,6 @@ class Entries::IndexSupport
     end
   end
 
-  def adsdsd
-    @adsdsd ||= begin
-      tasks.each_with_object({}) do |task, data|
-        next unless task.start_date && task.due_date
-        (task.start_date..task.due_date).each do |date|
-          date_key = date.strftime("%Y-%m-%d")
-
-          data[date_key] = data[date_key] ? data[date_key].push(task.id) : [task.id]
-        end
-      end
-    end
-  end
-
   def data_ranges
     @data_ranges ||= list_date.each_with_object({}) do |date, data|
       data[date.strftime("%Y-%m")] = (data[date.strftime("%Y-%m")] || []).push(date)
@@ -46,22 +33,6 @@ class Entries::IndexSupport
     @max_date ||= ((stories.map(&:due_date).compact.max || Date.current) + 2.week).end_of_week
   end
 
-  def class_name task, date
-    return :holiday if date.saturday? || date.sunday?
-
-    if (adsdsd[date.strftime("%Y-%m-%d")] || []).include? task.id
-      if task.closed?
-        return :done
-      elsif date < Date.current
-        return :in_progress
-      else
-        return :activity
-      end
-    end
-
-    :today if date.today?
-  end
-
   def stories
     @stories ||= begin
       Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
@@ -74,10 +45,20 @@ class Entries::IndexSupport
       tasks.each_with_object({}) do |task, data|
         story_id = task.story_id
 
-        data[story_id] = if data[story_id]
-          data[story_id].any?{|x| x[:id] == task.parent.id} ? data[story_id] : data[story_id].push(task.parent)
+        if task.story_display_childrent?
+          next unless task.parent_task_id
+
+          data[story_id] = if data[story_id]
+            data[story_id]&.any?{|x| x[:id] == task.parent.id} ? data[story_id] : data[story_id].push(task.parent)
+          else
+            [task.parent]
+          end
         else
-          [task.parent]
+          data[story_id] = if data[story_id]
+            data[story_id]&.any?{|x| x[:id] == task.id} ? data[story_id] : data[story_id].push(task)
+          else
+            [task]
+          end
         end
       end
     end
@@ -85,7 +66,7 @@ class Entries::IndexSupport
 
   def tasks_with_parent_id
     @tasks_with_parent_id ||= begin
-      tasks.each_with_object({}) do |task, data|
+      tasks.select(&:parent_task_id).each_with_object({}) do |task, data|
         parent_id = task.parent_task_id
 
         data[parent_id] = data[parent_id] ? data[parent_id].push(task) : [task]
@@ -95,13 +76,13 @@ class Entries::IndexSupport
 
   def tasks
     @tasks ||= begin
-      query = SubTask.without_parent_tasks.joins(:story)
+      query = SubTask.joins(:story)
         .merge(
           Story.where(status: [:init, :in_progress, :resolved, :code_review, :testing, :verified, :feedback, :ready_for_test, :jp_side])
       ).where(owner_id: params_search[:user_ids], status: task_statuses)
       .where(start_date: Date.current-1.month..Date.current+1.month)
 
-      query.includes(:owner, parent: :owner).order(start_date: :asc)
+      query.includes(:story, :owner, parent: :owner).order(start_date: :asc)
     end
   end
 

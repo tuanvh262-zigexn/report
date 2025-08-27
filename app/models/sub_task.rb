@@ -75,7 +75,7 @@ class SubTask < ApplicationRecord
   scope :without_parent_tasks, -> { where.not(parent_task_id: nil) }
 
   delegate :name, to: :owner, prefix: true, allow_nil: true
-  delegate :issue_id, to: :story, prefix: true, allow_nil: true
+  delegate :issue_id, :display_childrent?, to: :story, prefix: true, allow_nil: true
 
   def status_display
     return if status.blank?

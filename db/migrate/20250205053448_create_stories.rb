@@ -38,6 +38,7 @@ class CreateStories < ActiveRecord::Migration[8.0]
       t.datetime :redmine_created_at
       t.datetime :redmine_updated_at
       t.boolean :request_from_jp, default: true
+      t.boolean :display_childrent, default: true
 
       t.timestamps
     end

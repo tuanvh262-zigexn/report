@@ -77,8 +77,10 @@
       <div class="gantt-body-fixed">
         <!-- Office Itinerancy -->
         <% @support.stories.each do |story| %>
+          <% next unless @support.parent_tasks_with_story_id[story.id] %>
+
           <div class="task-group">
-            <div class="task-row border-b expandable-row story %>">
+            <div class="task-row border-b expandable-row story">
               <div class="task-row-fixed">
                 <div class="w-64 p-2 border-r">
                   <i class="fas fa-caret-down task-expand-icon"></i>
@@ -97,51 +99,78 @@
               </div>
             </div>
 
-            <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
-              <div class="task-row subtask border-b expandable-subtask">
-                <div class="task-row-fixed">
-                  <div class="w-64 p-2 border-r pl-6">
-                    <i class="fas fa-caret-down task-expand-icon"></i>
-                    <i class="fas fa-folder task-icon"></i>
-                    <%= link_to parent_task.subject,
-                      "https://dev.zigexn.vn/issues/#{parent_task.issue_id}",
-                      target: "_blank" %>
-                  </div>
-                  <div class="w-24 p-2 border-r text-center"><%= parent_task.owner_name %></div>
-                  <div class="w-24 p-2 border-r text-center">
-                  <%= parent_task.status_display %>
-                  <br>
-                  <%= "#{parent_task.done_ratio}%" %>
-                  </div>
-                  <div class="w-24 p-2 border-r text-center">
-                    <%= parent_task.total_estimated_hours.to_f %>
-                  </div>
-                </div>
-              </div>
+            <% if story.display_childrent? %>
+              <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
+                <% next unless @support.tasks_with_parent_id[parent_task.issue_id] %>
 
-              <div class="subtask-group">
-                <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
-                  <div class="task-row subtask border-b">
-                    <div class="task-row-fixed">
-                      <div class="w-64 p-2 border-r pl-10 truncate-text">
-                        <i class="fas fa-file task-icon"></i>
-                        <%= link_to task.subject,
-                          "https://dev.zigexn.vn/issues/#{task.issue_id}",
-                          target: "_blank" %>
-                      </div>
-                      <div class="w-24 p-2 border-r text-center"><%= task.owner_name %></div>
-                      <div class="w-24 p-2 border-r text-center">
-                        <%= task.status_display %>
-                        <br>
-                        <%= "#{task.done_ratio}%" %>
-                      </div>
-                      <div class="w-24 p-2 border-r text-center">
-                        <%= task.total_estimated_hours.to_f %>
-                      </div>
+                <div class="task-row subtask border-b expandable-subtask">
+                  <div class="task-row-fixed">
+                    <div class="w-64 p-2 border-r pl-6">
+                      <i class="fas fa-caret-down task-expand-icon"></i>
+                      <i class="fas fa-folder task-icon"></i>
+                      <%= link_to parent_task.subject,
+                        "https://dev.zigexn.vn/issues/#{parent_task.issue_id}",
+                        target: "_blank" %>
+                    </div>
+                    <div class="w-24 p-2 border-r text-center"><%= parent_task.owner_name %></div>
+                    <div class="w-24 p-2 border-r text-center">
+                    <%= parent_task.status_display %>
+                    <br>
+                    <%= "#{parent_task.done_ratio}%" %>
+                    </div>
+                    <div class="w-24 p-2 border-r text-center">
+                      <%= parent_task.total_estimated_hours.to_f %>
                     </div>
                   </div>
-                <% end %>
-              </div>
+                </div>
+
+                <div class="subtask-group">
+                  <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
+                    <div class="task-row subtask border-b expandable-subtask">
+                      <div class="task-row-fixed">
+                        <div class="w-64 p-2 border-r pl-10 truncate-text">
+                          <i class="fas fa-file task-icon"></i>
+                          <%= link_to task.subject,
+                            "https://dev.zigexn.vn/issues/#{task.issue_id}",
+                            target: "_blank" %>
+                        </div>
+                        <div class="w-24 p-2 border-r text-center"><%= task.owner_name %></div>
+                        <div class="w-24 p-2 border-r text-center">
+                          <%= task.status_display %>
+                          <br>
+                          <%= "#{task.done_ratio}%" %>
+                        </div>
+                        <div class="w-24 p-2 border-r text-center">
+                          <%= task.total_estimated_hours.to_f %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            <% else %>
+              <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
+
+                <div class="task-row subtask border-b expandable-subtask">
+                  <div class="task-row-fixed">
+                    <div class="w-64 p-2 border-r pl-6">
+                      <i class="fas fa-file task-icon"></i>
+                      <%= link_to parent_task.subject,
+                        "https://dev.zigexn.vn/issues/#{parent_task.issue_id}",
+                        target: "_blank" %>
+                    </div>
+                    <div class="w-24 p-2 border-r text-center"><%= parent_task.owner_name %></div>
+                    <div class="w-24 p-2 border-r text-center">
+                    <%= parent_task.status_display %>
+                    <br>
+                    <%= "#{parent_task.done_ratio}%" %>
+                    </div>
+                    <div class="w-24 p-2 border-r text-center">
+                      <%= parent_task.total_estimated_hours.to_f %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
             <% end %>
           </div>
         <% end %>
@@ -163,6 +192,7 @@
           <% end %>
 
           <% @support.stories.each do |story| %>
+            <% next unless @support.parent_tasks_with_story_id[story.id] %>
             <div class="task-row border-b">
               <div class="task-row-timeline">
                 <div class="task-bar <%= (story.waiting_release? || story.released?) ? :done : (:overdue if story.due_date && story.due_date < Date.current) %>"
@@ -176,37 +206,55 @@
               </div>
             </div>
 
-            <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
-              <!-- Office Itinerancy -->
-              <div class="task-row border-b">
-                <div class="task-row-timeline">
-                  <div class="task-bar <%= (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) ? :done : (:overdue if parent_task.due_date && parent_task.due_date < Date.current) %>"
-                        style="left: <%= day_width * (parent_task.start_date.try('-', start_date)).to_i %>px;
-                        width: <%= day_width * ((parent_task.due_date.try('-', parent_task.start_date)).to_i + 1) %>px;
-                        top: 8px;">
-                    <div class="task-progress" style="width:<%= parent_task.done_ratio %>%;">
-                      <%= "#{parent_task.done_ratio}%" unless (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) %>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
-                 <!-- Office Itinerancy -->
-                  <div class="task-row border-b">
-                    <div class="task-row-timeline">
-                      <div class="task-bar <%= task.closed? ? :done : (:overdue if task.due_date && task.due_date < Date.current) %>"
-                          style="left: <%= day_width * (task.start_date.try('-', start_date)).to_i %>px;
-                          width: <%= day_width * ((task.due_date.try('-', task.start_date)).to_i + 1) %>px;
+            <% if story.display_childrent? %>
+              <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
+                <!-- Office Itinerancy -->
+                <div class="task-row border-b">
+                  <div class="task-row-timeline">
+                    <div class="task-bar <%= (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) ? :done : (:overdue if parent_task.due_date && parent_task.due_date < Date.current) %>"
+                          style="left: <%= day_width * (parent_task.start_date.try('-', start_date)).to_i %>px;
+                          width: <%= day_width * ((parent_task.due_date.try('-', parent_task.start_date)).to_i + 1) %>px;
                           top: 8px;">
-                        <div class="task-progress" style="width:<%= task.done_ratio %>%;">
-                          <%= "#{task.done_ratio}%" unless task.closed? %>
-                        </div>
+                      <div class="task-progress" style="width:<%= parent_task.done_ratio %>%;">
+                        <%= "#{parent_task.done_ratio}%" unless (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) %>
                       </div>
                     </div>
                   </div>
+                </div>
+                <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
+                   <!-- Office Itinerancy -->
+                    <div class="task-row border-b">
+                      <div class="task-row-timeline">
+                        <div class="task-bar <%= task.closed? ? :done : (:overdue if task.due_date && task.due_date < Date.current) %>"
+                            style="left: <%= day_width * (task.start_date.try('-', start_date)).to_i %>px;
+                            width: <%= day_width * ((task.due_date.try('-', task.start_date)).to_i + 1) %>px;
+                            top: 8px;">
+                          <div class="task-progress" style="width:<%= task.done_ratio %>%;">
+                            <%= "#{task.done_ratio}%" unless task.closed? %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 <% end %>
               <% end %>
+            <% else %>
+              <% @support.parent_tasks_with_story_id[story.id].each do |parent_task| %>
+                <!-- Office Itinerancy -->
+                <div class="task-row border-b">
+                  <div class="task-row-timeline">
+                    <div class="task-bar <%= parent_task.closed? ? :done : (:overdue if parent_task.due_date && parent_task.due_date < Date.current) %>"
+                          style="left: <%= day_width * (parent_task.start_date.try('-', start_date)).to_i %>px;
+                          width: <%= day_width * ((parent_task.due_date.try('-', parent_task.start_date)).to_i + 1) %>px;
+                          top: 8px;">
+                      <div class="task-progress" style="width:<%= parent_task.done_ratio %>%;">
+                        <%= "#{parent_task.done_ratio}%" unless parent_task.closed? %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% end %>
             <% end %>
+          <% end %>
           </div>
         </div>
       </div>

@@ -22,7 +22,12 @@ regex:
       test: !ruby/regexp /4. Testing -/
       bug: !ruby/regexp /5. Bug fixing -/
       release: !ruby/regexp /6. Release -/
-
+static_subjects:
+  has_not_parent:
+    - '[ Documents ] -'
+    - '[ Support ] -'
+  has_parent:
+    - '[ Investment Plan ] -'
 redis:
   host: redis
   db: 15

@@ -59,7 +59,8 @@ class Story::FetchService
         redmine_created_at: redmine_issue.dig("created_on")&.to_datetime,
         redmine_updated_at:redmine_issue.dig("updated_on")&.to_datetime,
         timecrowd_est_ratio: timecrowd_est_ratio,
-        request_from_jp: request_from_jp?
+        request_from_jp: request_from_jp?,
+        display_childrent: !display_childrent?
       )
 
       user_changed = story.user_id_changed? || story.level_changed?
@@ -103,6 +104,9 @@ class Story::FetchService
   def sub_tasks
     @sub_tasks ||= begin
       return [] unless redmine_issue["children"]
+      unless request_from_jp?
+        return redmine_issue["children"]
+      end
       redmine_issue["children"].map{|x| x&.try("[]", "children")}.compact.flatten
     end
   end
@@ -182,6 +186,12 @@ class Story::FetchService
 
   def request_from_jp?
     redmine_issue.dig("custom_fields").find{|x| x["name"] == "JP Request"}.try("[]", "value") != "none"
+  end
+
+  def display_childrent?
+    Settings.static_subjects.has_not_parent.any? do |x|
+      redmine_issue.dig("subject").include?(x)
+    end
   end
 
   def timecrowd_est
