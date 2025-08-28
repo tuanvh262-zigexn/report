@@ -104,7 +104,7 @@ class Story::FetchService
   def sub_tasks
     @sub_tasks ||= begin
       return [] unless redmine_issue["children"]
-      unless request_from_jp?
+      if display_childrent?
         return redmine_issue["children"]
       end
       redmine_issue["children"].map{|x| x&.try("[]", "children")}.compact.flatten
