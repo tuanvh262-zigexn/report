@@ -157,7 +157,7 @@ class Story::FetchService
   end
 
   def build_sub_tasks!
-    current_sub_tasks = display_childrent? ? story.sub_tasks : story.parent_tasks
+    current_sub_tasks = display_childrent? ? story.parent_tasks : story.sub_tasks
 
     (sub_tasks.map{|x| x["id"]} - current_sub_tasks.pluck(:issue_id)).each do |x|
       SubTask.create! issue_id: x, story_id: story.id, kind: tracker_mapping[x]
@@ -165,7 +165,7 @@ class Story::FetchService
   end
 
   def remove_sub_tasks!
-    current_sub_tasks = display_childrent? ? story.sub_tasks : story.parent_tasks
+    current_sub_tasks = display_childrent? ? story.parent_tasks : story.sub_tasks
 
     (current_sub_tasks.pluck(:issue_id) - sub_tasks.map{|x| x["id"]}).each do |x|
       SubTask.find_by(issue_id: x).destroy!
