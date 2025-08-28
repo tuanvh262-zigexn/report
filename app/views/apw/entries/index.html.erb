@@ -303,17 +303,17 @@
       const $fixedRows = $('.gantt-body-fixed .task-row');
       const $timelineRows = $('.gantt-body-timeline .task-row');
 
-      $('.subtask-group').each(function () {
-        const $group = $(this);
-        $group.hide();
+      // $('.subtask-group').each(function () {
+      //   const $group = $(this);
+      //  $group.hide();
 
-        $group.find('.task-row.subtask').each(function () {
-          const index = $fixedRows.index(this);
-          if (index >= 0) {
-            $timelineRows.eq(index).hide();
-          }
-        });
-      });
+      //  $group.find('.task-row.subtask').each(function () {
+      //    const index = $fixedRows.index(this);
+      //    if (index >= 0) {
+      //      $timelineRows.eq(index).hide();
+      //    }
+      //  });
+      //});
 
       function syncRowHeights() {
         const $fixedRows = $('.gantt-body-fixed .task-row');
