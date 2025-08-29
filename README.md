@@ -1,24 +1,22 @@
-# README
+## How to run:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+1. Clone the repo
+  ```bash
+  git clone git@github.com:ZIGExN-VeNtura/redmine-github-slack-automation.git
+  ```
 
-Things you may want to cover:
+2. Update `Gemfile.lock`
+  - If you use mac OS, go to step 3
+  - If you use ubuntu, copy the content of file `Gemfile-ubuntu.lock` to `Gemfile.lock`
+  ```bash
+  cp Gemfile-ubuntu.lock Gemfile.lock
+  ```
 
-* Ruby version
+3. Start docker-compose:
 
-* System dependencies
+  ```bash
+  docker-compose build --no-cache
+  docker-compose up
+  ```
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+4. Access the root url: http://localhost:3000/sumai
