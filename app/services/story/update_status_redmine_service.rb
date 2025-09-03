@@ -31,7 +31,7 @@ class Story::UpdateStatusRedmineService
   def children_issue
     issue_ids = []
 
-    redmine_issue["children"].each do |child|
+    redmine_issue["children"]&.each do |child|
       issue_ids << child["id"]
       if child["children"].present?
         child["children"].each do |child2|
