@@ -53,7 +53,7 @@ update_actived_story_worker:
   queue: default
 
 create_static_story_worker:
-  cron: '0 7 * * 1-5'
+  cron: '30 8 * * 1-5'
   class: CreateStaticStoryWorker
   queue: default
 
