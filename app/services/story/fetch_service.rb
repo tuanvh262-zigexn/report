@@ -77,6 +77,13 @@ class Story::FetchService
           CategorizeActivitiesUserWorkingLogWorker.perform_async(log.id)
         end
       end
+
+    rescue ActiveRecord::RecordNotUnique => e
+      story.destroy
+      SubTask.where(story_id: story.id).destroy_all
+
+      redis.del(redis_key)
+      raise e.class, "Message: #{e.message}"
     rescue StandardError => e
       redis.del(redis_key)
       raise e.class, "Message: #{e.message}"
