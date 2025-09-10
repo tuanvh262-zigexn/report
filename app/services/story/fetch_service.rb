@@ -196,7 +196,9 @@ class Story::FetchService
   end
 
   def request_from_jp?
-    redmine_issue.dig("custom_fields").find{|x| x["name"] == "JP Request"}.try("[]", "value") != "none"
+    value = redmine_issue.dig("custom_fields").find{|x| x["name"] == "JP Request"}.try("[]", "value")
+
+    ["none", "None", "N/A"].exclude?(value)
   end
 
   def display_childrent?
