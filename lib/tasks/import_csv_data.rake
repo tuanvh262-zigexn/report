@@ -45,7 +45,7 @@ namespace :db do
 
   task async_user_working_logs: :environment do
     User.all.each do |user|
-      ('2024-01-01'.to_date..Time.current.to_date).each do |time|
+      ('2023-01-01'.to_date..Time.current.to_date).each do |time|
         FetchUserWorkingLogWorker.perform_async(user.id, time.strftime('%Y-%m-%d'))
       end
     end
