@@ -195,14 +195,6 @@
             <% next unless @support.parent_tasks_with_story_id[story.id] %>
             <div class="task-row border-b">
               <div class="task-row-timeline">
-                <div class="task-bar <%= (story.waiting_release? || story.released?) ? :done : (:overdue if story.due_date && story.due_date < Date.current) %>"
-                    style="left: <%= day_width * (story.start_date - start_date).to_i %>px;
-                    width: <%= day_width * ((story.due_date - story.start_date).to_i + 1) %>px;
-                    top: 8px;">
-                  <div class="task-progress" style="width:<%= story.done_ratio %>%;">
-                    <%= "#{story.done_ratio}%" %>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -211,14 +203,6 @@
                 <!-- Office Itinerancy -->
                 <div class="task-row border-b">
                   <div class="task-row-timeline">
-                    <div class="task-bar <%= (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) ? :done : (:overdue if parent_task.due_date && parent_task.due_date < Date.current) %>"
-                          style="left: <%= day_width * (parent_task.start_date.try('-', start_date)).to_i %>px;
-                          width: <%= day_width * ((parent_task.due_date.try('-', parent_task.start_date)).to_i + 1) %>px;
-                          top: 8px;">
-                      <div class="task-progress" style="width:<%= parent_task.done_ratio %>%;">
-                        <%= "#{parent_task.done_ratio}%" unless (parent_task.closed? || @support.tasks_with_parent_id[parent_task.issue_id].all?(&:closed?)) %>
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <% @support.tasks_with_parent_id[parent_task.issue_id].each do |task| %>
