@@ -14,6 +14,7 @@ update_reports_worker:
   queue: default
 
 fetch_all_report_worker:
+  cron: '0 23 * * 1-6'
   class: FetchAllReportWorker
   queue: default
 
